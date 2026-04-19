@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 40px auto; padding: 0 20px; }
+        h2 { margin-bottom: 20px; }
+        .summary { background: #f5f5f5; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+        .row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; color: #555; }
+        .row.total { border-top: 1px solid #ddd; margin-top: 8px; padding-top: 10px; font-size: 16px; font-weight: bold; color: #000; }
+        .field { margin-bottom: 14px; }
+        .field label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; }
+        .field input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .pay-btn { width: 100%; padding: 12px; background: #534AB7; color: white; border: none; border-radius: 6px; font-size: 15px; cursor: pointer; }
+        .pay-btn:hover { background: #3C3489; }
+    </style>
+</head>
+<body>
+    <h2>Rental payment</h2>
+
+    <div class="summary">
+        <div class="row"><span>Unit</span><span>{{ payment.unit }}</span></div>
+        <div class="row"><span>Period</span><span>{{ payment.period }}</span></div>
+        <div class="row"><span>Monthly rent</span><span>RM {{ payment.rent }}</span></div>
+        <div class="row"><span>Utility charges</span><span>RM {{ payment.utility }}</span></div>
+        <div class="row total"><span>Total due</span><span>RM {{ payment.total }}</span></div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="field">
+            <label>Cardholder name</label>
+            <input type="text" placeholder="Your full name" required>
+        </div>
+        <div class="field">
+            <label>Card number</label>
+            <input type="text" placeholder="1234 5678 9012 3456" required>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+            <div class="field">
+                <label>Expiry</label>
+                <input type="text" placeholder="MM / YY" required>
+            </div>
+            <div class="field">
+                <label>CVV</label>
+                <input type="text" placeholder="123" required>
+            </div>
+        </div>
+        <button class="pay-btn" type="submit">Pay RM {{ payment.total }}</button>
+    </form>
+</body>
+</html>
