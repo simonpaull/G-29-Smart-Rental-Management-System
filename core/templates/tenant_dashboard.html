@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Tenant Dashboard</h2>
+<p>Welcome {{ request.user.username }}</p>
+
+<a href="/profile/">My Profile</a> |
+<a href="/logout/">Logout</a>
+{% endblock %}
