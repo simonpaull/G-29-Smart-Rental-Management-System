@@ -10,8 +10,19 @@
 
     <nav>
         <a href="/">Home</a> |
-        <a href="/login/">Login</a> |
-        <a href="/dashboard/">Dashboard</a>
+
+        {% if user.is_authenticated %}
+            {% if user.profile.role == 'admin' %}
+                <a href="/admin-dashboard/">Dashboard</a> |
+            {% else %}
+                <a href="/tenant-dashboard/">Dashboard</a> |
+            {% endif %}
+
+            <a href="/profile/">Profile</a> |
+            <a href="/logout/">Logout</a>
+        {% else %}
+            <a href="/login/">Login</a>
+        {% endif %}
     </nav>
 
     <hr>
