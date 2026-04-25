@@ -1,0 +1,26 @@
+<h1>Add Room Page</h1>
+
+<form method = "POST">     #use post to past info to backend
+    {% csrf_token %}
+    
+    <label>Room Number: </label>
+    <input type= 'text'  name= 'roomnumber'>
+    
+    <label>Room Type: </label>
+    <input type= 'text'  name= 'roomtype'>
+
+    <label>Size: </label>
+    <input type= 'number'  name= 'size'  step= '0.01'>
+
+    <label>Price: </label>
+    <input type= 'number'   name= 'price'  step= '0.01'>
+
+    <label>Availability: </label>
+    <input type= 'checkbox'  name= 'availability'>
+
+    <label>Description: </label>
+    <textarea name= 'description'></textarea>
+
+    <button type= 'submit'>Add Room</button>
+
+</form>
