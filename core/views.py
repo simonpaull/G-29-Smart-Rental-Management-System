@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from .models import Profile
 
 def home(request):
     return render(request, 'home.html')
@@ -55,3 +57,34 @@ def edit_profile(request):
         return redirect('profile')
 
     return render(request, 'edit_profile.html', {'profile': profile})
+
+def register_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        role = request.POST.get('role')
+        phone_number = request.POST.get('phone_number')
+        address = request.POST.get('address')
+
+        if User.objects.filter(username=username).exists():
+            return render(request, 'register.html', {
+                'error': 'Username already exists'
+            })
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        Profile.objects.create(
+            user=user,
+            role=role,
+            phone_number=phone_number,
+            address=address
+        )
+
+        return redirect('login')
+
+    return render(request, 'register.html')
