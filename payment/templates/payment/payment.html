@@ -19,10 +19,13 @@
     <h2>Rental payment</h2>
 
     <div class="summary">
+        <div class="row"><span>Tenant</span><span>{{ request.user.get_full_name|default:request.user.username }}</span></div>
         <div class="row"><span>Unit</span><span>{{ payment.unit }}</span></div>
         <div class="row"><span>Period</span><span>{{ payment.period }}</span></div>
         <div class="row"><span>Monthly rent</span><span>RM {{ payment.rent }}</span></div>
-        <div class="row"><span>Utility charges</span><span>RM {{ payment.utility }}</span></div>
+        <div class="row"><span>Electric charges</span><span>RM {{ payment.electric }}</span></div>
+        <div class="row"><span>Water charges</span><span>RM {{ payment.water }}</span></div>
+        <div class="row"><span>Total utility</span><span>RM {{ payment.utility }}</span></div>
         <div class="row total"><span>Total due</span><span>RM {{ payment.total }}</span></div>
     </div>
 
@@ -30,7 +33,7 @@
         {% csrf_token %}
         <div class="field">
             <label>Cardholder name</label>
-            <input type="text" placeholder="Your full name" required>
+            <input type="text" value="{{ request.user.get_full_name|default:request.user.username }}" required>
         </div>
         <div class="field">
             <label>Card number</label>

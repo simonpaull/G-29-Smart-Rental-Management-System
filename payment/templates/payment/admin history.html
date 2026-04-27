@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Payment History</title>
+    <title>Admin Payment History</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; }
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; }
         h2 { margin-bottom: 6px; }
         p { color: #888; font-size: 13px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -15,11 +15,12 @@
     </style>
 </head>
 <body>
-    <h2>My payment history</h2>
-    <p>Showing payments for {{ request.user.get_full_name|default:request.user.username }}</p>
+    <h2>All payment records</h2>
+    <p>Viewing as admin — showing all tenants</p>
     <table>
         <thead>
             <tr>
+                <th>Tenant</th>
                 <th>Unit</th>
                 <th>Period</th>
                 <th>Rent</th>
@@ -33,6 +34,7 @@
         <tbody>
             {% for p in payments %}
             <tr>
+                <td>{{ p.tenant.get_full_name|default:p.tenant.username }}</td>
                 <td>{{ p.unit }}</td>
                 <td>{{ p.period }}</td>
                 <td>RM {{ p.rent }}</td>
@@ -43,7 +45,7 @@
                 <td class="{{ p.status }}">{{ p.status|capfirst }}</td>
             </tr>
             {% empty %}
-            <tr><td colspan="8">No payment records found.</td></tr>
+            <tr><td colspan="9">No payment records found.</td></tr>
             {% endfor %}
         </tbody>
     </table>
