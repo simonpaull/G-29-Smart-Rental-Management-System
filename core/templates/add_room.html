@@ -1,6 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h1>Add Room Page</h1>
 
-<form method = "POST">     #use post to past info to backend
+<form method = "POST">    
     {% csrf_token %}
     
     <label>Room Number: </label>
@@ -24,3 +28,5 @@
     <button type= 'submit'>Add Room</button>
 
 </form>
+
+{% endblock %}
