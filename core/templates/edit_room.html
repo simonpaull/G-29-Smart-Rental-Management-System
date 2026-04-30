@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Edit Room</h1>
+
+<form method = "POST">
+    {% csrf_token %}
+    <label>Room Number:</label>
+    <input 
+        type = "text"  
+        name = "roomnumber" 
+        value = "{{ room.roomnumber }}"
+    ><br><br>
+
+    <label>Room Type:</label>
+    <select name = "roomtype">
+        <option value ="Single Room" {% if room.roomtype == "Single Room" %}selected{% endif %}>Single Room</option> 
+        <option value ="Twin Shared Room" {% if room.roomtype == "Twin Shared Room" %}selected{% endif %}>Twin Shared Room</option> 
+        <option value ="Master Room" {% if room.roomtype == "Master Room" %}selected{% endif %}>Master Room</option> 
+        <option value ="Shared Room" {% if room.roomtype == "Shared Room" %}selected{% endif %}>Shared room</option> 
+        <option value ="Studio Room" {% if room.roomtype == "Studio Room" %}selected{% endif %}>Studio Room</option> 
+    </select><br><br>
+
+    <label>Size:</label>
+    <input
+        type = "text"
+        name = "size"
+        value = "{{ room.size }}"
+    ><br><br>
+
+    <label>Price:</label>
+    <input
+        type = "text"
+        name = "price"
+        value = "{{ room.price }}"
+    ><br><br>
+
+    <label>Availability:</label>
+    <input
+        type = "checkbox"
+        name = "availability"
+        {% if room.availablility %}checked{% endif %}
+    ><br><br>
+
+    <label>Description:</label>     
+    <textarea name = "description"> {{ room.description }} </textarea><br><br>
+
+    <br><button type = "submit">Update Room</button>
+</form>
+
+
+{% endblock %}

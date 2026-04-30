@@ -9,13 +9,27 @@
     {% for room in rooms %}
         <div>
             <p>Room Number: {{ room.roomnumber }}</p>
+
             <p>Room Type: {{ room.roomtype }}</p>
+
             <p>Size: {{ room.size }}</p>
+
             <p>Price: RM {{ room.price }}</p>
-            <p>availablility: {{ room.availablility }}</p>
+
+            <p>Availablility:
+                {% if room.availability %}
+                    yes
+                {% else %}
+                    No
+                {% endif %}
+            </p>
+
             <p>Description: {{ room.description }}</p>
+
+            <a href="{% url 'edit_room' room.id %}">Edit</a>
             <hr>
         </div>
+        
     {% empty %}
         <p>No rooms available.</p>
     {% endfor %}
