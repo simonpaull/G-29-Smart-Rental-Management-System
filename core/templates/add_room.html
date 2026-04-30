@@ -11,13 +11,21 @@
     <input type= 'text'  name= 'roomnumber'>
     
     <label>Room Type: </label>
-    <input type= 'text'  name= 'roomtype'>
+        <select name = 'roomtype'>
+            <option value = "Single Room">Single Room</option>
+            <option value = "Twin Sharing Room">Twin Sharing Room</option>
+            <option value = "Master Room">Master Room</option>
+            <option value = "Shared Room">Shared Room</option>
+            <option value = "Studio Room">Studio Room</option>
+        </select>
+            
+
 
     <label>Size: </label>
-    <input type= 'number'  name= 'size'  step= '0.01'>
+    <input type= 'text'  name= 'size'>
 
     <label>Price: </label>
-    <input type= 'number'   name= 'price'  step= '0.01'>
+    <input type= 'text'  name= 'price'>
 
     <label>Availability: </label>
     <input type= 'checkbox'  name= 'availability'>
