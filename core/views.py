@@ -45,4 +45,23 @@ def add_room(request):
     else:
          return render(request, 'add_room.html')
         
+def edit_room(request, id):
+    room = Room.objects.get(id=id)
+
+    if request.method =="POST" :
+        room.roomnumber = request.POST.get('roomnumber')
+        room.roomtype = request.POST.get('roomtype')
+        room.size = request.POST.get('size')
+        room.price = request.POST.get('price')
+            
+        if request.POST.get('availability'):
+            room.availability = True
+        else:
+            room.availability = False
+        
+        room.description = request.POST.get('description')
+        room.save()
+        return redirect('room_list')
     
+    else:
+        return render(request, 'edit_room.html', {'room': room})
