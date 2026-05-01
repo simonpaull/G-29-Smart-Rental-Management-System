@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Payment
 
-@login_required
+@login_required(login_url='/login/')
 def payment_page(request, payment_id):
     payment = get_object_or_404(Payment, id=payment_id, tenant=request.user)
 
@@ -17,14 +17,14 @@ def payment_page(request, payment_id):
         'payment': payment
     })
 
-@login_required
+@login_required(login_url='/login/')
 def payment_history(request):
     payments = Payment.objects.filter(tenant=request.user).order_by('-due_date')
     return render(request, 'payment/history.html', {
         'payments': payments
     })
 
-@login_required
+@login_required(login_url='/login/')
 def admin_payment_history(request):
     if request.user.profile.role != 'admin':
         return redirect('payment_history')
@@ -35,3 +35,19 @@ def admin_payment_history(request):
 
 def payment_success(request):
     return render(request, 'payment/success.html')
+
+@login_required(login_url='/login/')
+def tenant_payment_dashboard(request):
+    unpaid = Payment.objects.filter(
+        tenant=request.user,
+        status='unpaid'
+    ).order_by('due_date')
+
+    history = Payment.objects.filter(
+        tenant=request.user
+    ).order_by('-due_date')
+
+    return render(request, 'payment/tenant_dashboard.html', {
+        'unpaid': unpaid,
+        'history': history
+    })
