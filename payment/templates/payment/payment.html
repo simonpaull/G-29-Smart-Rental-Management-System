@@ -10,9 +10,14 @@
         .row.total { border-top: 1px solid #ddd; margin-top: 8px; padding-top: 10px; font-size: 16px; font-weight: bold; color: #000; }
         .field { margin-bottom: 14px; }
         .field label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; }
-        .field input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .field input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+        .field input.error { border-color: red; }
+        .field input.success { border-color: green; }
+        .error-msg { color: red; font-size: 12px; margin-top: 4px; display: none; }
         .pay-btn { width: 100%; padding: 12px; background: #534AB7; color: white; border: none; border-radius: 6px; font-size: 15px; cursor: pointer; }
         .pay-btn:hover { background: #3C3489; }
+        .pay-btn:disabled { background: #aaa; cursor: not-allowed; }
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     </style>
 </head>
 <body>
@@ -25,31 +30,162 @@
         <div class="row"><span>Monthly rent</span><span>RM {{ payment.rent }}</span></div>
         <div class="row"><span>Electric charges</span><span>RM {{ payment.electric }}</span></div>
         <div class="row"><span>Water charges</span><span>RM {{ payment.water }}</span></div>
-        <div class="row"><span>Total utility</span><span>RM {{ payment.utility }}</span></div>
         <div class="row total"><span>Total due</span><span>RM {{ payment.total }}</span></div>
     </div>
 
-    <form method="POST">
+    <form method="POST" id="payment-form">
         {% csrf_token %}
+
         <div class="field">
             <label>Cardholder name</label>
-            <input type="text" value="{{ request.user.get_full_name|default:request.user.username }}" required>
+            <input type="text" id="card-name" placeholder="Your full name" required>
+            <div class="error-msg" id="name-error">Please enter cardholder name</div>
         </div>
+
         <div class="field">
             <label>Card number</label>
-            <input type="text" placeholder="1234 5678 9012 3456" required>
+            <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" required>
+            <div class="error-msg" id="card-error">Card number must be 16 digits</div>
         </div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px">
+
+        <div class="grid2">
             <div class="field">
-                <label>Expiry</label>
-                <input type="text" placeholder="MM / YY" required>
+                <label>Expiry date</label>
+                <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" required>
+                <div class="error-msg" id="expiry-error">Invalid or expired date</div>
             </div>
             <div class="field">
                 <label>CVV</label>
-                <input type="text" placeholder="123" required>
+                <input type="text" id="cvv" placeholder="123" maxlength="3" required>
+                <div class="error-msg" id="cvv-error">CVV must be 3 digits</div>
             </div>
         </div>
-        <button class="pay-btn" type="submit">Pay RM {{ payment.total }}</button>
+
+        <button class="pay-btn" type="submit" id="pay-btn">
+            Pay RM {{ payment.total }}
+        </button>
     </form>
+
+    <script>
+        // Card number — auto format with spaces every 4 digits
+        document.getElementById('card-number').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // remove non-digits
+            value = value.substring(0, 16); // max 16 digits
+            let formatted = value.match(/.{1,4}/g)?.join(' ') || value; // add space every 4
+            e.target.value = formatted;
+
+            let err = document.getElementById('card-error');
+            if (value.length === 16) {
+                e.target.className = 'success';
+                err.style.display = 'none';
+            } else {
+                e.target.className = '';
+                err.style.display = value.length > 0 ? 'block' : 'none';
+            }
+        });
+
+        // Expiry date — auto format MM/YY + validate
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // remove non-digits
+            value = value.substring(0, 4); // max 4 digits
+
+            // auto add slash after MM
+            if (value.length >= 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2);
+            }
+            e.target.value = value;
+
+            let err = document.getElementById('expiry-error');
+            if (value.length === 5) {
+                let month = parseInt(value.substring(0, 2));
+                let year = parseInt('20' + value.substring(3, 5));
+
+                let today = new Date();
+                let currentMonth = today.getMonth() + 1; // 1-12
+                let currentYear = today.getFullYear();
+
+                // Check month is valid (1-12)
+                if (month < 1 || month > 12) {
+                    e.target.className = 'error';
+                    err.textContent = 'Month must be between 01 and 12';
+                    err.style.display = 'block';
+                }
+                // Check card is not expired
+                else if (year < currentYear || (year === currentYear && month < currentMonth)) {
+                    e.target.className = 'error';
+                    err.textContent = 'Your card has expired';
+                    err.style.display = 'block';
+                }
+                else {
+                    e.target.className = 'success';
+                    err.style.display = 'none';
+                }
+            } else {
+                e.target.className = '';
+                err.style.display = 'none';
+            }
+        });
+
+        // CVV — numbers only, max 3 digits
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // remove non-digits
+            value = value.substring(0, 3); // max 3 digits
+            e.target.value = value;
+
+            let err = document.getElementById('cvv-error');
+            if (value.length === 3) {
+                e.target.className = 'success';
+                err.style.display = 'none';
+            } else {
+                e.target.className = '';
+                err.style.display = value.length > 0 ? 'block' : 'none';
+            }
+        });
+
+        // Form submit validation
+        document.getElementById('payment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let valid = true;
+
+            // Check name
+            let name = document.getElementById('card-name').value.trim();
+            if (name === '') {
+                document.getElementById('card-name').className = 'error';
+                document.getElementById('name-error').style.display = 'block';
+                valid = false;
+            }
+
+            // Check card number
+            let cardNum = document.getElementById('card-number').value.replace(/\s/g, '');
+            if (cardNum.length !== 16) {
+                document.getElementById('card-number').className = 'error';
+                document.getElementById('card-error').style.display = 'block';
+                valid = false;
+            }
+
+            // Check expiry
+            let expiry = document.getElementById('expiry').value;
+            if (expiry.length !== 5) {
+                document.getElementById('expiry').className = 'error';
+                document.getElementById('expiry-error').style.display = 'block';
+                valid = false;
+            }
+
+            // Check CVV
+            let cvv = document.getElementById('cvv').value;
+            if (cvv.length !== 3) {
+                document.getElementById('cvv').className = 'error';
+                document.getElementById('cvv-error').style.display = 'block';
+                valid = false;
+            }
+
+            // If all valid, submit the form
+            if (valid) {
+                document.getElementById('pay-btn').textContent = 'Processing...';
+                document.getElementById('pay-btn').disabled = true;
+                this.submit();
+            }
+        });
+    </script>
 </body>
 </html>
