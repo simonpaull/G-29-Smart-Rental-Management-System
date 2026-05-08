@@ -25,10 +25,10 @@
 
         <p>
             Availability: 
-            {% if room.availability %}
-                Yes
-            {% else %}
+            {% if room.tenant_set.all %}
                 No
+            {% else %}
+                yes
             {% endif %}
         </p>
 
