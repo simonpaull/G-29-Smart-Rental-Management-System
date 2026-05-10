@@ -42,12 +42,6 @@
         value = "{{ room.price }}"
     ><br><br>
 
-    <label>Availability:</label>
-    <input
-        type = "checkbox"
-        name = "availability"
-        {% if room.availablility %}checked{% endif %}
-    ><br><br>
 
     <label>Description:</label>     
     <textarea name = "description"> {{ room.description }} </textarea><br><br>

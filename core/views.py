@@ -28,10 +28,6 @@ def add_room(request):
         size = request.POST.get('size')
         price = request.POST.get('price')
 
-        if request.POST.get('availability') :
-            availability = True
-        else:
-            availability = False
             
         description = request.POST.get('description')
 
@@ -42,11 +38,10 @@ def add_room(request):
             capacity = capacity,
             size = size,
             price = price,
-            availability = availability,
             description = description
         )
 
-        return redirect('room_list')
+        return redirect('owner_properties')
     
     else:
          return render(request, 'add_room.html')
@@ -60,11 +55,7 @@ def edit_room(request, id):
         room.capacity = request.POST.get('capacity')
         room.size = request.POST.get('size')
         room.price = request.POST.get('price')
-            
-        if request.POST.get('availability'):
-            room.availability = True
-        else:
-            room.availability = False
+        
         
         room.description = request.POST.get('description')
         room.save()

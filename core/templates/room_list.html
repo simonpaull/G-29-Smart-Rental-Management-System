@@ -16,8 +16,8 @@
 
             <p>Price: RM {{ room.price }}</p>
 
-            <p>Availablility:
-                {% if room.tenant_set.all %}
+            <p>Availability:
+                {% if room.tenant_set.count >= room.capacity %}
                     No
                 {% else %}
                     Yes
