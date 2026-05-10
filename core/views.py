@@ -24,6 +24,7 @@ def add_room(request):
     if request.method == 'POST':
         roomnumber = request.POST.get('roomnumber')
         roomtype = request.POST.get('roomtype')
+        capacity = request.POST.get('capacity')
         size = request.POST.get('size')
         price = request.POST.get('price')
 
@@ -38,6 +39,7 @@ def add_room(request):
         Room.objects.create(
             roomnumber = roomnumber,  #fieldname(from model.py) = variable 
             roomtype = roomtype,
+            capacity = capacity,
             size = size,
             price = price,
             availability = availability,
@@ -55,6 +57,7 @@ def edit_room(request, id):
     if request.method =="POST" :
         room.roomnumber = request.POST.get('roomnumber')
         room.roomtype = request.POST.get('roomtype')
+        room.capacity = request.POST.get('capacity')
         room.size = request.POST.get('size')
         room.price = request.POST.get('price')
             
@@ -65,7 +68,7 @@ def edit_room(request, id):
         
         room.description = request.POST.get('description')
         room.save()
-        return redirect('room_list')
+        return redirect('owner_properties')
     
     else:
         return render(request, 'edit_room.html', {'room': room})

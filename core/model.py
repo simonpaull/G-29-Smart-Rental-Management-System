@@ -6,6 +6,7 @@ from django.db import models
 class Room(models.Model):
     roomnumber = models.CharField(max_length = 10) 
     roomtype = models.CharField(max_length = 50)
+    capacity = models.IntegerField(default=1)
     size = models.CharField(max_length=6)  
     price = models. CharField(max_length = 8)
     availability = models.BooleanField(default = True)  

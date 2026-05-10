@@ -17,10 +17,10 @@
             <p>Price: RM {{ room.price }}</p>
 
             <p>Availablility:
-                {% if room.availability %}
-                    yes
-                {% else %}
+                {% if room.tenant_set.all %}
                     No
+                {% else %}
+                    Yes
                 {% endif %}
             </p>
 
