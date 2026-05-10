@@ -82,3 +82,25 @@ def delete_room(request, id):
 def tenant_list(request):
     tenants = Tenant.objects.all()
     return render(request, 'tenant_list.html',{'tenants': tenants})
+
+def assign_tenant(request,id):
+    room = Room.objects.get(id=id)
+    tenants = Tenant.objects.all()
+
+    if request.method == 'POST':
+        tenant_id = request.POST.get('tenant')
+        tenant = Tenant.objects.get(id = tenant_id)
+        tenant.room = room
+        tenant.save()
+        return redirect('owner_properties')
+    
+    else:
+        return render(
+            request,
+            'assign_tenant.html',
+            {
+                'room': room,
+                'tenants': tenants
+            }
+)
+        

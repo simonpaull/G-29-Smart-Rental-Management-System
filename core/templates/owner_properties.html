@@ -47,12 +47,24 @@
                 Edit
             </button>
         </a>
+        
+        |
 
         <a href="{% url 'delete_room' room.id %}">
             <button type='button'>
                 Delete
             </button>
         </a>
+
+        |
+        
+        {% if not room.tenant_set.all %}
+            <a href="{% url 'assign_tenant' room.id %}">
+                <button type= 'button'>
+                Assign Tenant
+                </button>
+            </a>
+        {% endif %}
 
         <hr>
     </div>
