@@ -1,19 +1,25 @@
 from django.db import models
-
-# Create your models here.
 from django.contrib.auth.models import User
-from django.db import models
+
+ROLE_CHOICES = [
+    ('admin', 'Admin'),
+    ('owner', 'Owner'),
+    ('tenant', 'Tenant'),
+]
 
 class Profile(models.Model):
-    ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('tenant', 'Tenant'),
-    ]
-
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone_number = models.CharField(max_length=15, blank=True)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='tenant')
-    address = models.TextField(blank=True)
+
+    full_name = models.CharField(max_length=100)
+
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES
+    )
+
+    phone_number = models.CharField(max_length=20)
+
+    address = models.TextField()
 
     def __str__(self):
         return self.user.username
