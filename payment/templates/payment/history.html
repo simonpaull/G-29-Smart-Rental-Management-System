@@ -28,6 +28,7 @@
                 <th>Total</th>
                 <th>Due date</th>
                 <th>Status</th>
+                <th>Receipt</th>
             </tr>
         </thead>
         <tbody>
@@ -41,10 +42,15 @@
                 <td>RM {{ p.total }}</td>
                 <td>{{ p.due_date }}</td>
                 <td class="{{ p.status }}">{{ p.status|capfirst }}</td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="8">No payment records found.</td></tr>
-            {% endfor %}
+                <td>
+                    {% if p.status == 'paid' %}
+        <a href="/payment/{{ p.id }}/receipt/">Download PDF</a>
+        {% else %}
+        -
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
         </tbody>
     </table>
 </body>

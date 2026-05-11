@@ -12,6 +12,8 @@
         .paid { color: green; font-weight: bold; }
         .unpaid { color: orange; font-weight: bold; }
         .overdue { color: red; font-weight: bold; }
+        .download-btn { color: #534AB7; text-decoration: none; font-weight: bold; }
+        .download-btn:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -29,6 +31,7 @@
                 <th>Total</th>
                 <th>Due date</th>
                 <th>Status</th>
+                <th>Receipt</th>
             </tr>
         </thead>
         <tbody>
@@ -43,11 +46,20 @@
                 <td>RM {{ p.total }}</td>
                 <td>{{ p.due_date }}</td>
                 <td class="{{ p.status }}">{{ p.status|capfirst }}</td>
+                <td>
+                    {% if p.status == 'paid' %}
+                    <a class="download-btn" href="/payment/{{ p.id }}/receipt/">Download PDF</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
             </tr>
             {% empty %}
-            <tr><td colspan="9">No payment records found.</td></tr>
+            <tr><td colspan="10">No payment records found.</td></tr>
             {% endfor %}
         </tbody>
     </table>
+    <br>
+    <a href="/tenant-dashboard/">Back to dashboard</a>
 </body>
 </html>

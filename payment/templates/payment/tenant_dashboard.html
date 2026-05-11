@@ -17,6 +17,8 @@
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
         th { text-align: left; padding: 8px; background: #f5f5f5; border-bottom: 1px solid #ddd; }
         td { padding: 8px; border-bottom: 1px solid #eee; }
+        .download-btn { color: #534AB7; text-decoration: none; font-weight: bold; }
+        .download-btn:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -51,6 +53,7 @@
                 <th>Period</th>
                 <th>Total</th>
                 <th>Status</th>
+                <th>Receipt</th>
             </tr>
         </thead>
         <tbody>
@@ -59,9 +62,16 @@
                 <td>{{ p.period }}</td>
                 <td>RM {{ p.total }}</td>
                 <td class="badge-{{ p.status }}">{{ p.status|capfirst }}</td>
+                <td>
+                    {% if p.status == 'paid' %}
+                    <a class="download-btn" href="/payment/{{ p.id }}/receipt/">Download PDF</a>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
             </tr>
             {% empty %}
-            <tr><td colspan="3">No payment records.</td></tr>
+            <tr><td colspan="4">No payment records.</td></tr>
             {% endfor %}
         </tbody>
     </table>
