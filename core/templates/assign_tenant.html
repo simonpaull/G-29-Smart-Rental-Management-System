@@ -12,10 +12,15 @@
 
     <label>Select Tenant:</label>
     
-    <input
-        type = 'text'
-        name = 'tenant'
-    ><br><br>
+    <select name="tenant">
+        {% for tenant in tenants %}
+            <option value="{{ tenant.id }}">
+                {{ tenant.name }}
+            </option>
+        {% empty %}
+            <option>No tenants available</option>
+        {% endfor %}
+    </select>
 
     <button type="submit">Assign</button>
 </form>
