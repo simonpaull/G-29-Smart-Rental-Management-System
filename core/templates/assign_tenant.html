@@ -11,23 +11,14 @@
     {% csrf_token %}
 
     <label>Select Tenant:</label>
-    <select name="tenant">
-        {% for tenant in tenants %}
-            <option value="{{ tenant.id }}">
-                {{ tenant.name }}
-            </option>
-        {% endfor %}
-    </select>
+    
+    <input
+        type = 'text'
+        name = 'tenant'
+    ><br><br>
 
     <button type="submit">Assign</button>
 </form>
-
-
-
-
-
-
-
 
 
 {% endblock %}

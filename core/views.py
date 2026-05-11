@@ -83,7 +83,7 @@ def assign_tenant(request,id):
 
     if request.method == 'POST':
         tenant_id = request.POST.get('tenant')
-        tenant = Tenant.objects.get(id = tenant_id)
+        tenant = Tenant.objects.get(name = tenant_name)
         tenant.room = room
         tenant.save()
         return redirect('owner_properties')
