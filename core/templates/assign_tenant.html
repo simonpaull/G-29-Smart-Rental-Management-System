@@ -22,6 +22,21 @@
         {% endfor %}
     </select>
 
+
+    <ul>
+
+    {% for request_obj in requests %}
+
+        <li>
+            {{ request_obj.tenant.username }}
+            :
+            {{ request_obj.message }}
+        </li>
+
+    {% endfor %}
+
+    </ul>
+
     <button type="submit">Assign</button>
 </form>
 

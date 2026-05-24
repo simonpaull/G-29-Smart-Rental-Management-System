@@ -155,7 +155,8 @@ def assign_tenant(request,id):
             'assign_tenant.html',
             {
                 'room': room,
-                'tenants': tenants
+                'tenants': tenants,
+                'requests':requests
             }
 )
         
