@@ -1,12 +1,9 @@
 from django.shortcuts import render, redirect
-<<<<<<< HEAD
-from .model import Room,Tenant
-=======
+from .models import Room,Tenant
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Profile
->>>>>>> 29a69e7d4f3b1f17cf0dd6c79f823ec05cbdf825
 
 def home(request):
     return render(request, 'home.html')
@@ -30,7 +27,6 @@ def login_view(request):
 
     return render(request, 'login.html')
 
-<<<<<<< HEAD
 def dashboard(request):
     return render(request, 'dashboard.html')
 
@@ -122,7 +118,6 @@ def assign_tenant(request,id):
             }
 )
         
-=======
 def logout_view(request):
     logout(request)
     return redirect('login')
@@ -185,4 +180,3 @@ def register_view(request):
         return redirect('login')
 
     return render(request, 'register.html')
->>>>>>> 29a69e7d4f3b1f17cf0dd6c79f823ec05cbdf825
