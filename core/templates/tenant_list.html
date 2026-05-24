@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Tenant List (Owner View)</h1>
+
+{% for tenant in tenants %}
+
+<p>Name: {{tenant.name}}</p>
+
+<p>Gender: {{tenant.gender}}</p>
+
+<p>Contact Number: {{tenant.contactnumber}}</p>
+
+<p>Email: {{tenant.email}}</p>
+
+<p>IC: {{tenant.ic}}</p>
+
+<p>Move In Date: {{tenant.moveindate}}</p>
+
+<p>Move Out Date: {{tenant.moveoutdate}}</p>
+
+<p>Room: {{tenant.room}}
+
+<hr>
+
+{% endfor %}
+
+{% endblock %}

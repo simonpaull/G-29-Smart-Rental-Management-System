@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment History</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; }
+        h2 { margin-bottom: 6px; }
+        p { color: #888; font-size: 13px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th { text-align: left; padding: 10px; background: #f5f5f5; border-bottom: 1px solid #ddd; }
+        td { padding: 10px; border-bottom: 1px solid #eee; }
+        .paid { color: green; font-weight: bold; }
+        .unpaid { color: orange; font-weight: bold; }
+        .overdue { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>My payment history</h2>
+    <p>Showing payments for {{ request.user.get_full_name|default:request.user.username }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Unit</th>
+                <th>Period</th>
+                <th>Rent</th>
+                <th>Electric</th>
+                <th>Water</th>
+                <th>Total</th>
+                <th>Due date</th>
+                <th>Status</th>
+                <th>Receipt</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in payments %}
+            <tr>
+                <td>{{ p.unit }}</td>
+                <td>{{ p.period }}</td>
+                <td>RM {{ p.rent }}</td>
+                <td>RM {{ p.electric }}</td>
+                <td>RM {{ p.water }}</td>
+                <td>RM {{ p.total }}</td>
+                <td>{{ p.due_date }}</td>
+                <td class="{{ p.status }}">{{ p.status|capfirst }}</td>
+                <td>
+                    {% if p.status == 'paid' %}
+        <a href="/payment/{{ p.id }}/receipt/">Download PDF</a>
+        {% else %}
+        -
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

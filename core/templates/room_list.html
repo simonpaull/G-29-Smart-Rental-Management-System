@@ -16,17 +16,23 @@
 
             <p>Price: RM {{ room.price }}</p>
 
-            <p>Availablility:
-                {% if room.availability %}
-                    yes
-                {% else %}
+            <p>Availability:
+                {% if room.tenant_set.count >= room.capacity %}
                     No
+                {% else %}
+                    Yes
                 {% endif %}
             </p>
 
             <p>Description: {{ room.description }}</p>
 
-            <a href="{% url 'edit_room' room.id %}">Edit</a>
+
+            {% if room.tenant_set.count < room.capacity %}
+                <a href = "{% url 'request_room' room.id %}">
+                    PM Owner
+                </a>
+            {% endif %}    
+
             <hr>
         </div>
         

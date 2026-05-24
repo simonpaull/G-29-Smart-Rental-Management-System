@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Edit Profile</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label>Full Name:</label><br>
+    <input type="text" name="full_name" value="{{ profile.full_name }}" required><br><br>
+
+    <label>Phone Number:</label><br>
+    <input type="text" name="phone_number" value="{{ profile.phone_number }}" required><br><br>
+
+    <label>Address:</label><br>
+    <textarea name="address" required>{{ profile.address }}</textarea><br><br>
+
+    <button type="submit">Save Changes</button>
+</form>
+
+<br>
+
+<a href="/profile/">Back to Profile</a>
+
+{% endblock %}
