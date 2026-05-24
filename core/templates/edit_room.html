@@ -49,5 +49,23 @@
     <br><button type = "submit">Update Room</button>
 </form>
 
+<hr>
+<h3>Current Tenant</h3>
+<ul>
+{% for tenant in room.tenant_set.all %}
+    <li>
+        {{ tenant.name }}
+        <a href = "{% url 'remove_tenant' tenant.id %}">
+            <button type = "button">
+                Remove
+            </button>
+        </a>
+    </li>
+
+{% empty %}
+    <li>No tenants</li>
+    
+{% endfor %}
+</ul>
 
 {% endblock %}

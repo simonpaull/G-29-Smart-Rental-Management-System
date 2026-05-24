@@ -29,7 +29,9 @@
 
             {% if room.tenant_set.count < room.capacity %}
                 <a href = "{% url 'request_room' room.id %}">
-                    PM Owner
+                    <button type="button">
+                        PM Owner
+                    </button>
                 </a>
             {% endif %}    
 

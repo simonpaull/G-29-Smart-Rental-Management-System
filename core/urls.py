@@ -15,7 +15,7 @@ urlpatterns = [
     path('edit-room/<int:id>/', views.edit_room, name = 'edit_room' ),
     path('delete-room/<int:id>/', views.delete_room, name='delete_room'),
     path('assign-tenant/<int:id>/',views.assign_tenant,name='assign_tenant'),
-
+    path('remove-tenant/<int:tenant_id>/', views.remove_tenant, name = 'remove_tenant'),
     path('', views.home, name='home'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),

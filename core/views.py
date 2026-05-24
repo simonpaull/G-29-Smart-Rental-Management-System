@@ -116,6 +116,12 @@ def delete_room(request, id):
         return redirect('owner_properties')
     else:
         return render(request,'delete_room.html',{'room':room})
+    
+def remove_tenant(request, tenant_id):
+    tenant = Tenant.objects.get(id = tenant_id)
+    tenant.room = None
+    tenant.save()
+    return redirect('owner_properties')
 
 def tenant_list(request):
     tenants = Tenant.objects.all()
