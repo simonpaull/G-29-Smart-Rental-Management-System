@@ -11,7 +11,7 @@
 </a>
 
 <br><br>
-<hr>
+<h
 
 {% for room in rooms %}
 
@@ -38,6 +38,10 @@
         <p>Tenant:
             {% for tenant in room.tenant_set.all %}
                 {{tenant.name}}
+
+                {% if not forloop.last %}
+                    ,
+                {% endif %}
             {% empty %}
                 No tenant assigned
             {% endfor %}

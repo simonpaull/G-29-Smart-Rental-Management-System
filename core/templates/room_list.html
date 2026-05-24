@@ -26,6 +26,13 @@
 
             <p>Description: {{ room.description }}</p>
 
+
+            {% if room.tenant_set.count < room.capacity %}
+                <a href = "{% url 'request_room' room.id %}">
+                    PM Owner
+                </a>
+            {% endif %}    
+
             <hr>
         </div>
         

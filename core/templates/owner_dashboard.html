@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Owner Dashboard</h2>
+<p>Welcome {{ request.user.username }}</p>
+
+<ul>
+    <li>Manage Rooms</li>
+    <li>Verify Existing Tenants</li>
+    <li>Create Rent Invoices</li>
+    <li>View Tenant Complaints</li>
+    <li>Message Admin</li>
+</ul>
+
+<a href="/profile/">My Profile</a> |
+<a href="/logout/">Logout</a>
+{% endblock %}

@@ -1,17 +1,26 @@
 # Create your models here.
-from django.contrib.auth.models import User
 from django.db import models
+from django.contrib.auth.models import User
+
+ROLE_CHOICES = [
+    ('admin', 'Admin'),
+    ('owner', 'Owner'),
+    ('tenant', 'Tenant'),
+]
 
 class Profile(models.Model):
-    ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('tenant', 'Tenant'),
-    ]
-
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone_number = models.CharField(max_length=15, blank=True)
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='tenant')
-    address = models.TextField(blank=True)
+
+    full_name = models.CharField(max_length=100)
+
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES
+    )
+
+    phone_number = models.CharField(max_length=20)
+
+    address = models.TextField()
 
     def __str__(self):
         return self.user.username
@@ -20,6 +29,15 @@ class Profile(models.Model):
 #Room Table
 #-------------------------------
 class Room(models.Model):
+
+    owner = models.ForeignKey(
+        User,
+        on_delete = models.CASCADE,
+        related_name = "owned_rooms",
+        null = True,
+        blank = True
+    )
+
     roomnumber = models.CharField(max_length = 10) 
     roomtype = models.CharField(max_length = 50)
     capacity = models.IntegerField(default=1)
@@ -55,3 +73,34 @@ class Tenant(models.Model):
             return f"{self.name} ({self.room.roomnumber})"
         else:
             return self.name
+        
+class RoomRequest(models.Model):
+
+    STATUS_CHOICES = [
+        ('pending' , 'Pending'),
+        ('accepted' , 'Accepted'),
+        ('rejected' , 'Rejected'),
+    ]
+
+    tenant = models.ForeignKey(
+        User,
+        on_delete = models.CASCADE
+    )
+
+    room = models.ForeignKey(
+        Room,
+        on_delete = models.CASCADE
+    )
+
+    message = models.TextField()
+
+    status = models.CharField(
+        max_length = 20,
+        choices = STATUS_CHOICES,
+        default = 'pending'
+    )
+
+    created_at = models.DateTimeField(auto_now_add= True)
+
+    def __str__(self):
+        return f"{self.tenant.username} -> {self.room.roomnumber}"

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Request Room</h1>
+
+<h3>Room: {{ room.roomnumber }}</h3>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <label>Message to Owner</label>
+    <br><br>
+
+    <textarea
+        name="message"
+        rows="5"
+        cols="50"
+        required
+    ></textarea>
+
+    <br><br>
+
+    <button type="submit">
+        Send Request
+    </button>
+
+</form>
+
+{% endblock %}
