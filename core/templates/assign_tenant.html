@@ -31,6 +31,27 @@
             {{ request_obj.tenant.username }}
             :
             {{ request_obj.message }}
+
+<a href="{% url 'update_request_status' request_obj.id 'accepted' %}">
+    <button type="button">
+        Accept
+    </button>
+</a>
+
+<a href="{% url 'update_request_status' request_obj.id 'rejected' %}">
+    <button type="button">
+        Reject
+    </button>
+</a>
+
+<a href="{% url 'update_request_status' request_obj.id 'pending' %}">
+    <button type="button">
+        Pending
+    </button>
+</a>
+
+Current Status:
+{{ request_obj.status }}
         </li>
 
     {% endfor %}

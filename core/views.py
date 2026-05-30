@@ -129,10 +129,12 @@ def tenant_list(request):
 
 def assign_tenant(request,id):
     room = Room.objects.get(id=id)
-    requests = RoomRequest.objects.filter(room=room, status = 'pending')
+    requests = RoomRequest.objects.filter(room=room)
 
     tenants = []
-    for request_obj in requests:
+    accepted_requests = RoomRequest.objects.filter( room=room, status = 'accepted' )
+    
+    for request_obj in accepted_requests:
         tenant_obj = Tenant.objects.filter(
             email = request_obj.tenant.email
         ).first()
@@ -167,7 +169,6 @@ def assign_tenant(request,id):
 )
         
 
-@login_required
 def request_room(request, room_id):
 
     room = Room.objects.get(id = room_id)
@@ -187,6 +188,18 @@ def request_room(request, room_id):
         return render(request, 'request_room.html',{
             'room':room
         })
+
+def update_request_status(request,request_id,status):
+    room_request  = RoomRequest.objects.get(id = request_id)
+
+    if status == 'rejected':
+        room_request.delete()
+
+    else:
+        room_request.status = status
+        room_request.save()
+
+    return redirect( 'assign_tenant', room_request.room.id )
 
 def logout_view(request):
     logout(request)
