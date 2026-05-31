@@ -7,13 +7,17 @@
         h2 { margin-bottom: 6px; }
         p { color: #888; font-size: 13px; margin-bottom: 20px; }
         .payment-card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 14px; }
+        .overdue-card { border: 1px solid red; border-radius: 8px; padding: 16px; margin-bottom: 14px; }
         .row { display: flex; justify-content: space-between; font-size: 14px; padding: 4px 0; }
         .pay-btn { display: block; width: 100%; padding: 10px; background: #534AB7; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; text-align: center; text-decoration: none; margin-top: 12px; }
         .pay-btn:hover { background: #3C3489; }
+        .pay-btn-red { display: block; width: 100%; padding: 10px; background: red; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; text-align: center; text-decoration: none; margin-top: 12px; }
+        .pay-btn-grey { display: block; width: 100%; padding: 10px; background: #888; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; text-align: center; text-decoration: none; margin-top: 6px; }
         .badge-unpaid { color: orange; font-weight: bold; }
         .badge-paid { color: green; font-weight: bold; }
         .badge-overdue { color: red; font-weight: bold; }
         .section-title { font-size: 16px; font-weight: bold; margin: 24px 0 12px; }
+        .section-title-red { font-size: 16px; font-weight: bold; margin: 24px 0 12px; color: red; }
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
         th { text-align: left; padding: 8px; background: #f5f5f5; border-bottom: 1px solid #ddd; }
         td { padding: 8px; border-bottom: 1px solid #eee; }
@@ -24,6 +28,25 @@
 <body>
     <h2>Welcome, {{ request.user.get_full_name|default:request.user.username }}</h2>
     <p>Manage your rental payments here</p>
+
+    <!-- Overdue payments -->
+    <div class="section-title-red">⚠️ Overdue payments</div>
+    {% if overdue %}
+        {% for p in overdue %}
+        <div class="overdue-card">
+            <div class="row"><span>Unit</span><span>{{ p.unit }}</span></div>
+            <div class="row"><span>Period</span><span>{{ p.period }}</span></div>
+            <div class="row"><span>Rent</span><span>RM {{ p.rent }}</span></div>
+            <div class="row"><span>Electric</span><span>RM {{ p.electric }}</span></div>
+            <div class="row"><span>Water</span><span>RM {{ p.water }}</span></div>
+            <div class="row"><span>Total</span><span>RM {{ p.total }}</span></div>
+            <div class="row"><span>Due date</span><span style="color:red;">{{ p.due_date }} ⚠️ OVERDUE</span></div>
+            <a class="pay-btn-red" href="/payment/{{ p.id }}/">Pay now (Overdue)</a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No overdue payments.</p>
+    {% endif %}
 
     <!-- Unpaid payments -->
     <div class="section-title">Pending payments</div>
@@ -74,9 +97,13 @@
             <tr><td colspan="4">No payment records.</td></tr>
             {% endfor %}
         </tbody>
-        <br>
-<a class="pay-btn" href="/payment/complaint/">Submit a complaint</a>
-<a class="pay-btn" style="background:#888;" href="/payment/complaint/status/">View my complaints</a>
     </table>
+
+    <!-- Complaint buttons — OUTSIDE table -->
+    <br>
+    <div class="section-title">Complaints</div>
+    <a class="pay-btn" href="/payment/complaint/">Submit a complaint</a>
+    <a class="pay-btn-grey" href="/payment/complaint/status/">View my complaints</a>
+
 </body>
 </html>

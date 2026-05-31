@@ -9,6 +9,7 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from .models import Payment
+from .utils import check_overdue_payments
 import io
 
 def generate_receipt_pdf(payment):
@@ -101,6 +102,9 @@ def payment_history(request):
 def admin_payment_history(request):
     if request.user.profile.role != 'admin':
         return redirect('payment_history')
+    
+    check_overdue_payments()
+    
     payments = Payment.objects.all().order_by('-due_date')
     return render(request, 'payment/admin_history.html', {
         'payments': payments
@@ -111,9 +115,16 @@ def payment_success(request):
 
 @login_required(login_url='/login/')
 def tenant_payment_dashboard(request):
+    check_overdue_payments()  # ← add this line
+
     unpaid = Payment.objects.filter(
         tenant=request.user,
         status='unpaid'
+    ).order_by('due_date')
+
+    overdue = Payment.objects.filter(
+        tenant=request.user,
+        status='overdue'
     ).order_by('due_date')
 
     history = Payment.objects.filter(
@@ -122,6 +133,7 @@ def tenant_payment_dashboard(request):
 
     return render(request, 'payment/tenant_dashboard.html', {
         'unpaid': unpaid,
+        'overdue': overdue,
         'history': history
     })
 
