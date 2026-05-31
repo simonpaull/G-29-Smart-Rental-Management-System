@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Complaints</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        h2 { margin-bottom: 6px; }
+        p { color: #888; font-size: 13px; margin-bottom: 20px; }
+        .complaint-card { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-bottom: 14px; }
+        .title { font-size: 15px; font-weight: bold; margin-bottom: 8px; }
+        .description { font-size: 13px; color: #555; margin-bottom: 8px; }
+        .row { display: flex; justify-content: space-between; font-size: 14px; padding: 4px 0; }
+        .badge { padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .badge-high { background: #ffe0e0; color: red; }
+        .badge-medium { background: #fff3cd; color: orange; }
+        .badge-low { background: #e0f5e0; color: green; }
+        .status-pending { color: orange; font-weight: bold; }
+        .status-in_progress { color: blue; font-weight: bold; }
+        .status-resolved { color: green; font-weight: bold; }
+        .update-btn { display: inline-block; padding: 6px 14px; background: #534AB7; color: white; border-radius: 6px; text-decoration: none; font-size: 13px; margin-top: 10px; }
+        .priority-label { font-size: 11px; text-transform: uppercase; color: #888; margin-bottom: 10px; }
+        .divider { border: none; border-top: 2px dashed #ddd; margin: 20px 0; }
+        a { color: #534AB7; }
+    </style>
+</head>
+<body>
+    <h2>All complaints</h2>
+    <p>Sorted by priority — High → Medium → Low</p>
+
+    {% if complaints %}
+        {% for c in complaints %}
+        <div class="complaint-card">
+            <div class="row">
+                <span class="title">{{ c.title }}</span>
+                <span class="badge badge-{{ c.priority }}">{{ c.priority|capfirst }}</span>
+            </div>
+            <div class="description">{{ c.description }}</div>
+            <div class="row"><span>Tenant</span><span>{{ c.tenant.get_full_name|default:c.tenant.username }}</span></div>
+            <div class="row">
+                <span>Status</span>
+                <span class="status-{{ c.status }}">{{ c.status|capfirst }}</span>
+            </div>
+            <div class="row"><span>Submitted</span><span>{{ c.submitted_date|date:"d M Y" }}</span></div>
+            <div class="row"><span>Last updated</span><span>{{ c.updated_date|date:"d M Y" }}</span></div>
+            <a class="update-btn" href="/payment/complaint/{{ c.id }}/update/">Update status</a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No complaints found.</p>
+    {% endif %}
+
+    <br>
+    <a href="/payment/admin-history/">Back to admin panel</a>
+</body>
+</html>

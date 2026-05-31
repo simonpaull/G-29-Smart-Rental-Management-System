@@ -137,3 +137,59 @@ def download_receipt(request, payment_id):
     response = HttpResponse(pdf_buffer, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="receipt_{payment.id}_{payment.period()}.pdf"'
     return response
+
+from .models import Payment, Complaint
+
+# Tenant — submit complaint
+@login_required(login_url='/login/')
+def complaint_submit(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        priority = request.POST.get('priority')
+
+        Complaint.objects.create(
+            tenant=request.user,
+            title=title,
+            description=description,
+            priority=priority,
+        )
+        return redirect('complaint_status')
+
+    return render(request, 'payment/complaint_submit.html')
+
+# Tenant — view own complaints
+@login_required(login_url='/login/')
+def complaint_status(request):
+    complaints = Complaint.objects.filter(tenant=request.user)
+    return render(request, 'payment/complaint_status_tenant.html', {
+        'complaints': complaints
+    })
+
+# Admin — view all complaints sorted by priority
+@login_required(login_url='/login/')
+def admin_complaint_status(request):
+    if request.user.profile.role != 'admin':
+        return redirect('complaint_status')
+    complaints = Complaint.objects.all()
+    return render(request, 'payment/complaint_status_admin.html', {
+        'complaints': complaints
+    })
+
+# Admin — update complaint status
+@login_required(login_url='/login/')
+def complaint_update(request, complaint_id):
+    if request.user.profile.role != 'admin':
+        return redirect('complaint_status')
+
+    complaint = get_object_or_404(Complaint, id=complaint_id)
+
+    if request.method == 'POST':
+        complaint.status = request.POST.get('status')
+        complaint.admin_notes = request.POST.get('admin_notes')
+        complaint.save()
+        return redirect('admin_complaint_status')
+
+    return render(request, 'payment/complaint_update.html', {
+        'complaint': complaint
+    })

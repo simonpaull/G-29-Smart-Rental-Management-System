@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submit Complaint</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 40px auto; padding: 0 20px; }
+        h2 { margin-bottom: 6px; }
+        p { color: #888; font-size: 13px; margin-bottom: 20px; }
+        .field { margin-bottom: 14px; }
+        .field label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; }
+        .field input, .field textarea, .field select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+        .field textarea { height: 120px; resize: vertical; }
+        .priority-high { color: red; font-weight: bold; }
+        .priority-medium { color: orange; font-weight: bold; }
+        .priority-low { color: green; font-weight: bold; }
+        .submit-btn { width: 100%; padding: 12px; background: #534AB7; color: white; border: none; border-radius: 6px; font-size: 15px; cursor: pointer; }
+        .submit-btn:hover { background: #3C3489; }
+        a { color: #534AB7; }
+    </style>
+</head>
+<body>
+    <h2>Submit a complaint</h2>
+    <p>Logged in as {{ request.user.get_full_name|default:request.user.username }}</p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="field">
+            <label>Title</label>
+            <input type="text" name="title" placeholder="Brief description of your complaint" required>
+        </div>
+
+        <div class="field">
+            <label>Description</label>
+            <textarea name="description" placeholder="Describe your complaint in detail..." required></textarea>
+        </div>
+
+        <div class="field">
+            <label>Priority</label>
+            <select name="priority" required>
+                <option value="low">Low — Minor issue, not urgent</option>
+                <option value="medium">Medium — Needs attention soon</option>
+                <option value="high">High — Urgent, needs immediate action</option>
+            </select>
+        </div>
+
+        <button class="submit-btn" type="submit">Submit complaint</button>
+    </form>
+    <br>
+    <a href="/payment/complaint/status/">View my complaints</a> |
+    <a href="/payment/">Back to dashboard</a>
+</body>
+</html>
