@@ -7,9 +7,8 @@ urlpatterns = [
     path('<int:payment_id>/receipt/', views.download_receipt, name='download_receipt'),
     path('history/', views.payment_history, name='payment_history'),
     path('admin-history/', views.admin_payment_history, name='admin_payment_history'),
+    path('admin-summary/', views.admin_summary, name='admin_summary'),
     path('success/', views.payment_success, name='payment_success'),
-
-    # Complaint URLs
     path('complaint/', views.complaint_submit, name='complaint_submit'),
     path('complaint/status/', views.complaint_status, name='complaint_status'),
     path('complaint/admin/', views.admin_complaint_status, name='admin_complaint_status'),

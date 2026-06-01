@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.core.mail import EmailMessage
+from django.core.mail import send_mail, EmailMessage
 from django.utils import timezone
 from django.conf import settings
 from django.http import HttpResponse
@@ -8,7 +8,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
-from .models import Payment
+from .models import Payment, Complaint
 from .utils import check_overdue_payments
 import io
 
@@ -152,20 +152,36 @@ def download_receipt(request, payment_id):
 
 from .models import Payment, Complaint
 
-# Tenant — submit complaint
 @login_required(login_url='/login/')
 def complaint_submit(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         description = request.POST.get('description')
-        priority = request.POST.get('priority')
 
-        Complaint.objects.create(
+        # Auto detect priority based on keywords
+        priority = auto_detect_priority(title, description)
+
+        complaint = Complaint.objects.create(
             tenant=request.user,
             title=title,
             description=description,
             priority=priority,
         )
+
+        # Send email to all admins
+        from django.contrib.auth.models import User
+        admins = User.objects.filter(profile__role='admin')
+        admin_emails = [admin.email for admin in admins if admin.email]
+
+        if admin_emails:
+            send_mail(
+                subject=f'New Complaint Received - {priority.upper()} Priority',
+                message=f'A new complaint has been submitted.\n\nTenant: {request.user.get_full_name() or request.user.username}\nTitle: {title}\nPriority: {priority.upper()}\nDescription: {description}\n\nPlease login to review.',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=admin_emails,
+                fail_silently=True,
+            )
+
         return redirect('complaint_status')
 
     return render(request, 'payment/complaint_submit.html')
@@ -204,4 +220,36 @@ def complaint_update(request, complaint_id):
 
     return render(request, 'payment/complaint_update.html', {
         'complaint': complaint
+    })
+
+# Admin — payment summary dashboard
+@login_required(login_url='/login/')
+def admin_summary(request):
+    if request.user.profile.role != 'admin':
+        return redirect('tenant_payment_dashboard')
+
+    check_overdue_payments()
+
+    from django.db.models import Sum
+
+    total_collected = Payment.objects.filter(status='paid').aggregate(Sum('rent'))['rent__sum'] or 0
+    total_utility_collected = sum(p.utility() for p in Payment.objects.filter(status='paid'))
+    total_paid = Payment.objects.filter(status='paid').count()
+    total_unpaid = Payment.objects.filter(status='unpaid').count()
+    total_overdue = Payment.objects.filter(status='overdue').count()
+    total_complaints_pending = Complaint.objects.filter(status='pending').count()
+    total_complaints_inprogress = Complaint.objects.filter(status='in_progress').count()
+    total_complaints_resolved = Complaint.objects.filter(status='resolved').count()
+    recent_payments = Payment.objects.filter(status='paid').order_by('-paid_date')[:5]
+
+    return render(request, 'payment/admin_summary.html', {
+        'total_collected': total_collected,
+        'total_utility_collected': total_utility_collected,
+        'total_paid': total_paid,
+        'total_unpaid': total_unpaid,
+        'total_overdue': total_overdue,
+        'total_complaints_pending': total_complaints_pending,
+        'total_complaints_inprogress': total_complaints_inprogress,
+        'total_complaints_resolved': total_complaints_resolved,
+        'recent_payments': recent_payments,
     })

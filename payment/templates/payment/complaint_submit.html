@@ -2,52 +2,224 @@
 <html>
 <head>
     <title>Submit Complaint</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: Arial, sans-serif; max-width: 500px; margin: 40px auto; padding: 0 20px; }
-        h2 { margin-bottom: 6px; }
-        p { color: #888; font-size: 13px; margin-bottom: 20px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #F4F3FF; font-family: Arial, sans-serif; }
+        .topbar { background: #534AB7; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .topbar-title { color: #fff; font-size: 15px; font-weight: 500; }
+        .topbar-user { display: flex; align-items: center; gap: 8px; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: #534AB7; flex-shrink: 0; }
+        .topbar-username { color: #EEEDFE; font-size: 13px; }
+        .logout-btn { color: #EEEDFE; font-size: 12px; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; text-decoration: none; margin-left: 4px; }
+        .hero { background: #534AB7; padding: 1.5rem 1.5rem 2rem; color: #fff; width: 100%; }
+        .hero h1 { font-size: clamp(16px, 4vw, 20px); font-weight: 500; margin-bottom: 4px; }
+        .hero p { font-size: 13px; opacity: 0.8; }
+        .content { padding: 1rem; max-width: 500px; margin: 1rem auto 2rem; width: 100%; }
+        .back-link { display: inline-block; color: #534AB7; font-size: 13px; text-decoration: none; margin-bottom: 1rem; }
+        .card { background: #fff; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; border: 0.5px solid #e0e0e0; }
+        .card-title { font-size: 15px; font-weight: 500; color: #333; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 0.5px solid #f0f0f0; }
         .field { margin-bottom: 14px; }
-        .field label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; }
-        .field input, .field textarea, .field select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+        .field label { display: block; font-size: 13px; color: #666; margin-bottom: 5px; }
+        .field input, .field textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; color: #333; outline: none; }
+        .field input:focus, .field textarea:focus { border-color: #534AB7; box-shadow: 0 0 0 3px rgba(83,74,183,0.08); }
         .field textarea { height: 120px; resize: vertical; }
-        .priority-high { color: red; font-weight: bold; }
-        .priority-medium { color: orange; font-weight: bold; }
-        .priority-low { color: green; font-weight: bold; }
-        .submit-btn { width: 100%; padding: 12px; background: #534AB7; color: white; border: none; border-radius: 6px; font-size: 15px; cursor: pointer; }
+
+        /* AI priority section */
+        .priority-section { background: #F8F7FF; border-radius: 10px; padding: 14px; margin-bottom: 14px; border: 1px solid #E0DEFF; }
+        .priority-section-title { font-size: 13px; color: #534AB7; font-weight: 500; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+        .ai-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .ai-label { font-size: 13px; color: #666; flex-shrink: 0; }
+        .priority-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+        .badge-high { background: #FCEBEB; color: #A32D2D; }
+        .badge-medium { background: #FAEEDA; color: #854F0B; }
+        .badge-low { background: #EAF3DE; color: #3B6D11; }
+        .badge-detecting { background: #f0f0f0; color: #888; }
+        .ai-hint { font-size: 11px; color: #aaa; margin-bottom: 10px; }
+        .divider { font-size: 12px; color: #aaa; margin-bottom: 10px; text-align: center; }
+
+        /* Manual override buttons */
+        .override-label { font-size: 12px; color: #666; margin-bottom: 6px; }
+        .priority-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .priority-btn { padding: 8px; border: 1px solid #ddd; border-radius: 8px; text-align: center; cursor: pointer; font-size: 12px; color: #666; background: #fff; transition: all 0.15s; }
+        .priority-btn span { display: block; font-size: 10px; opacity: 0.7; margin-top: 2px; }
+        .priority-btn.low.active { border-color: #3B6D11; background: #EAF3DE; color: #3B6D11; font-weight: 500; }
+        .priority-btn.medium.active { border-color: #BA7517; background: #FAEEDA; color: #854F0B; font-weight: 500; }
+        .priority-btn.high.active { border-color: #E24B4A; background: #FCEBEB; color: #A32D2D; font-weight: 500; }
+
+        .submit-btn { width: 100%; padding: 13px; background: #534AB7; color: #fff; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: 500; }
         .submit-btn:hover { background: #3C3489; }
-        a { color: #534AB7; }
+        .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+        @media (max-width: 400px) { .topbar-username { display: none; } }
     </style>
 </head>
 <body>
-    <h2>Submit a complaint</h2>
-    <p>Logged in as {{ request.user.get_full_name|default:request.user.username }}</p>
-
-    <form method="POST">
-        {% csrf_token %}
-
-        <div class="field">
-            <label>Title</label>
-            <input type="text" name="title" placeholder="Brief description of your complaint" required>
+    <div class="topbar">
+        <div class="topbar-title">Smart Rental System</div>
+        <div class="topbar-user">
+            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+            <span class="topbar-username">{{ request.user.get_full_name|default:request.user.username }}</span>
+            <a class="logout-btn" href="/logout/">Logout</a>
         </div>
+    </div>
 
-        <div class="field">
-            <label>Description</label>
-            <textarea name="description" placeholder="Describe your complaint in detail..." required></textarea>
+    <div class="hero">
+        <h1>Submit a complaint</h1>
+        <p>Let us know about any issues with your unit</p>
+    </div>
+
+    <div class="content">
+        <a class="back-link" href="/payment/">← Back to dashboard</a>
+        <div class="card">
+            <div class="card-title">Complaint details</div>
+            <form method="POST" id="complaint-form">
+                {% csrf_token %}
+                <input type="hidden" name="priority" id="priority-value" value="low">
+
+                <div class="field">
+                    <label>Title</label>
+                    <input type="text" name="title" id="title" placeholder="Brief description of your complaint" required>
+                </div>
+
+                <div class="field">
+                    <label>Description</label>
+                    <textarea name="description" id="description" placeholder="Describe your complaint in detail..." required></textarea>
+                </div>
+
+                <!-- AI + Manual Priority Section -->
+                <div class="priority-section">
+                    <div class="priority-section-title">
+                        🤖 Priority detection
+                    </div>
+
+                    <div class="ai-row">
+                        <span class="ai-label">AI suggested:</span>
+                        <span class="priority-badge badge-detecting" id="ai-badge">Type to detect...</span>
+                    </div>
+                    <div class="ai-hint">AI reads your complaint and suggests a priority level automatically.</div>
+
+                    <div class="divider">— or override manually —</div>
+
+                    <div class="override-label">Manual override:</div>
+                    <div class="priority-row">
+                        <div class="priority-btn low" onclick="setPriority('low', this)">
+                            Low <span>Minor issue</span>
+                        </div>
+                        <div class="priority-btn medium" onclick="setPriority('medium', this)">
+                            Medium <span>Needs attention</span>
+                        </div>
+                        <div class="priority-btn high" onclick="setPriority('high', this)">
+                            High <span>Urgent</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="submit-btn" type="submit" id="submit-btn">Submit complaint</button>
+            </form>
         </div>
+    </div>
 
-        <div class="field">
-            <label>Priority</label>
-            <select name="priority" required>
-                <option value="low">Low — Minor issue, not urgent</option>
-                <option value="medium">Medium — Needs attention soon</option>
-                <option value="high">High — Urgent, needs immediate action</option>
-            </select>
-        </div>
+    <script>
+        let aiTimeout = null;
+        let currentPriority = 'low';
 
-        <button class="submit-btn" type="submit">Submit complaint</button>
-    </form>
-    <br>
-    <a href="/payment/complaint/status/">View my complaints</a> |
-    <a href="/payment/">Back to dashboard</a>
+        function setPriority(value, el) {
+            // Manual override
+            document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('active'));
+            if (el) el.classList.add('active');
+            currentPriority = value;
+            document.getElementById('priority-value').value = value;
+        }
+
+        function updateAiBadge(priority) {
+            const badge = document.getElementById('ai-badge');
+            badge.className = 'priority-badge badge-' + priority;
+            badge.textContent = priority.charAt(0).toUpperCase() + priority.slice(1);
+
+            // Also update the manual buttons to match AI suggestion
+            document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.priority-btn.' + priority)?.classList.add('active');
+
+            // Update hidden value
+            currentPriority = priority;
+            document.getElementById('priority-value').value = priority;
+        }
+
+        async function detectWithAI() {
+    const title = document.getElementById('title').value.trim();
+    const desc = document.getElementById('description').value.trim();
+
+    if (title.length < 3 && desc.length < 3) return;
+
+    const badge = document.getElementById('ai-badge');
+    badge.className = 'priority-badge badge-detecting';
+    badge.textContent = 'Detecting...';
+
+    const API_KEY = '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';
+
+    try {
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_KEY}`
+            },
+            body: JSON.stringify({
+                model: 'llama-3.1-8b-instant',
+                max_tokens: 10,
+                messages: [{
+                    role: 'user',
+                    content: `You are a rental management complaint analyzer. Classify this tenant complaint priority.
+
+Complaint title: ${title}
+Complaint description: ${desc}
+
+Priority rules:
+- HIGH: Any issue with water supply, electricity, gas, safety, security, flooding, fire, structural damage, cannot enter unit, sewage, pests. Even poorly written like "nothing coming out from pipe" = no water = HIGH.
+- MEDIUM: Broken appliances, leaking minor, aircon issues, wifi problems, noise complaints, lift issues.
+- LOW: Minor requests, cosmetic issues, general questions.
+
+Understand Malay and broken English too.
+Reply with ONLY one word: high, medium, or low`
+                }]
+            })
+        });
+
+        const data = await response.json();
+        const result = data.choices?.[0]?.message?.content?.trim().toLowerCase();
+
+        if (['high', 'medium', 'low'].includes(result)) {
+            updateAiBadge(result);
+        } else {
+            fallbackDetect();
+        }
+    } catch (err) {
+        console.log('Groq failed, using fallback:', err);
+        fallbackDetect();
+    }
+}
+
+        function fallbackDetect() {
+            const text = (document.getElementById('title').value + ' ' + document.getElementById('description').value).toLowerCase();
+            const highKw = ['fire','flood','gas leak','no water','water cut','power outage','no electricity','burst pipe','broken door','broken lock','emergency','dangerous','urgent','injury','accident','collapsed','sewage','pest','rats'];
+            const medKw = ['leaking','leak','not working','broken','damaged','repair','fix','aircon','air cond','hot water','wifi','internet','lift','elevator','toilet','flush','drain','blocked','noise','smell','mould'];
+            let priority = 'low';
+            for (const kw of highKw) { if (text.includes(kw)) { priority = 'high'; break; } }
+            if (priority === 'low') { for (const kw of medKw) { if (text.includes(kw)) { priority = 'medium'; break; } } }
+            updateAiBadge(priority);
+        }
+
+        // Debounce AI call — wait 1 second after user stops typing
+        function onInput() {
+            clearTimeout(aiTimeout);
+            const badge = document.getElementById('ai-badge');
+            badge.className = 'priority-badge badge-detecting';
+            badge.textContent = 'Detecting...';
+            aiTimeout = setTimeout(detectWithAI, 5000);
+        }
+
+        document.getElementById('title').addEventListener('input', onInput);
+        document.getElementById('description').addEventListener('input', onInput);
+    </script>
 </body>
 </html>

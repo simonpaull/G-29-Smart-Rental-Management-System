@@ -12,11 +12,22 @@
         .paid { color: green; font-weight: bold; }
         .unpaid { color: orange; font-weight: bold; }
         .overdue { color: red; font-weight: bold; }
+        .download-btn { color: #534AB7; text-decoration: none; font-weight: bold; }
+        .download-btn:hover { text-decoration: underline; }
+        .btn { display: inline-block; padding: 8px 16px; background: #534AB7; color: white; border-radius: 6px; text-decoration: none; font-size: 13px; margin-right: 8px; margin-bottom: 16px; }
+        .btn-grey { background: #888; }
+        .btn-red { background: red; }
     </style>
 </head>
 <body>
     <h2>My payment history</h2>
     <p>Showing payments for {{ request.user.get_full_name|default:request.user.username }}</p>
+
+    <!-- Quick links -->
+    <a class="btn" href="/payment/">My Dashboard</a>
+    <a class="btn btn-grey" href="/payment/complaint/">Submit Complaint</a>
+    <a class="btn btn-grey" href="/payment/complaint/status/">My Complaints</a>
+
     <table>
         <thead>
             <tr>
@@ -44,13 +55,17 @@
                 <td class="{{ p.status }}">{{ p.status|capfirst }}</td>
                 <td>
                     {% if p.status == 'paid' %}
-        <a href="/payment/{{ p.id }}/receipt/">Download PDF</a>
-        {% else %}
-        -
-        {% endif %}
-    </td>
-</tr>
-{% endfor %}
+                    <a class="download-btn" href="/payment/{{ p.id }}/receipt/">Download PDF</a>
+                    {% elif p.status == 'overdue' %}
+                    <a class="btn btn-red" href="/payment/{{ p.id }}/">Pay now</a>
+                    {% else %}
+                    <a class="btn" href="/payment/{{ p.id }}/">Pay now</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="9">No payment records found.</td></tr>
+            {% endfor %}
         </tbody>
     </table>
 </body>

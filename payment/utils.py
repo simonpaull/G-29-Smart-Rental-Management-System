@@ -27,3 +27,38 @@ def check_overdue_payments():
         )
     
     return overdue_payments.count()
+
+def auto_detect_priority(title, description):
+    text = (title + ' ' + description).lower()
+
+    high_keywords = [
+        'fire', 'flood', 'electric shock', 'gas leak', 'no water',
+        'water cut', 'power outage', 'no electricity', 'burst pipe',
+        'broken door', 'broken lock', 'security', 'emergency',
+        'dangerous', 'urgent', 'immediately', 'serious', 'injury',
+        'accident', 'collapsed', 'ceiling fell', 'cannot enter',
+        'sewage', 'overflow', 'rodent', 'pest', 'rats', 'cockroach'
+    ]
+
+    medium_keywords = [
+        'leaking', 'leak', 'water leak', 'dripping', 'not working',
+        'broken', 'damaged', 'spoiled', 'repair', 'fix',
+        'air cond', 'aircon', 'air conditioning', 'heater',
+        'hot water', 'wifi', 'internet', 'elevator', 'lift',
+        'washing machine', 'refrigerator', 'fridge', 'stove',
+        'toilet', 'flush', 'sink', 'drain', 'blocked', 'clogged',
+        'noise', 'neighbour', 'neighbor', 'smell', 'mould', 'mold'
+    ]
+
+    # Check high priority first
+    for keyword in high_keywords:
+        if keyword in text:
+            return 'high'
+
+    # Check medium priority
+    for keyword in medium_keywords:
+        if keyword in text:
+            return 'medium'
+
+    # Default to low
+    return 'low'
