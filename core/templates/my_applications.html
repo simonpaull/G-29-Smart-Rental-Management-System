@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>My Applications</h1>
+
+<table border="1">
+
+<tr>
+    <th>Room</th>
+    <th>Message</th>
+    <th>Status</th>
+</tr>
+
+{% for request_obj in requests %}
+
+<tr>
+
+    <td>
+        {{ request_obj.room.roomnumber }}
+    </td>
+
+    <td>
+        {{ request_obj.message }}
+    </td>
+
+    <td>
+        {{ request_obj.status }}
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="3">
+        No applications found
+    </td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}
