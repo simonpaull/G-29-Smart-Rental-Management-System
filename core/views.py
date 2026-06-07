@@ -206,6 +206,32 @@ def my_applications(request):
     )
 
 
+@login_required
+def my_room(request):
+
+    tenant = Tenant.objects.filter(
+        email=request.user.email
+    ).first()
+
+    roommates = []
+
+    if tenant and tenant.room:
+
+        roommates = Tenant.objects.filter(
+            room=tenant.room
+        ).exclude(
+            id=tenant.id
+        )
+
+    return render(
+        request,
+        'my_room.html',
+        {
+            'tenant': tenant,
+            'roommates': roommates
+        }
+    )
+
 def update_request_status(request,request_id,status):
     room_request  = RoomRequest.objects.get(id = request_id)
 
