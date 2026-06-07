@@ -17,6 +17,9 @@ urlpatterns = [
     path('assign-tenant/<int:id>/',views.assign_tenant,name='assign_tenant'),
     path('remove-tenant/<int:tenant_id>/', views.remove_tenant, name = 'remove_tenant'),
     path('request-status/<int:request_id>/<str:status>/', views.update_request_status, name='update_request_status'),
+    path('my-applications/', views.my_applications, name='my_applications'),
+    path('my-room/', views.my_room, name='my_room'),
+    
     path('', views.home, name='home'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),

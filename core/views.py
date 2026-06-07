@@ -189,6 +189,49 @@ def request_room(request, room_id):
             'room':room
         })
 
+
+@login_required
+def my_applications(request):
+
+    requests = RoomRequest.objects.filter(
+        tenant=request.user
+    )
+
+    return render(
+        request,
+        'my_applications.html',
+        {
+            'requests': requests
+        }
+    )
+
+
+@login_required
+def my_room(request):
+
+    tenant = Tenant.objects.filter(
+        email=request.user.email
+    ).first()
+
+    roommates = []
+
+    if tenant and tenant.room:
+
+        roommates = Tenant.objects.filter(
+            room=tenant.room
+        ).exclude(
+            id=tenant.id
+        )
+
+    return render(
+        request,
+        'my_room.html',
+        {
+            'tenant': tenant,
+            'roommates': roommates
+        }
+    )
+
 def update_request_status(request,request_id,status):
     room_request  = RoomRequest.objects.get(id = request_id)
 
@@ -290,3 +333,5 @@ def register_view(request):
         return redirect('login')
 
     return render(request, 'register.html')
+
+
