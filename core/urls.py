@@ -58,5 +58,10 @@ urlpatterns = [
         ),
         name='password_reset_complete'
     ),
+    path(
+        'prospect-dashboard/',
+         views.prospect_dashboard,
+        name='prospect_dashboard'
+    ),
 
 ]

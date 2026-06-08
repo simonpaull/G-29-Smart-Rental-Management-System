@@ -129,7 +129,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = 'simonpaull439@gmail.com'
-EMAIL_HOST_PASSWORD = 'wmmgpulddppfhbtg'
+EMAIL_HOST_USER = 'srm.adminapi@gmail.com'
+EMAIL_HOST_PASSWORD = 'eyktckxilgfckyfc'
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
