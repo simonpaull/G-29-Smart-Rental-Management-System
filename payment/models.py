@@ -1,22 +1,24 @@
 from django.db import models
 from django.contrib.auth.models import User
+from dateutil.relativedelta import relativedelta
+from datetime import date
 
 MONTH_CHOICES = [
-    ('January', 'January'),
-    ('February', 'February'),
-    ('March', 'March'),
-    ('April', 'April'),
-    ('May', 'May'),
-    ('June', 'June'),
-    ('July', 'July'),
-    ('August', 'August'),
-    ('September', 'September'),
-    ('October', 'October'),
-    ('November', 'November'),
-    ('December', 'December'),
+    ('January', 'January'), ('February', 'February'),
+    ('March', 'March'), ('April', 'April'),
+    ('May', 'May'), ('June', 'June'),
+    ('July', 'July'), ('August', 'August'),
+    ('September', 'September'), ('October', 'October'),
+    ('November', 'November'), ('December', 'December'),
 ]
 
 YEAR_CHOICES = [(str(y), str(y)) for y in range(2024, 2030)]
+
+DURATION_CHOICES = [
+    (6, '6 months'),
+    (12, '12 months'),
+    (24, '24 months'),
+]
 
 class Payment(models.Model):
     STATUS_CHOICES = [
@@ -47,7 +49,7 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"{self.tenant.username} - {self.period()} - {self.status}"
-    
+
 class Complaint(models.Model):
     PRIORITY_CHOICES = [
         ('low', 'Low'),
