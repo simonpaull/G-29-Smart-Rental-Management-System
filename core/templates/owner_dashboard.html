@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <h2>Owner Dashboard</h2>
+
 <p>Welcome {{ request.user.username }}</p>
 
 <ul>
     <li>Manage Rooms</li>
-    <li>Verify Existing Tenants</li>
+    <li>Create Existing Tenant Accounts</li>
+    <li>Verify Tenant Room Assignment</li>
     <li>Create Rent Invoices</li>
     <li>View Tenant Complaints</li>
     <li>Message Admin</li>
@@ -14,4 +17,6 @@
 
 <a href="/profile/">My Profile</a> |
 <a href="/logout/">Logout</a>
+
 {% endblock %}
+7. core/templates/tenant_dashboard.h

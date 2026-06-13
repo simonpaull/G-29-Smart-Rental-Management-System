@@ -1,21 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <h2>Tenant Dashboard</h2>
+
 <p>Welcome {{ request.user.username }}</p>
 
+{% if request.user.profile.tenant_status == 'new' %}
+    <p>Status: New Tenant</p>
+    <p>You can search for available rooms and contact owners.</p>
+{% elif request.user.profile.tenant_status == 'verified' %}
+    <p>Status: Verified Tenant</p>
+    <p>You can view invoices, make payments, and submit complaints.</p>
+{% endif %}
+
 <a href="/profile/">My Profile</a> |
+
 <a href="/payment/">My Payments</a> |
-<a href="/logout/">Logout</a>
+
 <a href="/logout/">Logout</a> |
-<a href="/payment/history/">View My Payment History</a>
 
-<a href="{% url 'my_applications' %}">
-    My Applications
-</a>
+<a href="/payment/history/">View My Payment History</a> |
 
-<a href="{% url 'my_room' %}">
-    My Room
-</a>
+<a href="{% url 'my_applications' %}">My Applications</a> |
+
+<a href="{% url 'my_room' %}">My Room</a> |
 
 {% endblock %}
