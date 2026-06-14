@@ -2,9 +2,9 @@
 
 {% block content %}
 
-<h2>Tenant Registration</h2>
+<h2>New Tenant Registration</h2>
 
-<p>Create an account to search and rent available rooms.</p>
+<p>Create an account to search and request available rooms.</p>
 
 <form method="POST">
 
@@ -27,19 +27,36 @@
 
     <label>Password:</label><br>
 
-    <div style="display:flex; align-items:center; gap:5px;">
-        <input type="password" id="registerPassword" name="password" required>
+    <div style="position:relative; width:250px;">
 
-        <button type="button" onclick="toggleRegisterPassword()">
+        <input 
+            type="password"
+            id="registerPassword"
+            name="password"
+            required
+            style="width:100%; padding-right:40px;"
+        >
+
+        <span 
+            id="registerEye"
+            onclick="toggleRegisterPassword()"
+            style="
+                position:absolute;
+                right:10px;
+                top:50%;
+                transform:translateY(-50%);
+                cursor:pointer;
+                user-select:none;
+            "
+        >
             👁
-        </button>
+        </span>
+
     </div>
 
     <br>
 
-    <input type="hidden" name="role" value="tenant">
-
-    <button type="submit">Register</button>
+    <button type="submit">Register as New Tenant</button>
 
 </form>
 
@@ -59,13 +76,16 @@
 function toggleRegisterPassword() {
 
     var passwordInput = document.getElementById("registerPassword");
+    var eyeIcon = document.getElementById("registerEye");
 
     if (passwordInput.type === "password") {
         passwordInput.type = "text";
+        eyeIcon.innerHTML = "🙈";
     }
 
     else {
         passwordInput.type = "password";
+        eyeIcon.innerHTML = "👁";
     }
 }
 

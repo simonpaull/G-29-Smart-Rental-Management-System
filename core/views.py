@@ -21,23 +21,23 @@ def login_view(request):
             login(request, user)
 
             if hasattr(user, 'profile'):
-
                 if user.profile.role == 'admin':
                     return redirect('admin_dashboard')
 
                 elif user.profile.role == 'owner':
                     return redirect('owner_dashboard')
+                
+                elif user.profile.role == 'prospect':
+                    return redirect('prospect_dashboard')
 
-                else:
+                elif user.profile.role == 'tenant':
                     return redirect('tenant_dashboard')
 
-            else:
-                return redirect('tenant_dashboard')
+            return redirect('login')
 
-        else:
-            return render(request, 'login.html', {
-                'error': 'Invalid username or password'
-            })
+        return render(request, 'login.html', {
+            'error': 'Invalid username or password'
+        })
 
     return render(request, 'login.html')
 
@@ -296,6 +296,9 @@ def edit_profile(request):
         'profile': profile
     })
 
+@login_required
+def prospect_dashboard(request):
+    return render(request, 'prospect_dashboard.html')
 
 def register_view(request):
     if request.method == 'POST':
@@ -325,7 +328,7 @@ def register_view(request):
         Profile.objects.create(
             user=user,
             full_name=full_name,
-            role='tenant',
+            role='prospect',
             phone_number=phone_number,
             address=address
         )
@@ -334,4 +337,13 @@ def register_view(request):
 
     return render(request, 'register.html')
 
+@login_required
+def cancel_application(request, request_id):
+    
+    room_request = RoomRequest.objects.get( id = request_id )
 
+    if room_request.tenant == request.user:
+        
+        room_request.delete()
+
+    return redirect('my_applications')
