@@ -13,4 +13,6 @@ urlpatterns = [
     path('complaint/status/', views.complaint_status, name='complaint_status'),
     path('complaint/admin/', views.admin_complaint_status, name='admin_complaint_status'),
     path('complaint/<int:complaint_id>/update/', views.complaint_update, name='complaint_update'),
+    path('utility/', views.owner_add_utility, name='owner_add_utility'),
+    path('create-payment/', views.admin_create_payment, name='admin_create_payment'),
 ]

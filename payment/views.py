@@ -9,7 +9,8 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from .models import Payment, Complaint
-from .utils import check_overdue_payments
+from .utils import check_overdue_payments, auto_detect_priority
+from core.models import Room, Tenant
 import io
 
 def generate_receipt_pdf(payment):
@@ -252,4 +253,96 @@ def admin_summary(request):
         'total_complaints_inprogress': total_complaints_inprogress,
         'total_complaints_resolved': total_complaints_resolved,
         'recent_payments': recent_payments,
+    })
+
+@login_required(login_url='/login/')
+def owner_add_utility(request):
+    if request.user.profile.role != 'admin':
+        return redirect('tenant_payment_dashboard')
+
+    # Get all unpaid payments
+    payments = Payment.objects.filter(status='unpaid').order_by('due_date')
+
+    if request.method == 'POST':
+        payment_id = request.POST.get('payment_id')
+        electric = request.POST.get('electric')
+        water = request.POST.get('water')
+
+        payment = get_object_or_404(Payment, id=payment_id)
+        payment.electric = electric
+        payment.water = water
+        payment.save()
+
+        return redirect('owner_add_utility')
+
+    return render(request, 'payment/owner_add_utility.html', {
+        'payments': payments
+    })
+
+@login_required(login_url='/login/')
+def admin_create_payment(request):
+    if request.user.profile.role != 'admin':
+        return redirect('tenant_payment_dashboard')
+
+    from core.models import Room, Tenant
+    from django.contrib.auth.models import User
+
+    # Get all tenants with rooms
+    tenants = Tenant.objects.filter(room__isnull=False)
+
+    if request.method == 'POST':
+        tenant_id = request.POST.get('tenant_id')
+        period_month = request.POST.get('period_month')
+        period_year = request.POST.get('period_year')
+        electric = request.POST.get('electric', 0)
+        water = request.POST.get('water', 0)
+        due_date = request.POST.get('due_date')
+
+        # Get tenant details
+        tenant_obj = Tenant.objects.get(id=tenant_id)
+        room = tenant_obj.room
+
+        # Auto read rent from room
+        rent = room.price
+        unit = room.roomnumber
+
+        # Get the Django User linked to this tenant
+        # Match by email
+        try:
+            user = User.objects.get(email=tenant_obj.email)
+        except User.DoesNotExist:
+            user = None
+
+        if user:
+            Payment.objects.create(
+                tenant=user,
+                unit=unit,
+                period_month=period_month,
+                period_year=period_year,
+                rent=rent,
+                electric=electric,
+                water=water,
+                status='unpaid',
+                due_date=due_date,
+            )
+
+            # Send email to tenant
+            send_mail(
+                subject=f'New Payment Due - {period_month} {period_year}',
+                message=f'Dear {tenant_obj.name},\n\nA new payment has been created.\n\nUnit: {unit}\nPeriod: {period_month} {period_year}\nRent: RM {rent}\nDue date: {due_date}\n\nPlease login to make payment.\n\nThank you!',
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[tenant_obj.email],
+                fail_silently=True,
+            )
+
+        return redirect('admin_payment_history')
+
+    return render(request, 'payment/admin_create_payment.html', {
+        'tenants': tenants,
+        'month_choices': [
+            'January', 'February', 'March', 'April',
+            'May', 'June', 'July', 'August',
+            'September', 'October', 'November', 'December'
+        ],
+        'year_choices': ['2025', '2026', '2027'],
     })
