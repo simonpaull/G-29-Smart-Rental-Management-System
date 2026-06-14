@@ -346,3 +346,46 @@ def admin_create_payment(request):
         ],
         'year_choices': ['2025', '2026', '2027'],
     })
+
+@login_required(login_url='/login/')
+def owner_dashboard(request):
+    if request.user.profile.role != 'admin':
+        return redirect('tenant_payment_dashboard')
+
+    from core.models import Room, RoomRequest
+    from django.db.models import Sum
+
+    check_overdue_payments()
+
+    total_collected = sum(p.total() for p in Payment.objects.filter(status='paid'))
+    total_overdue = Payment.objects.filter(status='overdue').count()
+    total_complaints = Complaint.objects.filter(status='pending').count()
+    pending_complaints = Complaint.objects.filter(status='pending').order_by('priority')
+    rooms = Room.objects.filter(owner=request.user)
+    room_requests = RoomRequest.objects.filter(
+        room__owner=request.user,
+        status='pending'
+    ).order_by('-created_at')
+    recent_payments = Payment.objects.all().order_by('-due_date')[:5]
+
+    return render(request, 'payment/owner_dashboard.html', {
+        'total_collected': total_collected,
+        'total_overdue': total_overdue,
+        'total_complaints': total_complaints,
+        'pending_complaints': pending_complaints,
+        'rooms': rooms,
+        'room_requests': room_requests,
+        'recent_payments': recent_payments,
+    })
+
+@login_required(login_url='/login/')
+def new_tenant_dashboard(request):
+    from core.models import Room, RoomRequest
+
+    available_rooms = Room.objects.filter(availability=True)
+    my_requests = RoomRequest.objects.filter(tenant=request.user).order_by('-created_at')
+
+    return render(request, 'payment/new_tenant_dashboard.html', {
+        'available_rooms': available_rooms,
+        'my_requests': my_requests,
+    })

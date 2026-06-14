@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Find a Room</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #F4F3FF; font-family: Arial, sans-serif; }
+        .topbar { background: #534AB7; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .topbar-title { color: #fff; font-size: 15px; font-weight: 500; }
+        .topbar-user { display: flex; align-items: center; gap: 8px; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: #534AB7; flex-shrink: 0; }
+        .topbar-username { color: #EEEDFE; font-size: 13px; }
+        .logout-btn { color: #EEEDFE; font-size: 12px; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; text-decoration: none; margin-left: 4px; }
+        .hero { background: #534AB7; padding: 1.5rem 1.5rem 3rem; color: #fff; width: 100%; }
+        .hero h1 { font-size: clamp(16px,4vw,22px); font-weight: 500; margin-bottom: 4px; }
+        .hero p { font-size: 13px; opacity: 0.8; }
+        .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 1rem; margin-top: -1.5rem; margin-bottom: 1.5rem; }
+        .stat-card { background: #fff; border-radius: 12px; padding: 0.75rem; text-align: center; box-shadow: 0 2px 8px rgba(83,74,183,0.1); }
+        .stat-value { font-size: clamp(16px,4vw,22px); font-weight: 500; margin-bottom: 2px; }
+        .stat-label { font-size: clamp(9px,2vw,11px); color: #888; text-transform: uppercase; letter-spacing: 0.04em; }
+        .stat-green { color: #3B6D11; }
+        .stat-blue { color: #185FA5; }
+        .content { padding: 0 1rem 2rem; }
+        .section-title { font-size: 12px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.25rem 0 0.75rem; }
+        .notice-card { background: #F8F7FF; border-radius: 10px; padding: 12px 14px; border: 1px solid #E0DEFF; margin-bottom: 1rem; font-size: 13px; color: #534AB7; }
+        .rooms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .room-card { background: #fff; border-radius: 12px; border: 0.5px solid #e0e0e0; padding: 1rem; }
+        .room-num { font-size: 14px; font-weight: 500; color: #333; margin-bottom: 4px; }
+        .room-type { font-size: 12px; color: #888; margin-bottom: 6px; }
+        .room-price { font-size: 16px; font-weight: 500; color: #534AB7; margin-bottom: 4px; }
+        .room-detail { font-size: 12px; color: #888; margin-bottom: 8px; }
+        .req-btn { width: 100%; padding: 10px; background: #534AB7; color: #fff; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; text-decoration: none; display: block; text-align: center; }
+        .req-btn:hover { background: #3C3489; }
+        .complaint-card { border: 0.5px solid #e0e0e0; border-radius: 12px; padding: 1rem 1.25rem; background: #fff; }
+        .request-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 0.5px solid #f0f0f0; gap: 8px; }
+        .request-item:last-child { border-bottom: none; }
+        .request-title { font-size: 14px; font-weight: 500; color: #333; }
+        .request-sub { font-size: 12px; color: #888; margin-top: 2px; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+        .badge-pending { background: #FAEEDA; color: #854F0B; }
+        .badge-accepted { background: #EAF3DE; color: #3B6D11; }
+        .badge-rejected { background: #FCEBEB; color: #A32D2D; }
+        .empty-msg { font-size: 13px; color: #aaa; padding: 12px; background: #fff; border-radius: 10px; text-align: center; border: 0.5px dashed #ddd; }
+        @media (max-width: 400px) {
+            .rooms-grid { grid-template-columns: 1fr; }
+            .topbar-username { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-title">Smart Rental System</div>
+        <div class="topbar-user">
+            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+            <span class="topbar-username">{{ request.user.get_full_name|default:request.user.username }}</span>
+            <a class="logout-btn" href="/logout/">Logout</a>
+        </div>
+    </div>
+
+    <div class="hero">
+        <h1>Welcome, {{ request.user.get_full_name|default:request.user.username }}</h1>
+        <p>Find your perfect room and submit a request</p>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-value stat-green">{{ available_rooms|length }}</div>
+            <div class="stat-label">Available rooms</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value stat-blue">{{ my_requests|length }}</div>
+            <div class="stat-label">My requests</div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="notice-card">
+            ℹ️ You are a new tenant. Browse available rooms below and submit a request to the owner.
+        </div>
+
+        <div class="section-title">Available rooms</div>
+        {% if available_rooms %}
+        <div class="rooms-grid">
+            {% for r in available_rooms %}
+            <div class="room-card">
+                <div class="room-num">Unit {{ r.roomnumber }}</div>
+                <div class="room-type">{{ r.roomtype }}</div>
+                <div class="room-price">RM {{ r.price }}/mo</div>
+                <div class="room-detail">{{ r.capacity }} person · {{ r.size }}</div>
+                {% if r.description %}
+                <div class="room-detail">{{ r.description|truncatechars:50 }}</div>
+                {% endif %}
+                <a class="req-btn" href="/room-request/{{ r.id }}/">Request room</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-msg">No available rooms at the moment</div>
+        {% endif %}
+
+        <div class="section-title">My room requests</div>
+        {% if my_requests %}
+        <div class="complaint-card">
+            {% for r in my_requests %}
+            <div class="request-item">
+                <div>
+                    <div class="request-title">Unit {{ r.room.roomnumber }} — {{ r.room.roomtype }}</div>
+                    <div class="request-sub">Requested {{ r.created_at|date:"d M Y" }} · RM {{ r.room.price }}/month</div>
+                </div>
+                <span class="badge badge-{{ r.status }}">{{ r.status|capfirst }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-msg">No room requests yet</div>
+        {% endif %}
+    </div>
+</body>
+</html>

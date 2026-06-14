@@ -15,4 +15,6 @@ urlpatterns = [
     path('complaint/<int:complaint_id>/update/', views.complaint_update, name='complaint_update'),
     path('utility/', views.owner_add_utility, name='owner_add_utility'),
     path('create-payment/', views.admin_create_payment, name='admin_create_payment'),
+    path('owner-dashboard/', views.owner_dashboard, name='owner_dashboard'),
+    path('new-tenant/', views.new_tenant_dashboard, name='new_tenant_dashboard'),
 ]
