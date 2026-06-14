@@ -337,4 +337,13 @@ def register_view(request):
 
     return render(request, 'register.html')
 
+@login_required
+def cancel_application(request, request_id):
+    
+    room_request = RoomRequest.objects.get( id = request_id )
 
+    if room_request.tenant == request.user:
+        
+        room_request.delete()
+
+    return redirect('my_applications')

@@ -19,6 +19,7 @@ urlpatterns = [
     path('request-status/<int:request_id>/<str:status>/', views.update_request_status, name='update_request_status'),
     path('my-applications/', views.my_applications, name='my_applications'),
     path('my-room/', views.my_room, name='my_room'),
+    path('cancel-application/<int:request_id>/', views.cancel_application, name='cancel_application'),
     
     path('', views.home, name='home'),
     path('login/', views.login_view, name='login'),
