@@ -187,26 +187,45 @@ def assign_tenant(request,id):
             }
 )
         
-
+@login_required
 def request_room(request, room_id):
 
-    room = Room.objects.get(id = room_id)
+    room = Room.objects.get(id=room_id)
+
+    existing_request = RoomRequest.objects.filter(
+        tenant=request.user,
+        status='pending'
+    ).exists()
+
+    if existing_request:
+        return render(
+            request,
+            'request_room.html',
+            {
+                'room': room,
+                'error': 'You already have an active room request. Please wait for the owner response.'
+            }
+        )
 
     if request.method == 'POST':
 
         message = request.POST.get('message')
 
         RoomRequest.objects.create(
-            tenant = request.user,
-            room = room,
-            message = message
+            tenant=request.user,
+            room=room,
+            message=message
         )
+
         return redirect('room_list')
 
-    else:
-        return render(request, 'request_room.html',{
-            'room':room
-        })
+    return render(
+        request,
+        'request_room.html',
+        {
+            'room': room
+        }
+    )
 
 
 @login_required
