@@ -6,6 +6,32 @@
 
 <p>Welcome {{ request.user.username }}</p>
 
+<h3>New Room Requests</h3>
+
+{% if new_requests %}
+
+<ul>
+    {% for request_obj in new_requests %}
+        <li>
+            {{ request_obj.tenant.username }}
+            requested
+            {{ request_obj.room.roomnumber }}
+
+            <a href="{% url 'assign_tenant' request_obj.room.id %}">
+                <button type = "button">
+                    View
+                </button>
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+{% else %}
+
+<p>No new requests.</p>
+
+{% endif %}
+
 <ul>
     <li>Manage Rooms</li>
     <li>Create Existing Tenant Accounts</li>
@@ -15,6 +41,7 @@
     <li>Message Admin</li>
 </ul>
 
+<a href="{% url 'owner_properties' %}">My Properties</a> |
 <a href="/profile/">My Profile</a> |
 <a href="/logout/">Logout</a>
 

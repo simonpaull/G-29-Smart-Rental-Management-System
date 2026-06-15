@@ -278,10 +278,22 @@ def admin_dashboard(request):
 
 @login_required
 def owner_dashboard(request):
+
     if request.user.profile.role != 'owner':
         return redirect('tenant_dashboard')
 
-    return render(request, 'owner_dashboard.html')
+    new_requests = RoomRequest.objects.filter(
+        room__owner=request.user,
+        status='pending'
+    )
+
+    return render(
+        request,
+        'owner_dashboard.html',
+        {
+            'new_requests': new_requests
+        }
+    )
 
 
 @login_required
