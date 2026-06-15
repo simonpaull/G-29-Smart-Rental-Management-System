@@ -1,3 +1,4 @@
+# Create your models here.
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -29,3 +30,84 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.role}"
+
+#-------------------------------
+#Room Table
+#-------------------------------
+class Room(models.Model):
+
+    owner = models.ForeignKey(
+        User,
+        on_delete = models.CASCADE,
+        related_name = "owned_rooms",
+        null = True,
+        blank = True
+    )
+
+    roomnumber = models.CharField(max_length = 10) 
+    roomtype = models.CharField(max_length = 50)
+    capacity = models.IntegerField(default=1)
+    size = models.CharField(max_length=6)  
+    price = models. CharField(max_length = 8)
+    availability = models.BooleanField(default = True)  
+    description = models.TextField(blank = True, null = True)
+
+    def __str__(self):
+        return f"{self.roomnumber} - {self.roomtype}"
+    
+#-------------------------------
+#Tenant Table
+#-------------------------------
+class Tenant(models.Model):
+    name = models.CharField(max_length = 20)
+
+    genderchoices = (
+        ('male','Male'),
+        ('female','Female')
+    )
+    gender = models.CharField(max_length = 10, choices= genderchoices)
+
+    contactnumber = models.CharField(max_length = 15)
+    email = models.EmailField()
+    ic = models.CharField(max_length = 20)
+    moveindate = models.DateField()
+    moveoutdate = models.DateField(blank = True, null = True)
+    room = models.ForeignKey('Room',on_delete = models.SET_NULL, null = True, blank = True)
+
+    def __str__(self):
+        if self.room:
+            return f"{self.name} ({self.room.roomnumber})"
+        else:
+            return self.name
+        
+class RoomRequest(models.Model):
+
+    STATUS_CHOICES = [
+        ('pending' , 'Pending'),
+        ('accepted' , 'Accepted'),
+        ('rejected' , 'Rejected'),
+    ]
+
+    tenant = models.ForeignKey(
+        User,
+        on_delete = models.CASCADE
+    )
+
+    room = models.ForeignKey(
+        Room,
+        on_delete = models.CASCADE
+    )
+
+    message = models.TextField()
+
+    status = models.CharField(
+        max_length = 20,
+        choices = STATUS_CHOICES,
+        default = 'pending'
+    )
+
+    created_at = models.DateTimeField(auto_now_add= True)
+
+    def __str__(self):
+        return f"{self.tenant.username} -> {self.room.roomnumber}"
+

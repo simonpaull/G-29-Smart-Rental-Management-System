@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>My Room</h1>
+
+{% if tenant.room %}
+
+    <p>
+        Room Number:
+        {{ tenant.room.roomnumber }}
+    </p>
+
+    <p>
+        Room Type:
+        {{ tenant.room.roomtype }}
+    </p>
+
+    <p>
+        Price:
+        RM {{ tenant.room.price }}
+    </p>
+
+    <p>
+        Capacity:
+        {{ tenant.room.capacity }}
+    </p>
+
+{% else %}
+
+    <p>
+        You are not assigned to any room.
+    </p>
+
+{% endif %}
+
+<h3>Roommates</h3>
+
+<ul>
+
+{% for roommate in roommates %}
+
+    <li>{{ roommate.name }}</li>
+
+{% empty %}
+
+    <li>No roommates</li>
+
+{% endfor %}
+
+</ul>
+
+{% endblock %}

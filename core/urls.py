@@ -3,6 +3,24 @@ from . import views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
+    path('', views.home),
+    path('login/', views.login_view),
+    path('dashboard/', views.dashboard),
+
+    path('rooms/', views.room_list, name ='room_list'),
+    path('tenant-list/', views.tenant_list, name='tenant_list'),
+    path('owner-properties/', views.owner_properties, name='owner_properties'),
+    path('request-room/<int:room_id>/', views.request_room, name='request_room'),
+    path('add-room/', views.add_room, name = 'add_room'),
+    path('edit-room/<int:id>/', views.edit_room, name = 'edit_room' ),
+    path('delete-room/<int:id>/', views.delete_room, name='delete_room'),
+    path('assign-tenant/<int:id>/',views.assign_tenant,name='assign_tenant'),
+    path('remove-tenant/<int:tenant_id>/', views.remove_tenant, name = 'remove_tenant'),
+    path('request-status/<int:request_id>/<str:status>/', views.update_request_status, name='update_request_status'),
+    path('my-applications/', views.my_applications, name='my_applications'),
+    path('my-room/', views.my_room, name='my_room'),
+    path('cancel-application/<int:request_id>/', views.cancel_application, name='cancel_application'),
+    
     path('', views.home, name='home'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),

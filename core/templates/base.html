@@ -12,17 +12,29 @@
         <a href="/">Home</a> |
 
         {% if user.is_authenticated %}
+
             {% if user.profile.role == 'admin' %}
                 <a href="/admin-dashboard/">Dashboard</a> |
-            {% else %}
-                <a href="/tenant-dashboard/">Dashboard</a> |
-            {% endif %}
 
+            {% elif user.profile.role == 'owner' %}
+                <a href="/owner-dashboard/">Dashboard</a> |
+
+            {% elif user.profile.role == 'prospect' %}
+                <a href="/prospect-dashboard/">Dashboard</a> |
+
+            {% elif user.profile.role == 'tenant' %}
+                <a href="/tenant-dashboard/">Dashboard</a> |
+
+            {% endif %}
+            
             <a href="/profile/">Profile</a> |
             <a href="/logout/">Logout</a>
-        {% else %}
+
+         {% else %}
+
             <a href="/login/">Login</a> |
             <a href="/register/">Register</a>
+
         {% endif %}
     </nav>
     <hr>

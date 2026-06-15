@@ -15,15 +15,70 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='Room',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('roomnumber', models.CharField(max_length=10)),
+                ('roomtype', models.CharField(max_length=50)),
+                ('capacity', models.IntegerField(default=1)),
+                ('size', models.CharField(max_length=6)),
+                ('price', models.CharField(max_length=8)),
+                ('availability', models.BooleanField(default=True)),
+                ('description', models.TextField(blank=True, null=True)),
+            ],
+        ),
+        migrations.CreateModel(
             name='Profile',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('full_name', models.CharField(max_length=100)),
-                ('role', models.CharField(choices=[('admin', 'Admin'), ('owner', 'Owner'), ('prospect', 'Prospective Tenant'), ('tenant', 'Tenant')], max_length=20)),
+
+                ('role', models.CharField(
+                    choices=[
+                        ('admin', 'Admin'), 
+                        ('owner', 'Owner'), 
+                        ('prospect', 'Prospective Tenant'), 
+                        ('tenant', 'Tenant')
+                    ], 
+                    max_length=20
+                )),
                 ('phone_number', models.CharField(max_length=20)),
                 ('address', models.TextField()),
-                ('tenant_status', models.CharField(blank=True, choices=[('new', 'New Tenant'), ('verified', 'Verified Tenant')], max_length=20, null=True)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('tenant_status', models.CharField(
+                    blank=True, 
+                    choices=[
+                        ('new', 'New Tenant'), 
+                        ('verified', 'Verified Tenant')
+                    ], 
+                    max_length=20,
+                    null=True
+                )),
+                ('user', models.OneToOneField(
+                    on_delete=django.db.models.deletion.CASCADE, 
+                    to=settings.AUTH_USER_MODEL
+                )),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Tenant',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=20)),
+                ('gender', models.CharField(
+                    choices=[('male', 'Male'), ('female', 'Female')], 
+                    max_length=10
+                )),
+                ('contactnumber', models.CharField(max_length=15)),
+                ('email', models.EmailField(max_length=254)),
+                ('ic', models.CharField(max_length=20)),
+                ('moveindate', models.DateField()),
+                ('moveoutdate', models.DateField(blank=True, null=True)),
+                ('room', models.ForeignKey(
+                    blank=True, 
+                    null=True, 
+                    on_delete=django.db.models.deletion.SET_NULL, 
+                    to='core.room'
+                )),
             ],
         ),
     ]
