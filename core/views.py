@@ -146,46 +146,67 @@ def tenant_list(request):
     tenants = Tenant.objects.all()
     return render(request, 'tenant_list.html',{'tenants': tenants})
 
-def assign_tenant(request,id):
+@login_required
+def assign_tenant(request, id):
+
     room = Room.objects.get(id=id)
-    requests = RoomRequest.objects.filter(room=room)
 
-    tenants = []
-    accepted_requests = RoomRequest.objects.filter( room=room, status = 'accepted' )
-    
-    for request_obj in accepted_requests:
-        tenant_obj = Tenant.objects.filter(
-            email = request_obj.tenant.email
-        ).first()
+    requests = RoomRequest.objects.filter(
+        room=room
+    )
 
-        if tenant_obj:
-            tenants.append(tenant_obj)
+    accepted_requests = RoomRequest.objects.filter(
+        room=room,
+        status='accepted'
+    )
 
     if request.method == 'POST':
-        tenant_id = request.POST.get('tenant')
-        tenant = Tenant.objects.get(id = tenant_id)
+
+        request_id = request.POST.get('tenant')
+
+        room_request = RoomRequest.objects.get(
+            id=request_id
+        )
+
+        user = room_request.tenant
+
+        tenant, created = Tenant.objects.get_or_create(
+            email=user.email,
+            defaults={
+                'name': user.username,
+                'contactnumber': '',
+                'room': room
+            }
+        )
+
         tenant.room = room
         tenant.save()
 
+        user.profile.role = 'tenant'
+        user.profile.save()
+
+        room_request.status= 'assigned'
+        room_request.save()
+
         RoomRequest.objects.filter(
-            tenant__email=tenant.email
+            tenant=user
         ).exclude(
             room=room
         ).update(
             status='rejected'
         )
+
         return redirect('owner_properties')
-    
-    else:
-        return render(
-            request,
-            'assign_tenant.html',
-            {
-                'room': room,
-                'tenants': tenants,
-                'requests':requests
-            }
-)
+
+    return render(
+        request,
+        'assign_tenant.html',
+        {
+            'room': room,
+            'accepted_requests': accepted_requests,
+            'requests': requests
+        }
+    )
         
 @login_required
 def request_room(request, room_id):
@@ -249,7 +270,7 @@ def my_room(request):
 
     tenant = Tenant.objects.filter(
         email=request.user.email
-    ).first()
+    ).last()
 
     roommates = []
 
