@@ -101,8 +101,8 @@ def payment_history(request):
 
 @login_required(login_url='/login/')
 def admin_payment_history(request):
-    if request.user.profile.role != 'admin':
-        return redirect('payment_history')
+    if request.user.profile.role not in ['admin', 'owner']:
+        return redirect('tenant_payment_dashboard')
     
     check_overdue_payments()
     
@@ -386,10 +386,17 @@ def owner_dashboard(request):
 
 @login_required(login_url='/login/')
 def new_tenant_dashboard(request):
-    from core.models import Room, RoomRequest
-
-    available_rooms = Room.objects.filter(availability=True)
-    my_requests = RoomRequest.objects.filter(tenant=request.user).order_by('-created_at')
+    available_rooms = []
+    my_requests = []
+    
+    try:
+        from core.models import Room, RoomRequest
+        available_rooms = Room.objects.filter(availability=True)
+        my_requests = RoomRequest.objects.filter(
+            tenant=request.user
+        ).order_by('-created_at')
+    except Exception:
+        pass
 
     return render(request, 'payment/new_tenant_dashboard.html', {
         'available_rooms': available_rooms,

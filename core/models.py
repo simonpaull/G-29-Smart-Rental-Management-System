@@ -6,9 +6,11 @@ from django.db import models
 
 class Profile(models.Model):
     ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('tenant', 'Tenant'),
-    ]
+    ('admin', 'Admin'),
+    ('owner', 'Owner'),
+    ('tenant', 'Tenant'),
+    ('prospect', 'Prospective Tenant'),
+]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone_number = models.CharField(max_length=15, blank=True)
