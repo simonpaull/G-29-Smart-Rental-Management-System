@@ -10,11 +10,6 @@ ROLE_CHOICES = [
     ('tenant', 'Tenant'),
 ]
 
-TENANT_STATUS_CHOICES = [
-    ('new', 'New Tenant'),
-    ('verified', 'Verified Tenant'),
-]
-
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -30,12 +25,6 @@ class Profile(models.Model):
 
     address = models.TextField()
 
-    tenant_status = models.CharField(
-        max_length=20,
-        choices=TENANT_STATUS_CHOICES,
-        blank=True,
-        null=True
-    )
     
     email_verified = models.BooleanField(default=False)
 

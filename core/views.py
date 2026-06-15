@@ -4,6 +4,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Profile
+import random
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def home(request):
@@ -41,8 +44,24 @@ def login_view(request):
 
     return render(request, 'login.html')
 
+@login_required
 def dashboard(request):
-    return render(request, 'dashboard.html')
+
+    role = request.user.profile.role
+
+    if role == 'admin':
+        return redirect('admin_dashboard')
+
+    elif role == 'owner':
+        return redirect('owner_dashboard')
+
+    elif role == 'prospect':
+        return redirect('prospect_dashboard')
+
+    elif role == 'tenant':
+        return redirect('tenant_dashboard')
+
+    return redirect('login')
 
 
 def room_list(request):
@@ -302,6 +321,7 @@ def prospect_dashboard(request):
 
 def register_view(request):
     if request.method == 'POST':
+
         full_name = request.POST.get('full_name')
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -319,31 +339,83 @@ def register_view(request):
                 'error': 'Email already exists'
             })
 
-        user = User.objects.create_user(
-            username=username,
-            email=email,
-            password=password
+        otp = str(random.randint(100000, 999999))
+
+        request.session['otp'] = otp
+
+        request.session['registration_data'] = {
+            'full_name': full_name,
+            'username': username,
+            'email': email,
+            'password': password,
+            'phone_number': phone_number,
+            'address': address,
+        }
+
+        send_mail(
+            'Email Verification',
+            f'Your verification code is: {otp}',
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=False,
         )
 
-        Profile.objects.create(
-            user=user,
-            full_name=full_name,
-            role='prospect',
-            phone_number=phone_number,
-            address=address
-        )
-
-        return redirect('login')
+        return redirect('verify_email')
 
     return render(request, 'register.html')
 
+def verify_email(request):
+
+    if request.method == 'POST':
+
+        entered_otp = request.POST.get('otp')
+
+        stored_otp = request.session.get('otp')
+
+        if entered_otp == stored_otp:
+
+            data = request.session.get('registration_data')
+
+            user = User.objects.create_user(
+                username=data['username'],
+                email=data['email'],
+                password=data['password']
+            )
+
+            Profile.objects.create(
+                user=user,
+                full_name=data['full_name'],
+                role='prospect',
+                phone_number=data['phone_number'],
+                address=data['address'],
+                email_verified=True
+            )
+
+            del request.session['otp']
+            del request.session['registration_data']
+
+            return redirect('login')
+
+        return render(
+            request,
+            'verify_email.html',
+            {
+                'error': 'Invalid verification code'
+            }
+        )
+
+    return render(
+        request,
+        'verify_email.html'
+    )
+
+
 @login_required
 def cancel_application(request, request_id):
-    
-    room_request = RoomRequest.objects.get( id = request_id )
+
+    room_request = RoomRequest.objects.get(id=request_id)
 
     if room_request.tenant == request.user:
-        
         room_request.delete()
 
     return redirect('my_applications')
