@@ -10,7 +10,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet
 from .models import Payment, Complaint
 from .utils import check_overdue_payments, auto_detect_priority
-from core.models import Room, Tenant
+
 import io
 
 def generate_receipt_pdf(payment):
@@ -352,21 +352,27 @@ def owner_dashboard(request):
     if request.user.profile.role != 'admin':
         return redirect('tenant_payment_dashboard')
 
-    from core.models import Room, RoomRequest
-    from django.db.models import Sum
-
     check_overdue_payments()
 
+    # Payment stats
     total_collected = sum(p.total() for p in Payment.objects.filter(status='paid'))
     total_overdue = Payment.objects.filter(status='overdue').count()
     total_complaints = Complaint.objects.filter(status='pending').count()
     pending_complaints = Complaint.objects.filter(status='pending').order_by('priority')
-    rooms = Room.objects.filter(owner=request.user)
-    room_requests = RoomRequest.objects.filter(
-        room__owner=request.user,
-        status='pending'
-    ).order_by('-created_at')
     recent_payments = Payment.objects.all().order_by('-due_date')[:5]
+
+    # Try to get room data from Simon's models
+    rooms = []
+    room_requests = []
+    try:
+        from core.models import Room, RoomRequest
+        rooms = Room.objects.filter(owner=request.user)
+        room_requests = RoomRequest.objects.filter(
+            room__owner=request.user,
+            status='pending'
+        ).order_by('-created_at')
+    except Exception:
+        pass
 
     return render(request, 'payment/owner_dashboard.html', {
         'total_collected': total_collected,

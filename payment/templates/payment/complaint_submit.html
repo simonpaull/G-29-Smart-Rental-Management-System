@@ -169,18 +169,24 @@
                 max_tokens: 10,
                 messages: [{
                     role: 'user',
-                    content: `You are a rental management complaint analyzer. Classify this tenant complaint priority.
+                    content: `You are a rental property complaint classifier. Be strict about HIGH priority.
 
-Complaint title: ${title}
-Complaint description: ${desc}
+Title: ${title}
+Description: ${desc}
 
-Priority rules:
-- HIGH: Any issue with water supply, electricity, gas, safety, security, flooding, fire, structural damage, cannot enter unit, sewage, pests. Even poorly written like "nothing coming out from pipe" = no water = HIGH.
-- MEDIUM: Broken appliances, leaking minor, aircon issues, wifi problems, noise complaints, lift issues.
-- LOW: Minor requests, cosmetic issues, general questions.
+HIGH priority (any water/electricity issue = HIGH immediately):
+- No water, water cut, out of water, water supply issues
+- No electricity, power cut, blackout
+- Gas leak, fire, flood, security issues
+- Cannot enter unit, burst pipe, sewage
 
-Understand Malay and broken English too.
-Reply with ONLY one word: high, medium, or low`
+MEDIUM priority:
+- Broken appliances, leaking (minor), aircon issues, wifi, noise
+
+LOW priority:
+- Minor requests, cosmetic issues, questions
+
+Reply ONLY with one word: high, medium, or low`
                 }]
             })
         });
@@ -200,14 +206,49 @@ Reply with ONLY one word: high, medium, or low`
 }
 
         function fallbackDetect() {
-            const text = (document.getElementById('title').value + ' ' + document.getElementById('description').value).toLowerCase();
-            const highKw = ['fire','flood','gas leak','no water','water cut','power outage','no electricity','burst pipe','broken door','broken lock','emergency','dangerous','urgent','injury','accident','collapsed','sewage','pest','rats'];
-            const medKw = ['leaking','leak','not working','broken','damaged','repair','fix','aircon','air cond','hot water','wifi','internet','lift','elevator','toilet','flush','drain','blocked','noise','smell','mould'];
-            let priority = 'low';
-            for (const kw of highKw) { if (text.includes(kw)) { priority = 'high'; break; } }
-            if (priority === 'low') { for (const kw of medKw) { if (text.includes(kw)) { priority = 'medium'; break; } } }
-            updateAiBadge(priority);
-        }
+    const text = (document.getElementById('title').value + ' ' + 
+                  document.getElementById('description').value).toLowerCase();
+    
+    const highKw = [
+        // Water issues
+        'no water', 'out of water', 'water cut', 'cut water', 'water supply',
+        'no water supply', 'water outage', 'tiada air', 'air dipotong',
+        'nothing coming out', 'no water coming', 'water off',
+        // Electricity issues
+        'no electricity', 'power outage', 'power cut', 'electric cut',
+        'no power', 'blackout', 'tiada elektrik', 'elektrik dipotong',
+        // Safety/emergency
+        'fire', 'flood', 'gas leak', 'electric shock', 'burst pipe',
+        'broken door', 'broken lock', 'cannot enter', 'cant enter',
+        'emergency', 'dangerous', 'urgent', 'serious', 'injury',
+        'accident', 'collapsed', 'ceiling fell', 'sewage', 'overflow',
+        'pest', 'rats', 'cockroach', 'rodent',
+        // Malay keywords
+        'bahaya', 'kecemasan', 'banjir', 'kebakaran', 'paip pecah',
+        'tak boleh masuk', 'rosak teruk'
+    ];
+    
+    const medKw = [
+        'leaking', 'leak', 'dripping', 'not working', 'broken',
+        'damaged', 'spoiled', 'repair', 'fix', 'aircon', 'air cond',
+        'air conditioning', 'heater', 'hot water', 'wifi', 'internet',
+        'elevator', 'lift', 'washing machine', 'refrigerator', 'fridge',
+        'stove', 'toilet', 'flush', 'sink', 'drain', 'blocked', 'clogged',
+        'noise', 'neighbour', 'neighbor', 'smell', 'mould', 'mold',
+        'dirty', 'rosak', 'bocor', 'bau', 'bunyi', 'problem', 'issue'
+    ];
+    
+    let priority = 'low';
+    for (const kw of highKw) { 
+        if (text.includes(kw)) { priority = 'high'; break; } 
+    }
+    if (priority === 'low') { 
+        for (const kw of medKw) { 
+            if (text.includes(kw)) { priority = 'medium'; break; } 
+        } 
+    }
+    updateAiBadge(priority);
+}
 
         // Debounce AI call — wait 1 second after user stops typing
         function onInput() {
