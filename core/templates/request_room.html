@@ -6,6 +6,12 @@
 
 <h3>Room: {{ room.roomnumber }}</h3>
 
+{% if error %}
+<p style="color:red;">
+    {{ error }}
+</p>
+{% endif %}
+
 {% if room.owner %}
     <p>Owner: {{ room.owner.username }}</p>
 {% else %}

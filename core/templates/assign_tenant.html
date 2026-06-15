@@ -10,16 +10,17 @@
 <form method="POST">
     {% csrf_token %}
 
-    <label>Select Tenant:</label>
-    
     <select name="tenant">
-        {% for tenant in tenants %}
-            <option value="{{ tenant.id }}">
-                {{ tenant.name }}
+
+        {% for request_obj in accepted_requests %}
+            <option value="{{ request_obj.id }}">
+                {{ request_obj.tenant.username }}
             </option>
+
         {% empty %}
             <option>No tenants available</option>
         {% endfor %}
+
     </select>
 
 
