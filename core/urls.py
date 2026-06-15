@@ -63,5 +63,10 @@ urlpatterns = [
          views.prospect_dashboard,
         name='prospect_dashboard'
     ),
+    path(
+        'verify-email/',
+         views.verify_email,
+        name='verify_email'
+),
 
 ]
