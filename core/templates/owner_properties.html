@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Owner Properties</h1>
+
+<a href="{% url 'add_room' %}">
+    <button type='button'>
+        Add Property
+    </button>
+</a>
+
+<br><br>
+<h
+
+{% for room in rooms %}
+
+    <div>
+        <p>Room Number: {{ room.roomnumber }}</p>
+
+        <p>Room Type: {{ room.roomtype }}</p>
+
+        <p>Size: {{ room.size }} Sqfeet</p>
+
+        <p>Price: RM {{ room.price }}</p>
+
+        <p>
+            Availability: 
+            {% if room.tenant_set.count >= room.capacity %}
+                No
+            {% else %}
+                Yes
+            {% endif %}
+        </p>
+
+        <p>Description: {{ room.description }}</p>
+
+        <p>Tenant:
+            {% for tenant in room.tenant_set.all %}
+                {{tenant.name}}
+
+                {% if not forloop.last %}
+                    ,
+                {% endif %}
+            {% empty %}
+                No tenant assigned
+            {% endfor %}
+        </p>
+
+        <a href="{% url 'edit_room' room.id %}">
+            <button type='button'>
+                Edit
+            </button>
+        </a>
+        
+        
+
+        <a href="{% url 'delete_room' room.id %}">
+            <button type='button'>
+                Delete
+            </button>
+        </a>
+
+        
+        
+        {% if room.tenant_set.count < room.capacity %}
+            <a href="{% url 'assign_tenant' room.id %}">
+                <button type= 'button'>
+                Assign Tenant
+                </button>
+            </a>
+        {% endif %}
+
+        <hr>
+    </div>
+{% empty %}
+    <p>No properties found.</p>
+{% endfor %}
+
+{% endblock %}

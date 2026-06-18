@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Available Rooms</h2>
+
+<p>Browse available rooms and contact owners.</p>
+
+<a href="/rooms/">View Available Rooms</a> |
+
+<a href="{% url 'my_applications' %}">My Applications</a> |
+{% endblock %}

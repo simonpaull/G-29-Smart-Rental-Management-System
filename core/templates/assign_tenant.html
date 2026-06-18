@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Assign Tenant</h1>
+
+<p>Room Number: {{ room.roomnumber }}</p>
+
+
+<form method="POST">
+    {% csrf_token %}
+
+    <select name="tenant">
+
+        {% for request_obj in accepted_requests %}
+            <option value="{{ request_obj.id }}">
+                {{ request_obj.tenant.username }}
+            </option>
+
+        {% empty %}
+            <option>No tenants available</option>
+        {% endfor %}
+
+    </select>
+
+
+    <ul>
+
+    {% for request_obj in requests %}
+
+        <li>
+            {{ request_obj.tenant.username }}
+            :
+            {{ request_obj.message }}
+
+<a href="{% url 'update_request_status' request_obj.id 'accepted' %}">
+    <button type="button">
+        Accept
+    </button>
+</a>
+
+<a href="{% url 'update_request_status' request_obj.id 'rejected' %}">
+    <button type="button">
+        Reject
+    </button>
+</a>
+
+<a href="{% url 'update_request_status' request_obj.id 'pending' %}">
+    <button type="button">
+        Pending
+    </button>
+</a>
+
+Current Status:
+{{ request_obj.status }}
+        </li>
+
+    {% endfor %}
+
+    </ul>
+
+    <button type="submit">Assign</button>
+</form>
+
+
+{% endblock %}

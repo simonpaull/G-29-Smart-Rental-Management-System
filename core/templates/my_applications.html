@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>My Applications</h1>
+
+<table border="1">
+
+<tr>
+    <th>Room</th>
+    <th>Message</th>
+    <th>Status</th>
+    <th>Date</th>
+    <th>Action</th>
+</tr>
+
+{% for request_obj in requests %}
+
+<tr>
+
+    <td>
+        {{ request_obj.room.roomnumber }}
+    </td>
+
+    <td>
+        {{ request_obj.message }}
+    </td>
+
+    <td>
+        {{ request_obj.status }}
+    </td>
+
+    <td>
+        {{ request_obj.created_at|date:"d/m/Y" }}
+    </td>
+
+    <td>
+    {% if request_obj.status == 'pending' %}
+
+        <a href="{% url 'cancel_application' request_obj.id %}">
+            Cancel
+        </a>
+
+    {% endif %}
+    </td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="3">
+        No applications found
+    </td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endblock %}

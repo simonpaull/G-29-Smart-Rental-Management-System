@@ -1,10 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h2>My Profile</h2>
 
-<p>Username: {{ profile.user.username }}</p>
-<p>Email: {{ profile.user.email }}</p>
-<p>Phone: {{ profile.phone_number }}</p>
-<p>Role: {{ profile.role }}</p>
-<p>Address: {{ profile.address }}</p>
+<hr>
 
-<a href="/edit-profile/">Edit Profile</a>
+<h3>Account Information</h3>
+
+<p><strong>Full Name:</strong> {{ profile.full_name }}</p>
+<p><strong>Username:</strong> {{ profile.user.username }}</p>
+<p><strong>Email:</strong> {{ profile.user.email }}</p>
+<p><strong>Role:</strong> {{ profile.role }}</p>
+
+{% if profile.role == 'tenant' %}
+<p><strong>Tenant Status:</strong> {{ profile.tenant_status }}</p>
+{% endif %}
+
+<hr>
+
+<h3>Personal Information</h3>
+
+<p><strong>Phone Number:</strong> {{ profile.phone_number }}</p>
+<p><strong>Address:</strong> {{ profile.address }}</p>
+
+<hr>
+
+<h3>Actions</h3>
+
+<a href="/edit-profile/">Edit Profile</a> |
+<a href="/change-password/">Change Password</a> |
 <a href="/logout/">Logout</a>
+
+{% endblock %}
