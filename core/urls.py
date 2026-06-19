@@ -20,6 +20,7 @@ urlpatterns = [
     path('my-applications/', views.my_applications, name='my_applications'),
     path('my-room/', views.my_room, name='my_room'),
     path('cancel-application/<int:request_id>/', views.cancel_application, name='cancel_application'),
+    path('chat/<int:request_id>/', views.chat_room, name='chat_room'),
     
     path('', views.home, name='home'),
     path('login/', views.login_view, name='login'),
@@ -85,6 +86,6 @@ urlpatterns = [
         'verify-email/',
          views.verify_email,
         name='verify_email'
-),
+    ),
 
 ]

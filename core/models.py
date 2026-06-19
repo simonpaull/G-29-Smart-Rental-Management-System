@@ -123,3 +123,24 @@ class RoomRequest(models.Model):
     def __str__(self):
         return f"{self.tenant.username} -> {self.room.roomnumber}"
 
+
+class ChatMessage(models.Model):
+
+    room_request = models.ForeignKey(
+        RoomRequest,
+        on_delete=models.CASCADE
+    )
+
+    sender = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    message = models.TextField()
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"{self.sender.username}"
