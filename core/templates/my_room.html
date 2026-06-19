@@ -2,52 +2,119 @@
 
 {% block content %}
 
-<h1>My Room</h1>
+<style>
 
-{% if tenant.room %}
+.room-container{
+    max-width:550px;
+    margin:auto;
+}
 
-    <p>
-        Room Number:
-        {{ tenant.room.roomnumber }}
-    </p>
+.room-card{
+    background:#fff;
+    border-radius:12px;
+    padding:1.25rem;
+    border:0.5px solid #e0e0e0;
+    margin-bottom:20px;
+}
 
-    <p>
-        Room Type:
-        {{ tenant.room.roomtype }}
-    </p>
+.room-card h2{
+    color:#534AB7;
+    margin-bottom:15px;
+    padding-bottom:10px;
+    border-bottom:0.5px solid #f0f0f0;
+}
 
-    <p>
-        Price:
-        RM {{ tenant.room.price }}
-    </p>
+.room-detail{
+    margin-bottom:10px;
+    color:#555;
+}
 
-    <p>
-        Capacity:
-        {{ tenant.room.capacity }}
-    </p>
+.roommates-title{
+    margin-bottom:15px;
+}
 
-{% else %}
+.roommate-card{
+    background:#fff;
+    border-radius:10px;
+    padding:12px 15px;
+    border:0.5px solid #e0e0e0;
+    margin-bottom:10px;
+}
 
-    <p>
-        You are not assigned to any room.
-    </p>
+.empty-box{
+    background:#F8F7FF;
+    border:1px solid #E0DEFF;
+    border-radius:8px;
+    padding:12px;
+    color:#666;
+}
 
-{% endif %}
+.page-title{
+    text-align:center;
+    margin-bottom:20px;
+}
 
-<h3>Roommates</h3>
+</style>
 
-<ul>
+<div class="room-container">
 
-{% for roommate in roommates %}
+    <h1 class="page-title">
+        My Room
+    </h1>
 
-    <li>{{ roommate.name }}</li>
+    {% if tenant.room %}
 
-{% empty %}
+        <div class="room-card">
 
-    <li>No roommates</li>
+            <h2>
+                🏠 Room {{ tenant.room.roomnumber }}
+            </h2>
 
-{% endfor %}
+            <p class="room-detail">
+                <strong>Room Type:</strong>
+                {{ tenant.room.roomtype }}
+            </p>
 
-</ul>
+            <p class="room-detail">
+                <strong>Price:</strong>
+                RM {{ tenant.room.price }}
+            </p>
+
+            <p class="room-detail">
+                <strong>Capacity:</strong>
+                {{ tenant.room.capacity }}
+            </p>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-box">
+            You are not assigned to any room.
+        </div>
+
+    {% endif %}
+
+    <h3 class="roommates-title">
+        Roommates
+    </h3>
+
+    {% for roommate in roommates %}
+
+        <div class="roommate-card">
+
+            👤 {{ roommate.name }}
+
+        </div>
+
+    {% empty %}
+
+        <div class="empty-box">
+            No roommates.
+        </div>
+
+    {% endfor %}
+
+</div>
 
 {% endblock %}
