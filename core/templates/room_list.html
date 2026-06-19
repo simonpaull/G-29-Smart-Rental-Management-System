@@ -1,45 +1,116 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Room List</title>
-</head>
-<body>
-    <h1>Room List</h1>
+{% extends 'base.html' %}
 
+{% block content %}
+<style>
+
+.room-container{
+    display:grid;
+    gap:16px;
+    max-width:500px;
+    margin:auto;
+}
+
+.room-card{
+    background:#fff;
+    border-radius:12px;
+    padding:1.25rem;
+    border:0.5px solid #e0e0e0;
+    transition:0.2s;
+}
+
+.room-card:hover{
+    transform:translateY(-2px);
+}
+
+.room-card h3{
+    color:#333;
+    font-size:15px;
+    font-weight:500;
+    margin-bottom:12px;
+    padding-bottom:10px;
+    border-bottom:0.5px solid #f0f0f0;
+}
+
+.available{
+    color:#3B6D11;
+    background:#EAF3DE;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.unavailable{
+    color:#B42318;
+    background:#FEE4E2;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.room-btn{
+    display:block;
+    width:100%;
+    box-sizing:border-box;
+    margin-top:15px;
+    padding:13px;
+    background:#534AB7;
+    color:#fff;
+    border-radius:8px;
+    text-align:center;
+    text-decoration:none;
+    font-size:15px;
+    font-weight:500;
+}
+
+.room-btn:hover{
+    background:#3C3489;
+}
+
+</style>
+
+<div class="room-container">
     {% for room in rooms %}
-        <div>
-            <p>Room Number: {{ room.roomnumber }}</p>
 
-            <p>Room Type: {{ room.roomtype }}</p>
+        <div class="room-card">
+            <h3>🏠 Room {{ room.roomnumber }}</h3>
 
-            <p>Size: {{ room.size }}</p>
+            <p>Room Type : {{ room.roomtype }}</p>
 
-            <p>Price: RM {{ room.price }}</p>
+            <p>Size : {{ room.size }}</p>
 
-            <p>Availability:
+            <p>Price : RM {{ room.price }}</p>
+
+            <p>
+                Availability :
+
                 {% if room.tenant_set.count >= room.capacity %}
-                    No
+                    <span class="unavailable">
+                        ❌ Full
+                    </span>
                 {% else %}
-                    Yes
+                    <span class="available">
+                        ✅ Available
+                    </span>
                 {% endif %}
             </p>
 
-            <p>Description: {{ room.description }}</p>
+            <p>
+                {{ room.description }}
+            </p>
 
 
             {% if room.tenant_set.count < room.capacity %}
-                <a href = "{% url 'request_room' room.id %}">
-                    <button type="button">
-                        PM Owner
-                    </button>
+                <a href="{% url 'request_room' room.id %}" class="room-btn">
+                    PM Owner
                 </a>
             {% endif %}    
 
-            <hr>
         </div>
         
     {% empty %}
         <p>No rooms available.</p>
     {% endfor %}
-</body>
-</html>
+
+</div>
+
+{% endblock %}

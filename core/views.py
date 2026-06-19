@@ -137,9 +137,19 @@ def delete_room(request, id):
         return render(request,'delete_room.html',{'room':room})
     
 def remove_tenant(request, tenant_id):
-    tenant = Tenant.objects.get(id = tenant_id)
+
+    tenant = Tenant.objects.get(id=tenant_id)
+    user = User.objects.filter(
+        email=tenant.email
+    ).first()
+
+    if user:
+        user.profile.role = 'prospect'
+        user.profile.save()
+
     tenant.room = None
     tenant.save()
+
     return redirect('owner_properties')
 
 def tenant_list(request):
@@ -215,7 +225,7 @@ def request_room(request, room_id):
 
     existing_request = RoomRequest.objects.filter(
         tenant=request.user,
-        status='pending'
+        status__in=['pending,accepted']
     ).exists()
 
     if existing_request:
@@ -293,12 +303,21 @@ def my_room(request):
     )
 
 def update_request_status(request,request_id,status):
-    room_request  = RoomRequest.objects.get(id = request_id)
+
+    if status not in ['accepted', 'rejected']:
+        return redirect('owner_dashboard')
+
+    room_request = RoomRequest.objects.get(
+        id=request_id
+    )
 
     room_request.status = status
     room_request.save()
 
-    return redirect( 'assign_tenant', room_request.room.id )
+    return redirect(
+        'assign_tenant',
+        room_request.room.id
+    )
 
 def logout_view(request):
     logout(request)
