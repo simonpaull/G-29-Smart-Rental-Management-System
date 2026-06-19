@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Room,Tenant,RoomRequest
+from .models import Room,Tenant,RoomRequest,ChatMessage
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -230,15 +230,16 @@ def request_room(request, room_id):
 
     if request.method == 'POST':
 
-        message = request.POST.get('message')
-
-        RoomRequest.objects.create(
+        room_request = RoomRequest.objects.create(
             tenant=request.user,
             room=room,
-            message=message
-        )
+            message='Room request submitted'
+        ) 
 
-        return redirect('room_list')
+        return redirect(
+            'chat_room',
+            request_id=room_request.id
+        )
 
     return render(
         request,
@@ -294,12 +295,8 @@ def my_room(request):
 def update_request_status(request,request_id,status):
     room_request  = RoomRequest.objects.get(id = request_id)
 
-    if status == 'rejected':
-        room_request.delete()
-
-    else:
-        room_request.status = status
-        room_request.save()
+    room_request.status = status
+    room_request.save()
 
     return redirect( 'assign_tenant', room_request.room.id )
 
@@ -369,7 +366,20 @@ def edit_profile(request):
 
 @login_required
 def prospect_dashboard(request):
-    return render(request, 'prospect_dashboard.html')
+
+    room_request = RoomRequest.objects.filter(
+        tenant=request.user
+    ).exclude(
+        status='rejected'
+    ).last()
+
+    return render(
+        request,
+        'prospect_dashboard.html',
+        {
+            'room_request': room_request
+        }
+    )
 
 def register_view(request):
     if request.method == 'POST':
@@ -471,3 +481,44 @@ def cancel_application(request, request_id):
         room_request.delete()
 
     return redirect('my_applications')
+
+@login_required
+def chat_room(request, request_id):
+
+    room_request = RoomRequest.objects.get(
+        id=request_id
+    )
+
+    if (
+        request.user != room_request.tenant
+        and request.user != room_request.room.owner
+    ):
+        return redirect('dashboard')
+
+    messages = ChatMessage.objects.filter(
+        room_request=room_request
+    ).order_by('created_at')
+
+    if request.method == 'POST':
+
+        message = request.POST.get('message')
+
+        ChatMessage.objects.create(
+            room_request=room_request,
+            sender=request.user,
+            message=message
+        )
+
+        return redirect(
+            'chat_room',
+            request_id=room_request.id
+        )
+
+    return render(
+        request,
+        'chat_room.html',
+        {
+            'room_request': room_request,
+            'messages': messages
+        }
+    )

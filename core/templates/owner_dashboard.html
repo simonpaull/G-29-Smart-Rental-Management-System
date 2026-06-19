@@ -22,6 +22,11 @@
                     View
                 </button>
             </a>
+            <a href="{% url 'chat_room' request_obj.id %}">
+                <button type="button">
+                    Chat
+                </button>
+            </a>
         </li>
     {% endfor %}
 </ul>
