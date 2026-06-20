@@ -505,12 +505,18 @@ def admin_panel(request):
     total_tenants = users.filter(profile__role='tenant').count()
     total_banned = users.filter(is_active=False).count()
 
+    all_complaints = Complaint.objects.all().order_by('priority', '-submitted_date')
+    tenant_complaints = all_complaints.filter(complaint_type='tenant_to_owner')
+    owner_complaints = all_complaints.filter(complaint_type='owner_to_tenant')
+
     return render(request, 'payment/admin_panel.html', {
         'users': users,
         'total_users': total_users,
         'total_owners': total_owners,
         'total_tenants': total_tenants,
         'total_banned': total_banned,
+        'tenant_complaints': tenant_complaints,
+        'owner_complaints': owner_complaints,
     })
 
 @login_required(login_url='/login/')
@@ -526,3 +532,44 @@ def toggle_ban(request, user_id):
         target_user.save()
 
     return redirect('admin_panel')
+
+@login_required
+def cancel_application(request, request_id):
+
+    room_request = RoomRequest.objects.get(id=request_id)
+
+    if room_request.tenant == request.user:
+        room_request.delete()
+
+    return redirect('my_applications')
+
+@login_required(login_url='/login/')
+def owner_complaint_submit(request):
+    if request.user.profile.role not in ['admin', 'owner']:
+        return redirect('tenant_payment_dashboard')
+
+    from django.contrib.auth.models import User
+    tenants = User.objects.filter(profile__role='tenant')
+
+    if request.method == 'POST':
+        against_user_id = request.POST.get('against_user')
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        priority = request.POST.get('priority', 'medium')
+
+        against_user = User.objects.get(id=against_user_id)
+
+        Complaint.objects.create(
+            tenant=request.user,
+            complaint_type='owner_to_tenant',
+            against_user=against_user,
+            title=title,
+            description=description,
+            priority=priority,
+        )
+
+        return redirect('admin_panel')
+
+    return render(request, 'payment/owner_complaint_submit.html', {
+        'tenants': tenants
+    })

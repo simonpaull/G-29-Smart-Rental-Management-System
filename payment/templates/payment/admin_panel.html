@@ -38,6 +38,12 @@
         .unban-btn { padding: 5px 12px; background: #3B6D11; color: #fff; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; }
         .empty-msg { text-align: center; color: #aaa; padding: 24px; font-size: 13px; }
         @media (max-width: 600px) { .stats-row { grid-template-columns: repeat(2,1fr); } .topbar-username { display: none; } }
+        .badge-high { background: #FCEBEB; color: #A32D2D; }
+        .badge-medium { background: #FAEEDA; color: #854F0B; }
+        .badge-low { background: #EAF3DE; color: #3B6D11; }
+        .badge-pending { background: #FAEEDA; color: #854F0B; }
+        .badge-in_progress { background: #E0E8FF; color: #3C3489; }
+        .badge-resolved { background: #EAF3DE; color: #3B6D11; }
     </style>
 </head>
 <body>
@@ -61,6 +67,79 @@
         <div class="stat-card"><div class="stat-value orange">{{ total_tenants }}</div><div class="stat-label">Tenants</div></div>
         <div class="stat-card"><div class="stat-value red">{{ total_banned }}</div><div class="stat-label">Banned</div></div>
     </div>
+
+    <div class="section-title" style="color:#A32D2D;">Owner complaints about tenants</div>
+    {% if owner_complaints %}
+    <div class="table-card" style="margin-bottom: 1rem;">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>From owner</th>
+                        <th>Against tenant</th>
+                        <th>Title</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in owner_complaints %}
+                    <tr>
+                        <td>{{ c.tenant.get_full_name|default:c.tenant.username }}</td>
+                        <td>{{ c.against_user.get_full_name|default:c.against_user.username }}</td>
+                        <td>{{ c.title }}</td>
+                        <td><span class="badge badge-{{ c.priority }}">{{ c.priority|capfirst }}</span></td>
+                        <td><span class="badge badge-{{ c.status }}">{{ c.status|capfirst }}</span></td>
+                        <td>
+                            {% if c.against_user.is_active %}
+                            <form method="POST" action="/payment/admin-panel/toggle-ban/{{ c.against_user.id }}/" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="ban-btn">Ban tenant</button>
+                            </form>
+                            {% else %}
+                            <span style="color:#A32D2D;font-size:11px;">Banned</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-msg" style="background:#fff;border-radius:12px;margin-bottom:1rem;">No owner complaints yet.</div>
+    {% endif %}
+
+    <div class="section-title">Tenant complaints about properties</div>
+    {% if tenant_complaints %}
+    <div class="table-card" style="margin-bottom: 1rem;">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tenant</th>
+                        <th>Title</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in tenant_complaints %}
+                    <tr>
+                        <td>{{ c.tenant.get_full_name|default:c.tenant.username }}</td>
+                        <td>{{ c.title }}</td>
+                        <td><span class="badge badge-{{ c.priority }}">{{ c.priority|capfirst }}</span></td>
+                        <td><span class="badge badge-{{ c.status }}">{{ c.status|capfirst }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-msg" style="background:#fff;border-radius:12px;margin-bottom:1rem;">No tenant complaints yet.</div>
+    {% endif %}
 
     <div class="content">
         <div class="section-title">All users</div>

@@ -21,4 +21,5 @@ urlpatterns = [
     path('contracts/create/', views.create_contract, name='create_contract'),
     path('admin-panel/', views.admin_panel, name='admin_panel'),
     path('admin-panel/toggle-ban/<int:user_id>/', views.toggle_ban, name='toggle_ban'),
+    path('owner-complaint/', views.owner_complaint_submit, name='owner_complaint_submit'),
 ]
