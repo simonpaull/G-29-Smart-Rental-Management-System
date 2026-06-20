@@ -461,4 +461,39 @@ def verify_email(request):
         'verify_email.html'
     )
 
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+
+            print("DEBUG - Username:", user.username)
+            print("DEBUG - Has profile:", hasattr(user, 'profile'))
+            if hasattr(user, 'profile'):
+                print("DEBUG - Role:", user.profile.role)
+
+            if hasattr(user, 'profile'):
+                if user.profile.role == 'admin':
+                    return redirect('admin_dashboard')
+
+                elif user.profile.role == 'owner':
+                    print("DEBUG - Redirecting to owner_dashboard")
+                    return redirect('owner_dashboard')
+                
+                elif user.profile.role == 'prospect':
+                    return redirect('prospect_dashboard')
+
+                elif user.profile.role == 'tenant':
+                    return redirect('tenant_dashboard')
+
+            return redirect('login')
+
+        return render(request, 'login.html', {
+            'error': 'Invalid username or password'
+        })
+
+    return render(request, 'login.html')

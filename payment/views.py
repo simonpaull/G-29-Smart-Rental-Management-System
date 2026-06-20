@@ -8,9 +8,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
-from .models import Payment, Complaint
-from .utils import check_overdue_payments, auto_detect_priority
 from .models import Payment, Complaint, RentalContract
+from .utils import check_overdue_payments, auto_detect_priority
 
 import io
 
@@ -70,10 +69,8 @@ def payment_page(request, payment_id):
         payment.paid_date = timezone.now().date()
         payment.save()
 
-        # Generate PDF
         pdf_buffer = generate_receipt_pdf(payment)
 
-        # Send email with PDF attachment
         email = EmailMessage(
             subject=f'Payment Receipt - {payment.period()}',
             body=f'Dear {payment.tenant.get_full_name() or payment.tenant.username},\n\nYour payment of RM {payment.total()} for {payment.period()} has been received.\n\nPlease find your receipt attached.\n\nThank you!',
@@ -129,7 +126,6 @@ def tenant_payment_dashboard(request):
         status='overdue'
     ).order_by('due_date')
 
-    # Group overdue payments by unit
     overdue_grouped = {}
     for p in overdue_raw:
         if p.unit not in overdue_grouped:
@@ -162,7 +158,7 @@ def tenant_payment_dashboard(request):
 def download_receipt(request, payment_id):
     payment = get_object_or_404(Payment, id=payment_id)
 
-    if payment.tenant != request.user and request.user.profile.role != 'admin':
+    if payment.tenant != request.user and request.user.profile.role not in ['admin', 'owner']:
         return redirect('payment_history')
 
     pdf_buffer = generate_receipt_pdf(payment)
@@ -171,15 +167,12 @@ def download_receipt(request, payment_id):
     response['Content-Disposition'] = f'attachment; filename="receipt_{payment.id}_{payment.period()}.pdf"'
     return response
 
-from .models import Payment, Complaint
-
 @login_required(login_url='/login/')
 def complaint_submit(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         description = request.POST.get('description')
 
-        # Auto detect priority based on keywords
         priority = auto_detect_priority(title, description)
 
         complaint = Complaint.objects.create(
@@ -189,9 +182,8 @@ def complaint_submit(request):
             priority=priority,
         )
 
-        # Send email to all admins
         from django.contrib.auth.models import User
-        admins = User.objects.filter(profile__role='admin')
+        admins = User.objects.filter(profile__role__in=['admin', 'owner'])
         admin_emails = [admin.email for admin in admins if admin.email]
 
         if admin_emails:
@@ -207,7 +199,6 @@ def complaint_submit(request):
 
     return render(request, 'payment/complaint_submit.html')
 
-# Tenant — view own complaints
 @login_required(login_url='/login/')
 def complaint_status(request):
     complaints = Complaint.objects.filter(tenant=request.user)
@@ -215,20 +206,18 @@ def complaint_status(request):
         'complaints': complaints
     })
 
-# Admin — view all complaints sorted by priority
 @login_required(login_url='/login/')
 def admin_complaint_status(request):
-    if request.user.profile.role != 'admin':
+    if request.user.profile.role not in ['admin', 'owner']:
         return redirect('complaint_status')
     complaints = Complaint.objects.all()
     return render(request, 'payment/complaint_status_admin.html', {
         'complaints': complaints
     })
 
-# Admin — update complaint status
 @login_required(login_url='/login/')
 def complaint_update(request, complaint_id):
-    if request.user.profile.role != 'admin':
+    if request.user.profile.role not in ['admin', 'owner']:
         return redirect('complaint_status')
 
     complaint = get_object_or_404(Complaint, id=complaint_id)
@@ -243,10 +232,9 @@ def complaint_update(request, complaint_id):
         'complaint': complaint
     })
 
-# Admin — payment summary dashboard
 @login_required(login_url='/login/')
 def admin_summary(request):
-    if request.user.profile.role != 'admin':
+    if request.user.profile.role not in ['admin', 'owner']:
         return redirect('tenant_payment_dashboard')
 
     check_overdue_payments()
@@ -277,10 +265,9 @@ def admin_summary(request):
 
 @login_required(login_url='/login/')
 def owner_add_utility(request):
-    if request.user.profile.role != 'admin':
+    if request.user.profile.role not in ['admin', 'owner']:
         return redirect('tenant_payment_dashboard')
 
-    # Get all unpaid payments
     payments = Payment.objects.filter(status='unpaid').order_by('due_date')
 
     if request.method == 'POST':
@@ -301,14 +288,17 @@ def owner_add_utility(request):
 
 @login_required(login_url='/login/')
 def admin_create_payment(request):
-    if request.user.profile.role != 'admin':
+    if request.user.profile.role not in ['admin', 'owner']:
         return redirect('tenant_payment_dashboard')
 
-    from core.models import Room, Tenant
-    from django.contrib.auth.models import User
+    tenants = []
+    try:
+        from core.models import Tenant
+        tenants = Tenant.objects.filter(room__isnull=False)
+    except Exception:
+        pass
 
-    # Get all tenants with rooms
-    tenants = Tenant.objects.filter(room__isnull=False)
+    from django.contrib.auth.models import User
 
     if request.method == 'POST':
         tenant_id = request.POST.get('tenant_id')
@@ -318,16 +308,13 @@ def admin_create_payment(request):
         water = request.POST.get('water', 0)
         due_date = request.POST.get('due_date')
 
-        # Get tenant details
+        from core.models import Tenant
         tenant_obj = Tenant.objects.get(id=tenant_id)
         room = tenant_obj.room
 
-        # Auto read rent from room
         rent = room.price
         unit = room.roomnumber
 
-        # Get the Django User linked to this tenant
-        # Match by email
         try:
             user = User.objects.get(email=tenant_obj.email)
         except User.DoesNotExist:
@@ -346,7 +333,6 @@ def admin_create_payment(request):
                 due_date=due_date,
             )
 
-            # Send email to tenant
             send_mail(
                 subject=f'New Payment Due - {period_month} {period_year}',
                 message=f'Dear {tenant_obj.name},\n\nA new payment has been created.\n\nUnit: {unit}\nPeriod: {period_month} {period_year}\nRent: RM {rent}\nDue date: {due_date}\n\nPlease login to make payment.\n\nThank you!',
@@ -369,19 +355,17 @@ def admin_create_payment(request):
 
 @login_required(login_url='/login/')
 def owner_dashboard(request):
-    if request.user.profile.role != 'admin':
+    if request.user.profile.role not in ['admin', 'owner']:
         return redirect('tenant_payment_dashboard')
 
     check_overdue_payments()
 
-    # Payment stats
     total_collected = sum(p.total() for p in Payment.objects.filter(status='paid'))
     total_overdue = Payment.objects.filter(status='overdue').count()
     total_complaints = Complaint.objects.filter(status='pending').count()
     pending_complaints = Complaint.objects.filter(status='pending').order_by('priority')
     recent_payments = Payment.objects.all().order_by('-due_date')[:5]
 
-    # Try to get room data from Simon's models
     rooms = []
     room_requests = []
     try:
@@ -425,7 +409,7 @@ def new_tenant_dashboard(request):
 
 @login_required(login_url='/login/')
 def create_contract(request):
-    if request.user.profile.role != 'admin':
+    if request.user.profile.role not in ['admin', 'owner']:
         return redirect('tenant_payment_dashboard')
 
     from django.contrib.auth.models import User
@@ -485,7 +469,7 @@ def create_contract(request):
 
 @login_required(login_url='/login/')
 def admin_contracts(request):
-    if request.user.profile.role != 'admin':
+    if request.user.profile.role not in ['admin', 'owner']:
         return redirect('tenant_payment_dashboard')
     contracts = RentalContract.objects.all().order_by('-created_at')
     return render(request, 'payment/admin_contracts.html', {
@@ -532,16 +516,6 @@ def toggle_ban(request, user_id):
         target_user.save()
 
     return redirect('admin_panel')
-
-@login_required
-def cancel_application(request, request_id):
-
-    room_request = RoomRequest.objects.get(id=request_id)
-
-    if room_request.tenant == request.user:
-        room_request.delete()
-
-    return redirect('my_applications')
 
 @login_required(login_url='/login/')
 def owner_complaint_submit(request):

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from dateutil.relativedelta import relativedelta
 
 MONTH_CHOICES = [
     ('January', 'January'), ('February', 'February'),
@@ -11,6 +12,12 @@ MONTH_CHOICES = [
 ]
 
 YEAR_CHOICES = [(str(y), str(y)) for y in range(2024, 2030)]
+
+DURATION_CHOICES = [
+    (6, '6 months'),
+    (12, '12 months'),
+    (24, '24 months'),
+]
 
 class Payment(models.Model):
     STATUS_CHOICES = [
@@ -44,6 +51,11 @@ class Payment(models.Model):
 
 
 class Complaint(models.Model):
+    COMPLAINT_TYPE_CHOICES = [
+        ('tenant_to_owner', 'Tenant Complaint (about property)'),
+        ('owner_to_tenant', 'Owner Complaint (about tenant)'),
+    ]
+
     PRIORITY_CHOICES = [
         ('low', 'Low'),
         ('medium', 'Medium'),
@@ -56,7 +68,9 @@ class Complaint(models.Model):
         ('resolved', 'Resolved'),
     ]
 
-    tenant          = models.ForeignKey(User, on_delete=models.CASCADE)
+    tenant          = models.ForeignKey(User, on_delete=models.CASCADE, related_name='complaints_filed')
+    complaint_type  = models.CharField(max_length=20, choices=COMPLAINT_TYPE_CHOICES, default='tenant_to_owner')
+    against_user    = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='complaints_against')
     title           = models.CharField(max_length=200)
     description     = models.TextField()
     priority        = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='low')
@@ -79,13 +93,6 @@ class Complaint(models.Model):
             'submitted_date'
         ]
 
-from dateutil.relativedelta import relativedelta
-
-DURATION_CHOICES = [
-    (6, '6 months'),
-    (12, '12 months'),
-    (24, '24 months'),
-]
 
 class RentalContract(models.Model):
     tenant          = models.ForeignKey(User, on_delete=models.CASCADE)
