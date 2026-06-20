@@ -488,7 +488,7 @@ def login_view(request):
                     return redirect('prospect_dashboard')
 
                 elif user.profile.role == 'tenant':
-                    return redirect('tenant_dashboard')
+                    return redirect('tenant_payment_dashboard')
 
             return redirect('login')
 
