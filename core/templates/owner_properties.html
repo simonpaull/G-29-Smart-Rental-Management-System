@@ -2,79 +2,220 @@
 
 {% block content %}
 
-<h1>Owner Properties</h1>
+<style>
 
-<a href="{% url 'add_room' %}">
-    <button type='button'>
-        Add Property
-    </button>
+.page-title{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.add-btn{
+    display:block;
+    width:220px;
+    margin:0 auto 20px;
+
+    padding:12px;
+
+    background:#534AB7;
+
+    color:white;
+
+    text-decoration:none;
+
+    text-align:center;
+
+    border-radius:8px;
+
+    font-weight:500;
+}
+
+.room-container{
+    max-width:700px;
+    margin:auto;
+}
+
+.room-card{
+    background:#fff;
+
+    border-radius:12px;
+
+    padding:20px;
+
+    margin-bottom:20px;
+
+    border:1px solid #e0e0e0;
+
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+.room-card h2{
+    color:#534AB7;
+
+    margin-bottom:15px;
+
+    padding-bottom:10px;
+
+    border-bottom:1px solid #f0f0f0;
+}
+
+.room-detail{
+    margin-bottom:8px;
+}
+
+.available{
+    background:#D4EDDA;
+    color:#155724;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.full{
+    background:#F8D7DA;
+    color:#721C24;
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.tenant-box{
+    background:#F8F7FF;
+    border:1px solid #E0DEFF;
+    border-radius:8px;
+    padding:12px;
+    margin-top:12px;
+}
+
+.action-row{
+    margin-top:15px;
+}
+
+.action-btn{
+    display:inline-block;
+
+    padding:8px 14px;
+
+    border-radius:8px;
+
+    color:white;
+
+    text-decoration:none;
+
+    margin-right:8px;
+
+    font-size:14px;
+}
+
+.edit-btn{
+    background:#534AB7;
+}
+
+.delete-btn{
+    background:#dc3545;
+}
+
+.assign-btn{
+    background:#28a745;
+}
+
+</style>
+
+<h1 class="page-title">
+    Owner Properties
+</h1>
+
+<a href="{% url 'add_room' %}"
+class="add-btn">
+
++ Add Property
+
 </a>
 
-<br><br>
-<h
+<div class="room-container">
 
-{% for room in rooms %}
 
-    <div>
-        <p>Room Number: {{ room.roomnumber }}</p>
+    {% for room in rooms %}
 
-        <p>Room Type: {{ room.roomtype }}</p>
 
-        <p>Size: {{ room.size }} Sqfeet</p>
+    <div class="room-card">
 
-        <p>Price: RM {{ room.price }}</p>
+    
+        <h2>🏠 Room {{ room.roomnumber }}</h2>
 
-        <p>
-            Availability: 
+        <p class="room-detail"><strong>Type:</strong>{{ room.roomtype }}</p>
+
+        <p class="room-detail"><strong>Size:</strong>{{ room.size }} Sqft</p>
+
+        <p class="room-detail"><strong>Price:</strong>RM {{ room.price }}</p>
+
+        <p class="room-detail">
+            <strong>Status:</strong>
+
             {% if room.tenant_set.count >= room.capacity %}
-                No
+
+                <span class="full">Full</span>
+
             {% else %}
-                Yes
+
+                <span class="available">Available</span>
+
             {% endif %}
+
         </p>
 
-        <p>Description: {{ room.description }}</p>
+        <p class="room-detail"><strong>Description:</strong>{{ room.description }}</p>
 
-        <p>Tenant:
+        <div class="tenant-box">
+
+            <strong>Current Tenant:</strong>
+
             {% for tenant in room.tenant_set.all %}
-                {{tenant.name}}
+
+                {{ tenant.name }}
 
                 {% if not forloop.last %}
-                    ,
+                ,
                 {% endif %}
+
             {% empty %}
+
                 No tenant assigned
+
             {% endfor %}
-        </p>
 
-        <a href="{% url 'edit_room' room.id %}">
-            <button type='button'>
+        </div>
+
+        <div class="action-row">
+
+            <a href="{% url 'edit_room' room.id %}"
+             class="action-btn edit-btn">
                 Edit
-            </button>
-        </a>
-        
-        
-
-        <a href="{% url 'delete_room' room.id %}">
-            <button type='button'>
-                Delete
-            </button>
-        </a>
-
-        
-        
-        {% if room.tenant_set.count < room.capacity %}
-            <a href="{% url 'assign_tenant' room.id %}">
-                <button type= 'button'>
-                Assign Tenant
-                </button>
             </a>
-        {% endif %}
 
-        <hr>
+            <a href="{% url 'delete_room' room.id %}"
+             class="action-btn delete-btn">
+                Delete
+            </a>
+
+            {% if room.tenant_set.count < room.capacity %}
+
+                <a href="{% url 'assign_tenant' room.id %}"
+                 class="action-btn assign-btn">
+                    Assign Tenant
+                </a>
+
+            {% endif %}
+
+        </div>
+
     </div>
-{% empty %}
-    <p>No properties found.</p>
-{% endfor %}
+
+    {% empty %}
+
+        <p>No properties found.</p>
+
+    {% endfor %}
+
+</div>
 
 {% endblock %}
