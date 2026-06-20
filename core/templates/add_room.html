@@ -2,36 +2,148 @@
 
 {% block content %}
 
-<h1>Add Room Page</h1>
+<style>
 
-<form method = "POST">    
-    {% csrf_token %}
-    
-    <label>Room Number: </label>
-    <input type= 'text'  name= 'roomnumber'><br><br>
-    
-    <label>Room Type: </label>
-        <select name = 'roomtype'>
-            <option value = "Single Room">Single Room</option>
-            <option value = "Twin Sharing Room">Twin Sharing Room</option>
-            <option value = "Master Room">Master Room</option>
-            <option value = "Studio Room">Studio Room</option>
-        </select><br><br>
-            
-    <label>Capacity: </label><br>
-    <input type="number"  name='capacity'>   <br><br>
+.form-container{
+    max-width:550px;
+    margin:auto;
+}
 
-    <label>Size: </label>
-    <input type= 'text'  name= 'size'><br><br>
+.form-card{
+    background:#fff;
+    border-radius:12px;
+    padding:25px;
+    border:1px solid #e0e0e0;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
 
-    <label>Price: </label>
-    <input type= 'text'  name= 'price'><br><br>
+.page-title{
+    text-align:center;
+    margin-bottom:20px;
+}
 
-    <label>Description: </label>
-    <textarea name= 'description'></textarea><br><br>
+.field{
+    margin-bottom:16px;
+}
 
-    <br><button type= 'submit'>Add Room</button>
+.field label{
+    display:block;
+    margin-bottom:6px;
+    font-size:14px;
+    color:#666;
+}
 
-</form>
+.field input,
+.field select,
+.field textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:14px;
+    box-sizing:border-box;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+    outline:none;
+    border-color:#534AB7;
+    box-shadow:0 0 0 3px rgba(83,74,183,0.1);
+}
+
+.field textarea{
+    resize:vertical;
+    min-height:100px;
+}
+
+.submit-btn{
+    width:100%;
+    padding:13px;
+    background:#534AB7;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:15px;
+    font-weight:500;
+    cursor:pointer;
+}
+
+.submit-btn:hover{
+    background:#3C3489;
+}
+
+</style>
+
+<div class="form-container">
+
+    <h1 class="page-title">Add Room</h1>
+
+    <div class="form-card">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="field">
+                <label>Room Number</label>
+                <input type="text" name="roomnumber">
+            </div>
+
+            <div class="field">
+                <label>Room Type</label>
+
+                <select name="roomtype">
+                    <option value="Single Room">
+                        Single Room
+                    </option>
+
+                    <option value="Twin Sharing Room">
+                        Twin Sharing Room
+                    </option>
+
+                    <option value="Master Room">
+                        Master Room
+                    </option>
+
+                    <option value="Studio Room">
+                        Studio Room
+                    </option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Capacity</label>
+                <input type="number" name="capacity">
+            </div>
+
+            <div class="field">
+                <label>Size</label>
+                <input type="text" name="size">
+            </div>
+
+            <div class="field">
+                <label>Price</label>
+                <input type="text" name="price">
+            </div>
+
+            <div class="field">
+                <label>Description</label>
+                <textarea name="description"></textarea>
+            </div>
+
+            <button type="submit"
+                    class="submit-btn">
+
+                Add Room
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+</div>
 
 {% endblock %}
