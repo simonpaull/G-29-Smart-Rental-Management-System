@@ -19,4 +19,6 @@ urlpatterns = [
     path('new-tenant/', views.new_tenant_dashboard, name='new_tenant_dashboard'),
     path('contracts/', views.admin_contracts, name='admin_contracts'),
     path('contracts/create/', views.create_contract, name='create_contract'),
+    path('admin-panel/', views.admin_panel, name='admin_panel'),
+    path('admin-panel/toggle-ban/<int:user_id>/', views.toggle_ban, name='toggle_ban'),
 ]

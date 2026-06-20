@@ -1,14 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Welcome Page</h2>
-    <p>This is our Smart Rental Management System homepage.</p>
-    <p>Our features include:</p>
-    <ul>
-        <li>User login</li>
-        <li>Room listing</li>
-        <li>Booking management</li>
-        <li>Payment tracking</li>
-        <li>Complaint management</li>
-    </ul>
+<h2>Welcome Page</h2>
+
+<p>This is our Smart Rental Management System homepage.</p>
+
+<p>Our features include:</p>
+<ul>
+    <li>User login</li>
+    <li>Room listing</li>
+    <li>Booking management</li>
+    <li>Payment tracking</li>
+    <li>Complaint management</li>
+</ul>
+
+{% if request.user.is_authenticated %}
+    {% if request.user.profile.role == 'admin' %}
+    <p><a href="/payment/owner-dashboard/">Go to my dashboard</a></p>
+    {% elif request.user.profile.role == 'tenant' %}
+    <p><a href="/payment/">Go to my dashboard</a></p>
+    {% elif request.user.profile.role == 'prospect' %}
+    <p><a href="/payment/new-tenant/">Browse available rooms</a></p>
+    {% endif %}
+{% endif %}
+
 {% endblock %}

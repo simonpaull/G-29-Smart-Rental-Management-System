@@ -491,3 +491,38 @@ def admin_contracts(request):
     return render(request, 'payment/admin_contracts.html', {
         'contracts': contracts
     })
+
+@login_required(login_url='/login/')
+def admin_panel(request):
+    if request.user.profile.role != 'admin':
+        return redirect('owner_dashboard')
+
+    from django.contrib.auth.models import User
+
+    users = User.objects.all().select_related('profile').order_by('-date_joined')
+    total_users = users.count()
+    total_owners = users.filter(profile__role='owner').count() + users.filter(profile__role='admin').count()
+    total_tenants = users.filter(profile__role='tenant').count()
+    total_banned = users.filter(is_active=False).count()
+
+    return render(request, 'payment/admin_panel.html', {
+        'users': users,
+        'total_users': total_users,
+        'total_owners': total_owners,
+        'total_tenants': total_tenants,
+        'total_banned': total_banned,
+    })
+
+@login_required(login_url='/login/')
+def toggle_ban(request, user_id):
+    if request.user.profile.role != 'admin':
+        return redirect('owner_dashboard')
+
+    from django.contrib.auth.models import User
+    target_user = get_object_or_404(User, id=user_id)
+
+    if target_user != request.user:
+        target_user.is_active = not target_user.is_active
+        target_user.save()
+
+    return redirect('admin_panel')
