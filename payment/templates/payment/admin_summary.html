@@ -2,112 +2,145 @@
 <html>
 <head>
     <title>Admin Summary</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        h2 { margin-bottom: 6px; }
-        p { color: #888; font-size: 13px; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 30px; }
-        .card { border-radius: 8px; padding: 20px; text-align: center; }
-        .card-title { font-size: 13px; color: #888; margin-bottom: 8px; }
-        .card-value { font-size: 28px; font-weight: bold; }
-        .card-green { background: #e0f5e0; }
-        .card-green .card-value { color: green; }
-        .card-orange { background: #fff3cd; }
-        .card-orange .card-value { color: orange; }
-        .card-red { background: #ffe0e0; }
-        .card-red .card-value { color: red; }
-        .card-blue { background: #e0e8ff; }
-        .card-blue .card-value { color: #534AB7; }
-        .card-grey { background: #f5f5f5; }
-        .card-grey .card-value { color: #555; }
-        .section-title { font-size: 16px; font-weight: bold; margin: 24px 0 12px; }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        th { text-align: left; padding: 10px; background: #f5f5f5; border-bottom: 1px solid #ddd; }
-        td { padding: 10px; border-bottom: 1px solid #eee; }
-        .btn { display: inline-block; padding: 8px 16px; background: #534AB7; color: white; border-radius: 6px; text-decoration: none; font-size: 13px; margin-right: 8px; margin-bottom: 8px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #F4F3FF; font-family: Arial, sans-serif; }
+        .topbar { background: #534AB7; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .topbar-title { color: #fff; font-size: 15px; font-weight: 500; }
+        .topbar-user { display: flex; align-items: center; gap: 8px; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: #534AB7; flex-shrink: 0; }
+        .topbar-username { color: #EEEDFE; font-size: 13px; }
+        .logout-btn { color: #EEEDFE; font-size: 12px; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; text-decoration: none; margin-left: 4px; }
+        .hero { background: #534AB7; padding: 1.5rem 1.5rem 2rem; color: #fff; width: 100%; }
+        .hero h1 { font-size: clamp(16px,4vw,20px); font-weight: 500; margin-bottom: 4px; }
+        .hero p { font-size: 13px; opacity: 0.8; }
+        .content { padding: 1rem; max-width: 900px; margin: 1rem auto 2rem; width: 100%; }
+        .back-link { display: inline-block; color: #534AB7; font-size: 13px; text-decoration: none; margin-bottom: 1rem; }
+        .btn { display: inline-block; padding: 8px 16px; background: #534AB7; color: #fff; border-radius: 8px; text-decoration: none; font-size: 13px; margin-right: 8px; margin-bottom: 1rem; }
         .btn-grey { background: #888; }
-        .btn-red { background: red; }
+        .section-title { font-size: 12px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.25rem 0 0.75rem; }
+        .grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 1rem; }
+        .grid2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-bottom: 1rem; }
+        .card { border-radius: 12px; padding: 1.25rem; text-align: center; }
+        .card-title { font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.04em; }
+        .card-value { font-size: 26px; font-weight: 500; }
+        .card-green { background: #EAF3DE; }
+        .card-green .card-value { color: #3B6D11; }
+        .card-orange { background: #FAEEDA; }
+        .card-orange .card-value { color: #BA7517; }
+        .card-red { background: #FCEBEB; }
+        .card-red .card-value { color: #E24B4A; }
+        .card-blue { background: #E0E8FF; }
+        .card-blue .card-value { color: #534AB7; }
+        .table-card { background: #fff; border-radius: 12px; overflow: hidden; border: 0.5px solid #e0e0e0; }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 400px; }
+        th { text-align: left; padding: 10px 12px; background: #F8F7FF; color: #888; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
+        td { padding: 10px 12px; border-top: 0.5px solid #f0f0f0; color: #333; }
+        .empty-msg { text-align: center; color: #aaa; padding: 16px; font-size: 13px; }
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: repeat(2,1fr); }
+            .topbar-username { display: none; }
+        }
+        @media (max-width: 400px) {
+            .grid { grid-template-columns: 1fr; }
+            .grid2 { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
-    <h2>Admin Dashboard</h2>
-    <p>Payment and complaint summary</p>
-
-    <!-- Quick links -->
-    <a class="btn" href="/payment/admin-history/">All Payments</a>
-    <a class="btn btn-grey" href="/payment/complaint/admin/">All Complaints</a>
-    <a class="btn" href="/payment/utility/">Add Utility Charges</a>
-    <a class="btn" href="/payment/create-payment/">Create Payment</a>
-    <br><br>
-
-    <!-- Payment summary cards -->
-    <div class="section-title">Payment overview</div>
-    <div class="grid">
-        <div class="card card-green">
-            <div class="card-title">Total collected (rent)</div>
-            <div class="card-value">RM {{ total_collected }}</div>
-        </div>
-        <div class="card card-blue">
-            <div class="card-title">Total utility collected</div>
-            <div class="card-value">RM {{ total_utility_collected }}</div>
-        </div>
-        <div class="card card-green">
-            <div class="card-title">Paid payments</div>
-            <div class="card-value">{{ total_paid }}</div>
-        </div>
-        <div class="card card-orange">
-            <div class="card-title">Pending payments</div>
-            <div class="card-value">{{ total_unpaid }}</div>
-        </div>
-        <div class="card card-red">
-            <div class="card-title">Overdue payments</div>
-            <div class="card-value">{{ total_overdue }}</div>
+    <div class="topbar">
+        <div class="topbar-title">Smart Rental System</div>
+        <div class="topbar-user">
+            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+            <span class="topbar-username">{{ request.user.get_full_name|default:request.user.username }}</span>
+            <a class="logout-btn" href="/logout/">Logout</a>
         </div>
     </div>
 
-    <!-- Complaint summary cards -->
-    <div class="section-title">Complaint overview</div>
-    <div class="grid">
-        <div class="card card-orange">
-            <div class="card-title">Pending complaints</div>
-            <div class="card-value">{{ total_complaints_pending }}</div>
-        </div>
-        <div class="card card-blue">
-            <div class="card-title">In progress</div>
-            <div class="card-value">{{ total_complaints_inprogress }}</div>
-        </div>
-        <div class="card card-green">
-            <div class="card-title">Resolved</div>
-            <div class="card-value">{{ total_complaints_resolved }}</div>
-        </div>
+    <div class="hero">
+        <h1>Payment summary</h1>
+        <p>Overview of all payments and complaints</p>
     </div>
 
-    <!-- Recent payments -->
-    <div class="section-title">Recent payments</div>
-    <table>
-        <thead>
-            <tr>
-                <th>Tenant</th>
-                <th>Unit</th>
-                <th>Period</th>
-                <th>Total</th>
-                <th>Paid date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for p in recent_payments %}
-            <tr>
-                <td>{{ p.tenant.get_full_name|default:p.tenant.username }}</td>
-                <td>{{ p.unit }}</td>
-                <td>{{ p.period }}</td>
-                <td>RM {{ p.total }}</td>
-                <td>{{ p.paid_date }}</td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="5">No payments yet.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="content">
+        <a class="back-link" href="/payment/owner-dashboard/">← Back to dashboard</a>
 
+        <a class="btn" href="/payment/admin-history/">All Payments</a>
+        <a class="btn btn-grey" href="/payment/complaint/admin/">All Complaints</a>
+        <a class="btn btn-grey" href="/payment/utility/">Add Utility Charges</a>
+        <a class="btn btn-grey" href="/payment/create-payment/">Create Payment</a>
+
+        <div class="section-title">Payment overview</div>
+        <div class="grid">
+            <div class="card card-green">
+                <div class="card-title">Total collected (rent)</div>
+                <div class="card-value">RM {{ total_collected }}</div>
+            </div>
+            <div class="card card-blue">
+                <div class="card-title">Total utility collected</div>
+                <div class="card-value">RM {{ total_utility_collected }}</div>
+            </div>
+            <div class="card card-green">
+                <div class="card-title">Paid payments</div>
+                <div class="card-value">{{ total_paid }}</div>
+            </div>
+            <div class="card card-orange">
+                <div class="card-title">Pending payments</div>
+                <div class="card-value">{{ total_unpaid }}</div>
+            </div>
+            <div class="card card-red">
+                <div class="card-title">Overdue payments</div>
+                <div class="card-value">{{ total_overdue }}</div>
+            </div>
+        </div>
+
+        <div class="section-title">Complaint overview</div>
+        <div class="grid">
+            <div class="card card-orange">
+                <div class="card-title">Pending complaints</div>
+                <div class="card-value">{{ total_complaints_pending }}</div>
+            </div>
+            <div class="card card-blue">
+                <div class="card-title">In progress</div>
+                <div class="card-value">{{ total_complaints_inprogress }}</div>
+            </div>
+            <div class="card card-green">
+                <div class="card-title">Resolved</div>
+                <div class="card-value">{{ total_complaints_resolved }}</div>
+            </div>
+        </div>
+
+        <div class="section-title">Recent payments</div>
+        <div class="table-card">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tenant</th>
+                            <th>Unit</th>
+                            <th>Period</th>
+                            <th>Total</th>
+                            <th>Paid date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in recent_payments %}
+                        <tr>
+                            <td>{{ p.tenant.get_full_name|default:p.tenant.username }}</td>
+                            <td>{{ p.unit }}</td>
+                            <td>{{ p.period }}</td>
+                            <td>RM {{ p.total }}</td>
+                            <td>{{ p.paid_date }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="empty-msg">No payments yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

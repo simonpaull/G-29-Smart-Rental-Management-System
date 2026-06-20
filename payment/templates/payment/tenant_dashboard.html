@@ -96,21 +96,23 @@
     <div class="content">
         <div class="section-title-red">⚠️ Overdue payments</div>
         {% if overdue %}
-            {% for p in overdue %}
+            {% for o in overdue %}
             <div class="overdue-card">
                 <div class="overdue-header">
-                    <span class="overdue-unit">Unit {{ p.unit }}</span>
-                    <span class="overdue-badge">Overdue since {{ p.due_date }}</span>
+                    <span class="overdue-unit">Unit {{ o.unit }}</span>
+                    <span class="overdue-badge">{{ o.payments|length }} overdue payment{{ o.payments|length|pluralize }}</span>
                 </div>
-                <div class="detail-row"><span>Period</span><span>{{ p.period }}</span></div>
-                <div class="detail-row"><span>Rent</span><span>RM {{ p.rent }}</span></div>
-                <div class="detail-row"><span>Electric</span><span>RM {{ p.electric }}</span></div>
-                <div class="detail-row"><span>Water</span><span>RM {{ p.water }}</span></div>
+                <div class="detail-row"><span>Periods</span><span>{{ o.periods|join:", " }}</span></div>
+                <div class="detail-row"><span>Earliest due date</span><span>{{ o.earliest_due }}</span></div>
                 <div class="amount-row">
-                    <span class="amount-label">Total due</span>
-                    <span class="amount-value-red">RM {{ p.total }}</span>
+                    <span class="amount-label">Total overdue</span>
+                    <span class="amount-value-red">RM {{ o.total }}</span>
                 </div>
-                <a class="pay-btn-red" href="/payment/{{ p.id }}/">Pay now (overdue)</a>
+                {% for p in o.payments %}
+                <a class="pay-btn-red" href="/payment/{{ p.id }}/" style="margin-top: {% if forloop.first %}10px{% else %}6px{% endif %};">
+                    Pay {{ p.period }} — RM {{ p.total }}
+                </a>
+                {% endfor %}
             </div>
             {% endfor %}
         {% else %}

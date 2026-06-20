@@ -10,6 +10,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet
 from .models import Payment, Complaint
 from .utils import check_overdue_payments, auto_detect_priority
+from .models import Payment, Complaint, RentalContract
 
 import io
 
@@ -116,17 +117,36 @@ def payment_success(request):
 
 @login_required(login_url='/login/')
 def tenant_payment_dashboard(request):
-    check_overdue_payments()  # ← add this line
+    check_overdue_payments()
 
     unpaid = Payment.objects.filter(
         tenant=request.user,
         status='unpaid'
     ).order_by('due_date')
 
-    overdue = Payment.objects.filter(
+    overdue_raw = Payment.objects.filter(
         tenant=request.user,
         status='overdue'
     ).order_by('due_date')
+
+    # Group overdue payments by unit
+    overdue_grouped = {}
+    for p in overdue_raw:
+        if p.unit not in overdue_grouped:
+            overdue_grouped[p.unit] = {
+                'unit': p.unit,
+                'payments': [],
+                'total': 0,
+                'earliest_due': p.due_date,
+                'periods': [],
+            }
+        overdue_grouped[p.unit]['payments'].append(p)
+        overdue_grouped[p.unit]['total'] += p.total()
+        overdue_grouped[p.unit]['periods'].append(p.period())
+        if p.due_date < overdue_grouped[p.unit]['earliest_due']:
+            overdue_grouped[p.unit]['earliest_due'] = p.due_date
+
+    overdue = list(overdue_grouped.values())
 
     history = Payment.objects.filter(
         tenant=request.user
@@ -401,4 +421,73 @@ def new_tenant_dashboard(request):
     return render(request, 'payment/new_tenant_dashboard.html', {
         'available_rooms': available_rooms,
         'my_requests': my_requests,
+    })
+
+@login_required(login_url='/login/')
+def create_contract(request):
+    if request.user.profile.role != 'admin':
+        return redirect('tenant_payment_dashboard')
+
+    from django.contrib.auth.models import User
+    tenants_with_users = []
+
+    try:
+        from core.models import Tenant
+        tenant_records = Tenant.objects.filter(room__isnull=False)
+        for t in tenant_records:
+            try:
+                user = User.objects.get(email=t.email)
+                tenants_with_users.append({
+                    'user': user,
+                    'tenant_record': t,
+                    'room': t.room,
+                })
+            except User.DoesNotExist:
+                continue
+    except Exception:
+        pass
+
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        unit = request.POST.get('unit')
+        start_date = request.POST.get('start_date')
+        duration = request.POST.get('duration_months')
+        rent = request.POST.get('monthly_rent')
+        electric = request.POST.get('electric_rate')
+        water = request.POST.get('water_rate')
+
+        tenant_user = User.objects.get(id=user_id)
+
+        contract = RentalContract.objects.create(
+            tenant=tenant_user,
+            unit=unit,
+            start_date=start_date,
+            duration_months=int(duration),
+            monthly_rent=rent,
+            electric_rate=electric or 0,
+            water_rate=water or 0,
+        )
+        contract.generate_payments()
+
+        send_mail(
+            subject='Rental Contract Created',
+            message=f'Dear {tenant_user.get_full_name() or tenant_user.username},\n\nYour rental contract has been created.\n\nUnit: {unit}\nStart date: {start_date}\nDuration: {duration} months\nMonthly rent: RM {rent}\n\nYour monthly payments have been set up automatically.\n\nThank you!',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[tenant_user.email],
+            fail_silently=True,
+        )
+
+        return redirect('admin_contracts')
+
+    return render(request, 'payment/create_contract.html', {
+        'tenants_with_users': tenants_with_users
+    })
+
+@login_required(login_url='/login/')
+def admin_contracts(request):
+    if request.user.profile.role != 'admin':
+        return redirect('tenant_payment_dashboard')
+    contracts = RentalContract.objects.all().order_by('-created_at')
+    return render(request, 'payment/admin_contracts.html', {
+        'contracts': contracts
     })

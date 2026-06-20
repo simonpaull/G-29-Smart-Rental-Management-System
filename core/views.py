@@ -23,14 +23,6 @@ def login_view(request):
         if user is not None:
             login(request, user)
 
-<<<<<<< HEAD
-            if user.profile.role == 'admin':
-                return redirect('owner_dashboard')
-            else:
-                return redirect('tenant_payment_dashboard')  # ← point to your dashboard
-        else:
-            return render(request, 'login.html', {'error': 'Invalid username or password'})
-=======
             if hasattr(user, 'profile'):
                 if user.profile.role == 'admin':
                     return redirect('admin_dashboard')
@@ -49,7 +41,6 @@ def login_view(request):
         return render(request, 'login.html', {
             'error': 'Invalid username or password'
         })
->>>>>>> dfe1b60b9d0662f25beaf51e5e55c8992d42db90
 
     return render(request, 'login.html')
 

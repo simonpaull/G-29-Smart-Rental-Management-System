@@ -78,3 +78,70 @@ class Complaint(models.Model):
             ),
             'submitted_date'
         ]
+
+from dateutil.relativedelta import relativedelta
+
+DURATION_CHOICES = [
+    (6, '6 months'),
+    (12, '12 months'),
+    (24, '24 months'),
+]
+
+class RentalContract(models.Model):
+    tenant          = models.ForeignKey(User, on_delete=models.CASCADE)
+    unit            = models.CharField(max_length=50)
+    start_date      = models.DateField()
+    duration_months = models.IntegerField(choices=DURATION_CHOICES, default=12)
+    monthly_rent    = models.DecimalField(max_digits=10, decimal_places=2)
+    electric_rate   = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    water_rate      = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    created_at      = models.DateTimeField(auto_now_add=True)
+
+    def end_date(self):
+        return self.start_date + relativedelta(months=self.duration_months)
+
+    def __str__(self):
+        return f"{self.tenant.username} - {self.unit} - {self.duration_months} months"
+
+    def generate_payments(self):
+        MONTH_NAMES = [
+            'January', 'February', 'March', 'April',
+            'May', 'June', 'July', 'August',
+            'September', 'October', 'November', 'December'
+        ]
+
+        for i in range(self.duration_months):
+            payment_date = self.start_date + relativedelta(months=i)
+            month_name = MONTH_NAMES[payment_date.month - 1]
+            year_str = str(payment_date.year)
+
+            existing = Payment.objects.filter(
+                tenant=self.tenant,
+                unit=self.unit,
+                period_month=month_name,
+                period_year=year_str
+            ).exists()
+
+            if not existing:
+                Payment.objects.create(
+                    tenant=self.tenant,
+                    unit=self.unit,
+                    period_month=month_name,
+                    period_year=year_str,
+                    rent=self.monthly_rent,
+                    electric=self.electric_rate,
+                    water=self.water_rate,
+                    status='unpaid',
+                    due_date=payment_date,
+                )
+
+from .models import Payment, Complaint, RentalContract
+
+class RentalContractAdmin(admin.ModelAdmin):
+    list_display = ['tenant', 'unit', 'start_date', 'duration_months', 'monthly_rent']
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        obj.generate_payments()
+
+admin.site.register(RentalContract, RentalContractAdmin)

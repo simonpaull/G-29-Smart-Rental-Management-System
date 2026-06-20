@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Contract</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #F4F3FF; font-family: Arial, sans-serif; }
+        .topbar { background: #534AB7; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .topbar-title { color: #fff; font-size: 15px; font-weight: 500; }
+        .hero { background: #534AB7; padding: 1.5rem 1.5rem 2rem; color: #fff; }
+        .hero h1 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+        .hero p { font-size: 13px; opacity: 0.8; }
+        .content { padding: 1rem; max-width: 500px; margin: 1rem auto 2rem; }
+        .back-link { display: inline-block; color: #534AB7; font-size: 13px; text-decoration: none; margin-bottom: 1rem; }
+        .card { background: #fff; border-radius: 12px; padding: 1.25rem; border: 0.5px solid #e0e0e0; }
+        .card-title { font-size: 15px; font-weight: 500; color: #333; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 0.5px solid #f0f0f0; }
+        .field { margin-bottom: 14px; }
+        .field label { display: block; font-size: 13px; color: #666; margin-bottom: 5px; }
+        .field input, .field select { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; }
+        .field input:focus, .field select:focus { border-color: #534AB7; box-shadow: 0 0 0 3px rgba(83,74,183,0.08); }
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .info-box { background: #F8F7FF; border-radius: 8px; padding: 12px; margin-bottom: 14px; font-size: 13px; color: #534AB7; border: 1px solid #E0DEFF; }
+        .room-info { background: #EAF3DE; border-radius: 8px; padding: 10px 12px; margin-top: 6px; font-size: 13px; color: #3B6D11; display: none; }
+        .submit-btn { width: 100%; padding: 13px; background: #534AB7; color: #fff; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: 500; }
+        .submit-btn:hover { background: #3C3489; }
+        @media (max-width: 400px) { .grid2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-title">Smart Rental System — Admin</div>
+    </div>
+
+    <div class="hero">
+        <h1>Create rental contract</h1>
+        <p>Monthly payments will be auto generated</p>
+    </div>
+
+    <div class="content">
+        <a class="back-link" href="/payment/contracts/">← Back to contracts</a>
+
+        <div class="card">
+            <div class="card-title">Contract details</div>
+
+            <div class="info-box">
+                After creating this contract, the system will automatically generate all monthly payment records for the tenant.
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="field">
+                    <label>Tenant</label>
+                    <select name="user_id" id="tenant-select" required onchange="showRoomInfo(this)">
+                        <option value="">Select tenant...</option>
+                        {% for t in tenants_with_users %}
+                        <option value="{{ t.user.id }}"
+                            data-unit="{{ t.room.roomnumber }}"
+                            data-rent="{{ t.room.price }}">
+                            {{ t.tenant_record.name }} — Unit {{ t.room.roomnumber }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <div class="room-info" id="room-info"></div>
+                </div>
+
+                <div class="field">
+                    <label>Unit</label>
+                    <input type="text" name="unit" id="unit-input" placeholder="Auto filled from room" required>
+                </div>
+
+                <div class="field">
+                    <label>Start date</label>
+                    <input type="date" name="start_date" required>
+                </div>
+
+                <div class="field">
+                    <label>Duration</label>
+                    <select name="duration_months" required>
+                        <option value="6">6 months</option>
+                        <option value="12" selected>12 months</option>
+                        <option value="24">24 months</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Monthly rent (RM)</label>
+                    <input type="number" name="monthly_rent" id="rent-input" step="0.01" required>
+                </div>
+
+                <div class="grid2">
+                    <div class="field">
+                        <label>Electric rate (RM)</label>
+                        <input type="number" name="electric_rate" step="0.01" value="0">
+                    </div>
+                    <div class="field">
+                        <label>Water rate (RM)</label>
+                        <input type="number" name="water_rate" step="0.01" value="0">
+                    </div>
+                </div>
+
+                <button class="submit-btn" type="submit">Create contract & generate payments</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showRoomInfo(select) {
+            const option = select.options[select.selectedIndex];
+            if (option.value) {
+                document.getElementById('unit-input').value = option.dataset.unit;
+                document.getElementById('rent-input').value = option.dataset.rent;
+                document.getElementById('room-info').style.display = 'block';
+                document.getElementById('room-info').innerHTML = `Unit: <strong>${option.dataset.unit}</strong> | Rent: <strong>RM ${option.dataset.rent}</strong>`;
+            }
+        }
+    </script>
+</body>
+</html>

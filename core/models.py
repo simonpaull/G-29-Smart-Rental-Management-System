@@ -17,16 +17,6 @@ TENANT_STATUS_CHOICES = [
 
 
 class Profile(models.Model):
-<<<<<<< HEAD
-    ROLE_CHOICES = [
-    ('admin', 'Admin'),
-    ('owner', 'Owner'),
-    ('tenant', 'Tenant'),
-    ('prospect', 'Prospective Tenant'),
-]
-
-=======
->>>>>>> dfe1b60b9d0662f25beaf51e5e55c8992d42db90
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     full_name = models.CharField(max_length=100)
