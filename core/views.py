@@ -240,6 +240,12 @@ def request_room(request, room_id):
 
     if request.method == 'POST':
 
+        RoomRequest.objects.filter(
+            tenant=request.user,
+            room=room,
+            status='rejected'
+        ).delete()
+
         room_request = RoomRequest.objects.create(
             tenant=request.user,
             room=room,
@@ -304,7 +310,7 @@ def my_room(request):
 
 def update_request_status(request,request_id,status):
 
-    if status not in ['accepted', 'rejected']:
+    if status not in ['accepted', 'rejected','pending']:
         return redirect('owner_dashboard')
 
     room_request = RoomRequest.objects.get(
