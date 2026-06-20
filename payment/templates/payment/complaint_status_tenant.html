@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Complaints</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #F4F3FF; font-family: Arial, sans-serif; }
+        .topbar { background: #534AB7; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .topbar-title { color: #fff; font-size: 15px; font-weight: 500; }
+        .topbar-user { display: flex; align-items: center; gap: 8px; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: #534AB7; flex-shrink: 0; }
+        .topbar-username { color: #EEEDFE; font-size: 13px; }
+        .logout-btn { color: #EEEDFE; font-size: 12px; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; text-decoration: none; margin-left: 4px; }
+        .hero { background: #534AB7; padding: 1.5rem 1.5rem 2rem; color: #fff; width: 100%; }
+        .hero h1 { font-size: clamp(16px, 4vw, 20px); font-weight: 500; margin-bottom: 4px; }
+        .hero p { font-size: 13px; opacity: 0.8; }
+        .content { padding: 1rem; max-width: 600px; margin: 1rem auto 2rem; width: 100%; }
+        .back-link { display: inline-block; color: #534AB7; font-size: 13px; text-decoration: none; margin-bottom: 1rem; }
+        .btn { display: inline-block; padding: 8px 16px; background: #534AB7; color: #fff; border-radius: 8px; text-decoration: none; font-size: 13px; margin-bottom: 1rem; }
+        .complaint-card { background: #fff; border-radius: 12px; padding: 1.25rem; margin-bottom: 12px; border: 0.5px solid #e0e0e0; }
+        .complaint-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
+        .complaint-title { font-size: 15px; font-weight: 500; color: #333; }
+        .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+        .badge-high { background: #FCEBEB; color: #A32D2D; }
+        .badge-medium { background: #FAEEDA; color: #854F0B; }
+        .badge-low { background: #EAF3DE; color: #3B6D11; }
+        .badge-pending { background: #FAEEDA; color: #854F0B; }
+        .badge-in_progress { background: #E0E8FF; color: #3C3489; }
+        .badge-resolved { background: #EAF3DE; color: #3B6D11; }
+        .complaint-desc { font-size: 13px; color: #666; margin-bottom: 10px; line-height: 1.5; }
+        .complaint-meta { font-size: 12px; color: #aaa; }
+        .admin-notes { background: #F8F7FF; border-radius: 8px; padding: 10px 12px; margin-top: 10px; border-left: 3px solid #534AB7; }
+        .admin-notes-title { font-size: 12px; font-weight: 500; color: #534AB7; margin-bottom: 4px; }
+        .admin-notes-text { font-size: 13px; color: #555; }
+        .empty-msg { text-align: center; color: #aaa; padding: 24px; font-size: 13px; background: #fff; border-radius: 12px; border: 0.5px dashed #ddd; }
+        @media (max-width: 400px) { .topbar-username { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-title">Smart Rental System</div>
+        <div class="topbar-user">
+            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+            <span class="topbar-username">{{ request.user.get_full_name|default:request.user.username }}</span>
+            <a class="logout-btn" href="/logout/">Logout</a>
+        </div>
+    </div>
+
+    <div class="hero">
+        <h1>My complaints</h1>
+        <p>Track the status of your submitted complaints</p>
+    </div>
+
+    <div class="content">
+        <a class="back-link" href="/payment/">← Back to dashboard</a>
+        <a class="btn" href="/payment/complaint/">+ New complaint</a>
+
+        {% if complaints %}
+            {% for c in complaints %}
+            <div class="complaint-card">
+                <div class="complaint-header">
+                    <span class="complaint-title">{{ c.title }}</span>
+                    <div class="badges">
+                        <span class="badge badge-{{ c.priority }}">{{ c.priority|capfirst }}</span>
+                        <span class="badge badge-{{ c.status }}">{{ c.status|capfirst }}</span>
+                    </div>
+                </div>
+                <div class="complaint-desc">{{ c.description }}</div>
+                <div class="complaint-meta">Submitted {{ c.submitted_date|date:"d M Y" }} · Last updated {{ c.updated_date|date:"d M Y" }}</div>
+                {% if c.admin_notes %}
+                <div class="admin-notes">
+                    <div class="admin-notes-title">Admin response</div>
+                    <div class="admin-notes-text">{{ c.admin_notes }}</div>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-msg">No complaints submitted yet.</div>
+        {% endif %}
+    </div>
+</body>
+</html>

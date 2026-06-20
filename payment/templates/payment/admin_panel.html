@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #F4F3FF; font-family: Arial, sans-serif; }
+        .topbar { background: #1F1B3D; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .topbar-title { color: #fff; font-size: 15px; font-weight: 500; }
+        .topbar-user { display: flex; align-items: center; gap: 8px; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #534AB7; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: #fff; flex-shrink: 0; }
+        .topbar-username { color: #EEEDFE; font-size: 13px; }
+        .logout-btn { color: #EEEDFE; font-size: 12px; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; text-decoration: none; margin-left: 4px; }
+        .hero { background: #1F1B3D; padding: 1.5rem 1.5rem 3rem; color: #fff; width: 100%; }
+        .hero h1 { font-size: clamp(16px,4vw,22px); font-weight: 500; margin-bottom: 4px; }
+        .hero p { font-size: 13px; opacity: 0.8; }
+        .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; padding: 0 1rem; margin-top: -1.5rem; margin-bottom: 1.5rem; }
+        .stat-card { background: #fff; border-radius: 12px; padding: 0.75rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .stat-value { font-size: clamp(14px,3vw,18px); font-weight: 500; margin-bottom: 2px; }
+        .stat-label { font-size: clamp(9px,2vw,10px); color: #888; text-transform: uppercase; letter-spacing: 0.04em; }
+        .purple { color: #534AB7; } .green { color: #3B6D11; } .red { color: #E24B4A; } .orange { color: #BA7517; }
+        .content { padding: 0 1rem 2rem; }
+        .section-title { font-size: 12px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.25rem 0 0.75rem; }
+        .table-card { background: #fff; border-radius: 12px; overflow: hidden; border: 0.5px solid #e0e0e0; }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+        th { text-align: left; padding: 10px 12px; background: #F8F7FF; color: #888; font-weight: 500; font-size: 11px; text-transform: uppercase; }
+        td { padding: 10px 12px; border-top: 0.5px solid #f0f0f0; color: #333; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+        .badge-active { background: #EAF3DE; color: #3B6D11; }
+        .badge-banned { background: #FCEBEB; color: #A32D2D; }
+        .badge-admin { background: #E0E8FF; color: #185FA5; }
+        .badge-owner { background: #F3E8FF; color: #7E22CE; }
+        .badge-tenant { background: #FAEEDA; color: #854F0B; }
+        .badge-prospect { background: #F0F0F0; color: #666; }
+        .ban-btn { padding: 5px 12px; background: #E24B4A; color: #fff; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; }
+        .unban-btn { padding: 5px 12px; background: #3B6D11; color: #fff; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; }
+        .empty-msg { text-align: center; color: #aaa; padding: 24px; font-size: 13px; }
+        @media (max-width: 600px) { .stats-row { grid-template-columns: repeat(2,1fr); } .topbar-username { display: none; } }
+        .badge-high { background: #FCEBEB; color: #A32D2D; }
+        .badge-medium { background: #FAEEDA; color: #854F0B; }
+        .badge-low { background: #EAF3DE; color: #3B6D11; }
+        .badge-pending { background: #FAEEDA; color: #854F0B; }
+        .badge-in_progress { background: #E0E8FF; color: #3C3489; }
+        .badge-resolved { background: #EAF3DE; color: #3B6D11; }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-title">⚙️ Admin Panel — Smart Rental System</div>
+        <div class="topbar-user">
+            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+            <span class="topbar-username">{{ request.user.get_full_name|default:request.user.username }}</span>
+            <a class="logout-btn" href="/logout/">Logout</a>
+        </div>
+    </div>
+
+    <div class="hero">
+        <h1>System administration</h1>
+        <p>Manage all users, owners, and system-wide settings</p>
+    </div>
+
+    <div class="stats-row">
+        <div class="stat-card"><div class="stat-value purple">{{ total_users }}</div><div class="stat-label">Total users</div></div>
+        <div class="stat-card"><div class="stat-value green">{{ total_owners }}</div><div class="stat-label">Owners</div></div>
+        <div class="stat-card"><div class="stat-value orange">{{ total_tenants }}</div><div class="stat-label">Tenants</div></div>
+        <div class="stat-card"><div class="stat-value red">{{ total_banned }}</div><div class="stat-label">Banned</div></div>
+    </div>
+
+    <div class="section-title" style="color:#A32D2D;">Owner complaints about tenants</div>
+    {% if owner_complaints %}
+    <div class="table-card" style="margin-bottom: 1rem;">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>From owner</th>
+                        <th>Against tenant</th>
+                        <th>Title</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in owner_complaints %}
+                    <tr>
+                        <td>{{ c.tenant.get_full_name|default:c.tenant.username }}</td>
+                        <td>{{ c.against_user.get_full_name|default:c.against_user.username }}</td>
+                        <td>{{ c.title }}</td>
+                        <td><span class="badge badge-{{ c.priority }}">{{ c.priority|capfirst }}</span></td>
+                        <td><span class="badge badge-{{ c.status }}">{{ c.status|capfirst }}</span></td>
+                        <td>
+                            {% if c.against_user.is_active %}
+                            <form method="POST" action="/payment/admin-panel/toggle-ban/{{ c.against_user.id }}/" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="ban-btn">Ban tenant</button>
+                            </form>
+                            {% else %}
+                            <span style="color:#A32D2D;font-size:11px;">Banned</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-msg" style="background:#fff;border-radius:12px;margin-bottom:1rem;">No owner complaints yet.</div>
+    {% endif %}
+
+    <div class="section-title">Tenant complaints about properties</div>
+    {% if tenant_complaints %}
+    <div class="table-card" style="margin-bottom: 1rem;">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tenant</th>
+                        <th>Title</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in tenant_complaints %}
+                    <tr>
+                        <td>{{ c.tenant.get_full_name|default:c.tenant.username }}</td>
+                        <td>{{ c.title }}</td>
+                        <td><span class="badge badge-{{ c.priority }}">{{ c.priority|capfirst }}</span></td>
+                        <td><span class="badge badge-{{ c.status }}">{{ c.status|capfirst }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-msg" style="background:#fff;border-radius:12px;margin-bottom:1rem;">No tenant complaints yet.</div>
+    {% endif %}
+
+    <div class="content">
+        <div class="section-title">All users</div>
+        <div class="table-card">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in users %}
+                        <tr>
+                            <td>{{ u.get_full_name|default:"-" }}</td>
+                            <td>{{ u.username }}</td>
+                            <td>
+                                {% if u.profile %}
+                                <span class="badge badge-{{ u.profile.role }}">{{ u.profile.role|capfirst }}</span>
+                                {% else %}—{% endif %}
+                            </td>
+                            <td>
+                                {% if u.is_active %}
+                                <span class="badge badge-active">Active</span>
+                                {% else %}
+                                <span class="badge badge-banned">Banned</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if u != request.user %}
+                                <form method="POST" action="/payment/admin-panel/toggle-ban/{{ u.id }}/" style="display:inline;">
+                                    {% csrf_token %}
+                                    {% if u.is_active %}
+                                    <button type="submit" class="ban-btn">Ban</button>
+                                    {% else %}
+                                    <button type="submit" class="unban-btn">Unban</button>
+                                    {% endif %}
+                                </form>
+                                {% else %}
+                                <span style="color:#aaa;font-size:11px;">You</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="empty-msg">No users found.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

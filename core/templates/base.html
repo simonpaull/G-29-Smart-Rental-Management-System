@@ -16,16 +16,16 @@
         {% if user.is_authenticated %}
 
             {% if user.profile.role == 'admin' %}
-                <a href="/admin-dashboard/">Dashboard</a> |
+                <a href="/payment/admin-panel/">Dashboard</a> |
 
             {% elif user.profile.role == 'owner' %}
-                <a href="/owner-dashboard/">Dashboard</a> |
+                <a href="/payment/owner-dashboard/">Dashboard</a> |
 
             {% elif user.profile.role == 'prospect' %}
                 <a href="/prospect-dashboard/">Dashboard</a> |
 
             {% elif user.profile.role == 'tenant' %}
-                <a href="/tenant-dashboard/">Dashboard</a> |
+                <a href="/payment/">Dashboard</a> |
 
             {% endif %}
             

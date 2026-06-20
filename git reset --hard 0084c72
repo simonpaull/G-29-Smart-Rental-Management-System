@@ -1,0 +1,80 @@
+[33m06eab85[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mShyan[m[33m)[m Merge main into Shyan
+[33m76351cd[m[33m ([m[1;31morigin/Shyan[m[33m)[m edit something
+[33mba4cc89[m fixed something
+[33m8b7f7b3[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m Merge pull request #18 from simonpaull/Dino
+[33mf646ee6[m owner name showed when tenant request for room and Owner dashboard show which room have tenant looking.
+[33m9e9c493[m Merge pull request #17 from simonpaull/Simon
+[33m089bdf4[m Merge main branch and resolve conflicts
+[33me8e7bc5[m Remove tenant status and simplify role management
+[33mbbc45db[m added owner dashboard, new tenant dashboard, room listings
+[33maa341ed[m added utility page, combined overdue email, auto read rent from room, admin create payment
+[33m9bfef2d[m Merge pull request #16 from simonpaull/Dino
+[33m671af2e[m Added application date and cancel application
+[33m19f5ee3[m application date
+[33m4282142[m merge simon branch
+[33m80c8b5b[m added payment links to admin dashboard
+[33m21e94bd[m cleaned up models, removed contract feature
+[33m174c8aa[m update something
+[33med0e521[m add some UI
+[33me8eb3a3[m Create email verification page
+[33m56d25ef[m Merge pull request #15 from simonpaull/Dino
+[33mf4b108d[m tenant can click my room to view his room details
+[33md7947ff[m tenant can see his application history
+[33m0084c72[m added AI priority detection, responsive UI for all pages
+[33me3e8ec1[m added complaint system, overdue detection, timezone fix
+[33mebf53e8[m added complaint system - models, views, templates
+[33m1e1e743[m Merge pull request #14 from simonpaull/Dino
+[33me52d4cb[m Update request status
+[33m1cb8474[m Merge pull request #13 from simonpaull/Dino
+[33m93a5f5f[m remove tenant from room funnction
+[33mee463da[m owner side can see what tenant pm
+[33m042b5e8[m Merge pull request #12 from simonpaull/Dino
+[33mbb30853[m Merged Simon branch and implemented room request workflow
+[33m5627630[m Merge teammate system succes
+[33m633ea78[m Merge Shyan branch with room and tenant modules
+[33md4a99d7[m adgsjh
+[33me06d212[m Updated user structure for admin owner and tenant workflow
+[33m29a69e7[m added PDF receipt, email with attachment, download receipt
+[33m24373fd[m Updated tenant registration and profile fields
+[33mdba8075[m edit
+[33m465846c[m Configured forgot password email reset with Gmail SMTP
+[33m92e2906[m update *2
+[33m9b174c1[m little bit update
+[33mbafc882[m assign tenant
+[33m5ce956e[m logic issue
+[33ma518b00[m room availability logic
+[33m239135d[m delete room, owner properties, tenant list
+[33mdb1fb25[m Fixed and completed change password functionality
+[33mcb66d00[m added payment validation, admin history, tenant dashboard
+[33m3b32e82[m merged Simon's branch, combined tenant dashboard
+[33m0867095[m updated payment views, urls and templates
+[33mc4a440e[m Merge pull request #10 from simonpaull/Dino
+[33mb0a1e5e[m Edit room
+[33m0063fcc[m Merge pull request #9 from simonpaull/Dino
+[33mecb83c4[m drop down list
+[33m598f7cc[m Merge pull request #8 from simonpaull/Dino
+[33mbd36b06[m add room html page
+[33mb2cb187[m updated payment with user  authentication, utility breakdown, admin history
+[33m96a720c[m[33m ([m[1;31morigin/Simon[m[33m)[m Updated profile page with change password and actions
+[33m56433dc[m Added user registration with role selection
+[33m229d3fc[m Merge pull request #7 from simonpaull/Dino
+[33mefb7d91[m add room
+[33m10a931c[m Merge pull request #6 from simonpaull/Dino
+[33m90d3150[m Merge pull request #5 from simonpaull/main
+[33m410479a[m Merge pull request #4 from simonpaull/Dino
+[33m6380150[m room list
+[33m8a23091[m added payment app - models, views, templates
+[33m93eee0b[m Merge pull request #3 from simonpaull/Dino
+[33m141820c[m room table
+[33m56ed03c[m Updated base navigation for role-based dashboards
+[33m8caa92e[m Added admin and tenant dashboard templates
+[33m89acf11[m Implemented profile view page
+[33md318126[m Merge pull request #2 from simonpaull/Dino
+[33m98a6e01[m roomtable
+[33mc186f19[m Merge pull request #1 from simonpaull/Dino
+[33ma4450dd[m room table
+[33mf3a3ffc[m room table.
+[33md87db26[m add payment
+[33m1100b58[m Merge branch 'main' of https://github.com/simonpaull/G-29-Smart-Rental-Management-System
+[33m90e947b[m Initial commit
+[33m8eb5895[m Initial Django setup with pages

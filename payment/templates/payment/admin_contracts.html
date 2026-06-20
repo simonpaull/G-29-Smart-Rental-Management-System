@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rental Contracts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #F4F3FF; font-family: Arial, sans-serif; }
+        .topbar { background: #534AB7; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .topbar-title { color: #fff; font-size: 15px; font-weight: 500; }
+        .hero { background: #534AB7; padding: 1.5rem 1.5rem 2rem; color: #fff; }
+        .hero h1 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+        .hero p { font-size: 13px; opacity: 0.8; }
+        .content { padding: 1rem; max-width: 900px; margin: 1rem auto 2rem; }
+        .back-link { display: inline-block; color: #534AB7; font-size: 13px; text-decoration: none; margin-bottom: 1rem; }
+        .btn { display: inline-block; padding: 8px 16px; background: #534AB7; color: #fff; border-radius: 8px; text-decoration: none; font-size: 13px; margin-right: 8px; margin-bottom: 1rem; }
+        .table-card { background: #fff; border-radius: 12px; overflow: hidden; border: 0.5px solid #e0e0e0; }
+        .table-wrapper { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
+        th { text-align: left; padding: 10px 12px; background: #F8F7FF; color: #888; font-weight: 500; font-size: 11px; text-transform: uppercase; }
+        td { padding: 10px 12px; border-top: 0.5px solid #f0f0f0; color: #333; }
+        .empty-msg { text-align: center; color: #aaa; padding: 24px; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-title">Smart Rental System — Admin</div>
+    </div>
+
+    <div class="hero">
+        <h1>Rental contracts</h1>
+        <p>Manage all tenant rental contracts</p>
+    </div>
+
+    <div class="content">
+        <a class="back-link" href="/payment/owner-dashboard/">← Back to dashboard</a>
+        <a class="btn" href="/payment/contracts/create/">+ New contract</a>
+
+        <div class="table-card">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tenant</th>
+                            <th>Unit</th>
+                            <th>Start date</th>
+                            <th>Duration</th>
+                            <th>Monthly rent</th>
+                            <th>End date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in contracts %}
+                        <tr>
+                            <td>{{ c.tenant.get_full_name|default:c.tenant.username }}</td>
+                            <td>{{ c.unit }}</td>
+                            <td>{{ c.start_date }}</td>
+                            <td>{{ c.duration_months }} months</td>
+                            <td>RM {{ c.monthly_rent }}</td>
+                            <td>{{ c.end_date }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="empty-msg">No contracts yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

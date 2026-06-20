@@ -3,14 +3,33 @@
 <head>
     <title>Payment Successful</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 80px; }
-        h2 { color: green; }
-        a { color: #534AB7; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #F4F3FF; font-family: Arial, sans-serif; }
+        .topbar { background: #534AB7; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .topbar-title { color: #fff; font-size: 15px; font-weight: 500; }
+        .hero { background: #534AB7; padding: 1.5rem 1.5rem 2rem; color: #fff; }
+        .hero h1 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+        .hero p { font-size: 13px; opacity: 0.8; }
+        .content { padding: 1rem; max-width: 500px; margin: 1rem auto 2rem; }
+        .back-link { display: inline-block; color: #534AB7; font-size: 13px; text-decoration: none; margin-bottom: 1rem; }
+        .card { background: #fff; border-radius: 12px; padding: 1.25rem; border: 0.5px solid #e0e0e0; }
+        .card-title { font-size: 15px; font-weight: 500; color: #333; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 0.5px solid #f0f0f0; }
+        .field { margin-bottom: 14px; }
+        .field label { display: block; font-size: 13px; color: #666; margin-bottom: 5px; }
+        .field input, .field select { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; color: #333; outline: none; }
+        .field input:focus, .field select:focus { border-color: #534AB7; box-shadow: 0 0 0 3px rgba(83,74,183,0.08); }
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .info-box { background: #F8F7FF; border-radius: 8px; padding: 12px; margin-bottom: 14px; font-size: 13px; color: #534AB7; border: 1px solid #E0DEFF; }
+        .room-info { background: #EAF3DE; border-radius: 8px; padding: 10px 12px; margin-top: 6px; font-size: 13px; color: #3B6D11; display: none; }
+        .submit-btn { width: 100%; padding: 13px; background: #534AB7; color: #fff; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: 500; }
+        .submit-btn:hover { background: #3C3489; }
+        @media (max-width: 400px) { .grid2 { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
     <h2>Payment successful!</h2>
     <p>Your payment has been recorded.</p>
     <a href="/payment/history/">View payment history</a>
+    <a href="/payment/">Back to dashboard</a>
 </body>
 </html>

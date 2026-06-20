@@ -121,6 +121,7 @@ class RoomRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add= True)
 
     def __str__(self):
+
         return f"{self.tenant.username} -> {self.room.roomnumber}"
 
 
@@ -144,3 +145,5 @@ class ChatMessage(models.Model):
 
     def __str__(self):
         return f"{self.sender.username}"
+=======
+        return f"{self.tenant.username} -> {self.room.roomnumber}"
