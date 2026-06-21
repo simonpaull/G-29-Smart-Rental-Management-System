@@ -2,184 +2,215 @@
 <html>
 <head>
     <title>Payment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: Arial, sans-serif; max-width: 500px; margin: 40px auto; padding: 0 20px; }
-        h2 { margin-bottom: 20px; }
-        .summary { background: #f5f5f5; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
-        .row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; color: #555; }
-        .row.total { border-top: 1px solid #ddd; margin-top: 8px; padding-top: 10px; font-size: 16px; font-weight: bold; color: #000; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #F4F3FF; font-family: Arial, sans-serif; }
+
+        /* Navbar */
+        .topbar { background: #534AB7; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .topbar-title { color: #fff; font-size: 15px; font-weight: 500; }
+        .topbar-user { display: flex; align-items: center; gap: 8px; }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: #534AB7; flex-shrink: 0; }
+        .topbar-username { color: #EEEDFE; font-size: 13px; }
+        .logout-btn { color: #EEEDFE; font-size: 12px; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; text-decoration: none; margin-left: 4px; }
+
+        /* Hero */
+        .hero { background: #534AB7; padding: 1.5rem 1.5rem 2rem; color: #fff; }
+        .hero h1 { font-size: clamp(16px, 4vw, 20px); font-weight: 500; margin-bottom: 4px; }
+        .hero p { font-size: 13px; opacity: 0.8; }
+
+        /* Content */
+        .content { padding: 1rem; max-width: 500px; margin: 1rem auto 2rem; width:100%;}
+        .back-link { display: inline-block; color: #534AB7; font-size: 13px; text-decoration: none; margin-bottom: 1rem; }
+        .card { background: #fff; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; border: 0.5px solid #e0e0e0; }
+        .card-title { font-size: 15px; font-weight: 500; color: #333; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 0.5px solid #f0f0f0; }
+
+        body { 
+        background: #F4F3FF; 
+        font-family: Arial, sans-serif; 
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+}
+
+        /* Summary */
+        .summary-row { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; color: #666; }
+        .summary-row.total { border-top: 1px solid #eee; margin-top: 8px; padding-top: 10px; font-size: 15px; font-weight: 500; color: #333; }
+
+        /* Form */
         .field { margin-bottom: 14px; }
-        .field label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; }
-        .field input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
-        .field input.error { border-color: red; }
-        .field input.success { border-color: green; }
-        .error-msg { color: red; font-size: 12px; margin-top: 4px; display: none; }
-        .pay-btn { width: 100%; padding: 12px; background: #534AB7; color: white; border: none; border-radius: 6px; font-size: 15px; cursor: pointer; }
+        .field label { display: block; font-size: 13px; color: #666; margin-bottom: 5px; }
+        .field input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; color: #333; outline: none; }
+        .field input:focus { border-color: #534AB7; box-shadow: 0 0 0 3px rgba(83,74,183,0.08); }
+        .field input.success { border-color: #3B6D11; }
+        .field input.error { border-color: #E24B4A; }
+        .error-msg { color: #E24B4A; font-size: 12px; margin-top: 4px; display: none; }
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        /* Pay button */
+        .pay-btn { width: 100%; padding: 13px; background: #534AB7; color: #fff; border: none; border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: 500; }
         .pay-btn:hover { background: #3C3489; }
         .pay-btn:disabled { background: #aaa; cursor: not-allowed; }
-        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .secure-note { text-align: center; font-size: 12px; color: #aaa; margin-top: 10px; }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .topbar-username { display: none; }
+            .grid2 { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
-    <h2>Rental payment</h2>
 
-    <div class="summary">
-        <div class="row"><span>Tenant</span><span>{{ request.user.get_full_name|default:request.user.username }}</span></div>
-        <div class="row"><span>Unit</span><span>{{ payment.unit }}</span></div>
-        <div class="row"><span>Period</span><span>{{ payment.period }}</span></div>
-        <div class="row"><span>Monthly rent</span><span>RM {{ payment.rent }}</span></div>
-        <div class="row"><span>Electric charges</span><span>RM {{ payment.electric }}</span></div>
-        <div class="row"><span>Water charges</span><span>RM {{ payment.water }}</span></div>
-        <div class="row total"><span>Total due</span><span>RM {{ payment.total }}</span></div>
+    <!-- Navbar -->
+    <div class="topbar">
+        <div class="topbar-title">Smart Rental System</div>
+        <div class="topbar-user">
+            <div class="avatar">
+                {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+            </div>
+            <span class="topbar-username">{{ request.user.get_full_name|default:request.user.username }}</span>
+            <a class="logout-btn" href="/logout/">Logout</a>
+        </div>
     </div>
 
-    <form method="POST" id="payment-form">
-        {% csrf_token %}
+    <!-- Hero -->
+    <div class="hero">
+        <h1>Rental payment</h1>
+        <p>Complete your payment securely</p>
+    </div>
 
-        <div class="field">
-            <label>Cardholder name</label>
-            <input type="text" id="card-name" placeholder="Your full name" required>
-            <div class="error-msg" id="name-error">Please enter cardholder name</div>
+    <div class="content">
+        <a class="back-link" href="/payment/">← Back to dashboard</a>
+
+        <!-- Summary card -->
+        <div class="card">
+            <div class="card-title">Payment summary</div>
+            <div class="summary-row"><span>Tenant</span><span>{{ request.user.get_full_name|default:request.user.username }}</span></div>
+            <div class="summary-row"><span>Unit</span><span>{{ payment.unit }}</span></div>
+            <div class="summary-row"><span>Period</span><span>{{ payment.period }}</span></div>
+            <div class="summary-row"><span>Monthly rent</span><span>RM {{ payment.rent }}</span></div>
+            <div class="summary-row"><span>Electric charges</span><span>RM {{ payment.electric }}</span></div>
+            <div class="summary-row"><span>Water charges</span><span>RM {{ payment.water }}</span></div>
+            <div class="summary-row total"><span>Total due</span><span>RM {{ payment.total }}</span></div>
         </div>
 
-        <div class="field">
-            <label>Card number</label>
-            <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" required>
-            <div class="error-msg" id="card-error">Card number must be 16 digits</div>
-        </div>
+        <!-- Card details -->
+        <div class="card">
+            <div class="card-title">Card details</div>
+            <form method="POST" id="payment-form">
+                {% csrf_token %}
 
-        <div class="grid2">
-            <div class="field">
-                <label>Expiry date</label>
-                <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" required>
-                <div class="error-msg" id="expiry-error">Invalid or expired date</div>
-            </div>
-            <div class="field">
-                <label>CVV</label>
-                <input type="text" id="cvv" placeholder="123" maxlength="3" required>
-                <div class="error-msg" id="cvv-error">CVV must be 3 digits</div>
-            </div>
-        </div>
+                <div class="field">
+                    <label>Cardholder name</label>
+                    <input type="text" id="card-name" placeholder="Your full name" required>
+                    <div class="error-msg" id="name-error">Please enter cardholder name</div>
+                </div>
 
-        <button class="pay-btn" type="submit" id="pay-btn">
-            Pay RM {{ payment.total }}
-        </button>
-    </form>
+                <div class="field">
+                    <label>Card number</label>
+                    <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                    <div class="error-msg" id="card-error">Card number must be 16 digits</div>
+                </div>
+
+                <div class="grid2">
+                    <div class="field">
+                        <label>Expiry date</label>
+                        <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" required>
+                        <div class="error-msg" id="expiry-error">Invalid or expired date</div>
+                    </div>
+                    <div class="field">
+                        <label>CVV</label>
+                        <input type="text" id="cvv" placeholder="123" maxlength="3" required>
+                        <div class="error-msg" id="cvv-error">CVV must be 3 digits</div>
+                    </div>
+                </div>
+
+                <button class="pay-btn" type="submit" id="pay-btn">Pay RM {{ payment.total }}</button>
+                <p class="secure-note">Secured payment — your details are encrypted</p>
+            </form>
+        </div>
+    </div>
 
     <script>
-        // Card number — auto format with spaces every 4 digits
+        // Card number — auto format
         document.getElementById('card-number').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, ''); // remove non-digits
-            value = value.substring(0, 16); // max 16 digits
-            let formatted = value.match(/.{1,4}/g)?.join(' ') || value; // add space every 4
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.substring(0, 16);
+            let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
             e.target.value = formatted;
-
             let err = document.getElementById('card-error');
-            if (value.length === 16) {
-                e.target.className = 'success';
-                err.style.display = 'none';
-            } else {
-                e.target.className = '';
-                err.style.display = value.length > 0 ? 'block' : 'none';
-            }
+            if (value.length === 16) { e.target.className = 'success'; err.style.display = 'none'; }
+            else { e.target.className = ''; err.style.display = value.length > 0 ? 'block' : 'none'; }
         });
 
-        // Expiry date — auto format MM/YY + validate
+        // Expiry date
         document.getElementById('expiry').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, ''); // remove non-digits
-            value = value.substring(0, 4); // max 4 digits
-
-            // auto add slash after MM
-            if (value.length >= 2) {
-                value = value.substring(0, 2) + '/' + value.substring(2);
-            }
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.substring(0, 4);
+            if (value.length >= 2) value = value.substring(0, 2) + '/' + value.substring(2);
             e.target.value = value;
-
             let err = document.getElementById('expiry-error');
             if (value.length === 5) {
                 let month = parseInt(value.substring(0, 2));
                 let year = parseInt('20' + value.substring(3, 5));
-
                 let today = new Date();
-                let currentMonth = today.getMonth() + 1; // 1-12
+                let currentMonth = today.getMonth() + 1;
                 let currentYear = today.getFullYear();
-
-                // Check month is valid (1-12)
                 if (month < 1 || month > 12) {
                     e.target.className = 'error';
                     err.textContent = 'Month must be between 01 and 12';
                     err.style.display = 'block';
-                }
-                // Check card is not expired
-                else if (year < currentYear || (year === currentYear && month < currentMonth)) {
+                } else if (year < currentYear || (year === currentYear && month < currentMonth)) {
                     e.target.className = 'error';
                     err.textContent = 'Your card has expired';
                     err.style.display = 'block';
-                }
-                else {
+                } else {
                     e.target.className = 'success';
                     err.style.display = 'none';
                 }
-            } else {
-                e.target.className = '';
-                err.style.display = 'none';
-            }
+            } else { e.target.className = ''; err.style.display = 'none'; }
         });
 
-        // CVV — numbers only, max 3 digits
+        // CVV
         document.getElementById('cvv').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, ''); // remove non-digits
-            value = value.substring(0, 3); // max 3 digits
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.substring(0, 3);
             e.target.value = value;
-
             let err = document.getElementById('cvv-error');
-            if (value.length === 3) {
-                e.target.className = 'success';
-                err.style.display = 'none';
-            } else {
-                e.target.className = '';
-                err.style.display = value.length > 0 ? 'block' : 'none';
-            }
+            if (value.length === 3) { e.target.className = 'success'; err.style.display = 'none'; }
+            else { e.target.className = ''; err.style.display = value.length > 0 ? 'block' : 'none'; }
         });
 
-        // Form submit validation
+        // Form submit
         document.getElementById('payment-form').addEventListener('submit', function(e) {
             e.preventDefault();
             let valid = true;
-
-            // Check name
             let name = document.getElementById('card-name').value.trim();
             if (name === '') {
                 document.getElementById('card-name').className = 'error';
                 document.getElementById('name-error').style.display = 'block';
                 valid = false;
             }
-
-            // Check card number
             let cardNum = document.getElementById('card-number').value.replace(/\s/g, '');
             if (cardNum.length !== 16) {
                 document.getElementById('card-number').className = 'error';
                 document.getElementById('card-error').style.display = 'block';
                 valid = false;
             }
-
-            // Check expiry
             let expiry = document.getElementById('expiry').value;
             if (expiry.length !== 5) {
                 document.getElementById('expiry').className = 'error';
                 document.getElementById('expiry-error').style.display = 'block';
                 valid = false;
             }
-
-            // Check CVV
             let cvv = document.getElementById('cvv').value;
             if (cvv.length !== 3) {
                 document.getElementById('cvv').className = 'error';
                 document.getElementById('cvv-error').style.display = 'block';
                 valid = false;
             }
-
-            // If all valid, submit the form
             if (valid) {
                 document.getElementById('pay-btn').textContent = 'Processing...';
                 document.getElementById('pay-btn').disabled = true;
@@ -187,5 +218,6 @@
             }
         });
     </script>
+
 </body>
 </html>

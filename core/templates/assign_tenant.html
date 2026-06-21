@@ -2,64 +2,244 @@
 
 {% block content %}
 
-<h1>Assign Tenant</h1>
+<style>
 
-<p>Room Number: {{ room.roomnumber }}</p>
+.assign-container{
+    max-width:600px;
+    margin:auto;
+}
 
+.page-title{
+    text-align:center;
+    margin-bottom:20px;
+}
 
-<form method="POST">
-    {% csrf_token %}
+.room-info{
+    background:#F8F7FF;
+    border:1px solid #E0DEFF;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:20px;
+}
 
-    <label>Select Tenant:</label>
-    
-    <select name="tenant">
-        {% for tenant in tenants %}
-            <option value="{{ tenant.id }}">
-                {{ tenant.name }}
-            </option>
-        {% empty %}
-            <option>No tenants available</option>
-        {% endfor %}
-    </select>
+.request-card{
+    background:#fff;
+    border-radius:12px;
+    padding:20px;
+    margin-bottom:15px;
+    border:0.5px solid #e0e0e0;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    transition:0.2s;
+}
 
+.request-card:hover{
+    transform:translateY(-2px);
+}
 
-    <ul>
+.request-card h3{
+    color:#534AB7;
+    margin-bottom:10px;
+}
 
-    {% for request_obj in requests %}
+.request-card p{
+    margin-bottom:10px;
+}
 
-        <li>
-            {{ request_obj.tenant.username }}
-            :
+.status{
+    padding:5px 10px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:500;
+}
+
+.status.pending{
+    background:#FFF3CD;
+    color:#856404;
+}
+
+.status.accepted{
+    background:#D4EDDA;
+    color:#155724;
+}
+
+.status.rejected{
+    background:#F8D7DA;
+    color:#721C24;
+}
+
+.status.assigned{
+    background:#D1ECF1;
+    color:#0C5460;
+}
+
+.action-btn{
+    display:inline-block;
+    text-decoration:none;
+    padding:8px 14px;
+    border-radius:8px;
+    color:white;
+    margin-right:8px;
+    font-size:14px;
+}
+
+.accept{
+    background:#28a745;
+}
+
+.reject{
+    background:#dc3545;
+}
+
+.pending-btn{
+    background:#ffc107;
+    color:black;
+}
+
+.assign-box{
+    background:#fff;
+    border-radius:12px;
+    padding:20px;
+    border:0.5px solid #e0e0e0;
+    margin-top:20px;
+}
+
+.assign-box select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    margin-top:10px;
+}
+
+.assign-btn{
+    width:100%;
+    padding:13px;
+    background:#534AB7;
+    color:white;
+    border:none;
+    border-radius:8px;
+    margin-top:15px;
+    cursor:pointer;
+    font-size:15px;
+    font-weight:500;
+}
+
+.assign-btn:hover{
+    background:#3C3489;
+}
+
+</style>
+
+<div class="assign-container">
+
+<h1 class="page-title">
+    Assign Tenant
+</h1>
+
+<div class="room-info">
+    <strong>🏠 Room:</strong>
+    {{ room.roomnumber }}
+</div>
+
+{% for request_obj in requests %}
+
+    <div class="request-card">
+
+        <h3>
+            👤 {{ request_obj.tenant.username }}
+        </h3>
+
+        <p>
             {{ request_obj.message }}
+        </p>
 
-<a href="{% url 'update_request_status' request_obj.id 'accepted' %}">
-    <button type="button">
-        Accept
-    </button>
-</a>
+        <p>
 
-<a href="{% url 'update_request_status' request_obj.id 'rejected' %}">
-    <button type="button">
-        Reject
-    </button>
-</a>
+            Status:
 
-<a href="{% url 'update_request_status' request_obj.id 'pending' %}">
-    <button type="button">
-        Pending
-    </button>
-</a>
+            {% if request_obj.status == 'pending' %}
+                <span class="status pending">
+                    Pending
+                </span>
 
-Current Status:
-{{ request_obj.status }}
-        </li>
+            {% elif request_obj.status == 'accepted' %}
+                <span class="status accepted">
+                    Accepted
+                </span>
 
-    {% endfor %}
+            {% elif request_obj.status == 'rejected' %}
+                <span class="status rejected">
+                    Rejected
+                </span>
 
-    </ul>
+            {% elif request_obj.status == 'assigned' %}
+                <span class="status assigned">
+                    Assigned
+                </span>
 
-    <button type="submit">Assign</button>
-</form>
+            {% endif %}
 
+        </p>
+
+        <a href="{% url 'update_request_status' request_obj.id 'accepted' %}"
+           class="action-btn accept">
+            Accept
+        </a>
+
+        <a href="{% url 'update_request_status' request_obj.id 'rejected' %}"
+           class="action-btn reject">
+            Reject
+        </a>
+
+        <a href="{% url 'update_request_status' request_obj.id 'pending' %}"
+            class="action-btn pending-btn">
+             Pending
+
+        </a>
+
+    </div>
+
+{% endfor %}
+
+<div class="assign-box">
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <label>
+            Select Accepted Tenant
+        </label>
+
+        <select name="tenant">
+
+            {% for request_obj in accepted_requests %}
+
+                <option value="{{ request_obj.id }}">
+                    {{ request_obj.tenant.username }}
+                </option>
+
+            {% empty %}
+
+                <option>
+                    No tenants available
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <button type="submit"
+                class="assign-btn">
+
+            Assign Tenant
+
+        </button>
+
+    
+</div>
+
+
+</div>
 
 {% endblock %}

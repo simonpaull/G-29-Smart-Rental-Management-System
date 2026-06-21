@@ -2,70 +2,235 @@
 
 {% block content %}
 
-<h1>Edit Room</h1>
+<style>
 
-<form method = "POST">
-    {% csrf_token %}
-    <label>Room Number:</label>
-    <input 
-        type = "text"  
-        name = "roomnumber" 
-        value = "{{ room.roomnumber }}"
-    ><br><br>
+.form-container{
+    max-width:600px;
+    margin:auto;
+}
 
-    <label>Room Type:</label>
-    <select name = "roomtype">
-        <option value ="Single Room" {% if room.roomtype == "Single Room" %}selected{% endif %}>Single Room</option> 
-        <option value ="Twin Shared Room" {% if room.roomtype == "Twin Shared Room" %}selected{% endif %}>Twin Shared Room</option> 
-        <option value ="Master Room" {% if room.roomtype == "Master Room" %}selected{% endif %}>Master Room</option>  
-        <option value ="Studio Room" {% if room.roomtype == "Studio Room" %}selected{% endif %}>Studio Room</option> 
-    </select><br><br>
+.form-card{
+    background:#fff;
+    border-radius:12px;
+    padding:25px;
+    border:1px solid #e0e0e0;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
 
-    <label>Capacity:</label><br>
-    <input
-        type="number"
-        name="capacity"
-        value="{{ room.capacity }}"
-    ><br><br>
+.page-title{
+    text-align:center;
+    margin-bottom:20px;
+}
 
-    <label>Size:</label>
-    <input
-        type = "text"
-        name = "size"
-        value = "{{ room.size }}"
-    ><br><br>
+.field{
+    margin-bottom:16px;
+}
 
-    <label>Price:</label>
-    <input
-        type = "text"
-        name = "price"
-        value = "{{ room.price }}"
-    ><br><br>
+.field label{
+    display:block;
+    margin-bottom:6px;
+    color:#666;
+}
 
+.field input,
+.field select,
+.field textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:14px;
+    box-sizing:border-box;
+}
 
-    <label>Description:</label>     
-    <textarea name = "description"> {{ room.description }} </textarea><br><br>
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+    outline:none;
+    border-color:#534AB7;
+    box-shadow:0 0 0 3px rgba(83,74,183,0.1);
+}
 
-    <br><button type = "submit">Update Room</button>
-</form>
+.field textarea{
+    min-height:100px;
+    resize:vertical;
+}
 
-<hr>
-<h3>Current Tenant</h3>
-<ul>
-{% for tenant in room.tenant_set.all %}
-    <li>
-        {{ tenant.name }}
-        <a href = "{% url 'remove_tenant' tenant.id %}">
-            <button type = "button">
-                Remove
+.submit-btn{
+    width:100%;
+    padding:13px;
+    background:#534AB7;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:15px;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+.submit-btn:hover{
+    background:#3C3489;
+}
+
+.tenant-section{
+    margin-top:25px;
+}
+
+.tenant-card{
+    background:#F8F7FF;
+    border:1px solid #E0DEFF;
+    border-radius:8px;
+    padding:12px 15px;
+    margin-bottom:10px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.remove-btn{
+    background:#dc3545;
+    color:white;
+    text-decoration:none;
+    padding:6px 12px;
+    border-radius:6px;
+    font-size:13px;
+}
+
+.empty-box{
+    background:#F8F7FF;
+    border-radius:8px;
+    padding:12px;
+    color:#666;
+}
+
+</style>
+
+<div class="form-container">
+
+    <h1 class="page-title">Edit Room</h1>
+
+    <div class="form-card">
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="field">
+                <label>Room Number</label>
+                <input type="text"
+                       name="roomnumber"
+                       value="{{ room.roomnumber }}">
+            </div>
+
+            <div class="field">
+                <label>Room Type</label>
+
+                <select name="roomtype">
+
+                    <option value="Single Room"
+                    {% if room.roomtype == "Single Room" %}
+                    selected
+                    {% endif %}>
+                        Single Room
+                    </option>
+
+                    <option value="Twin Shared Room"
+                    {% if room.roomtype == "Twin Shared Room" %}
+                    selected
+                    {% endif %}>
+                        Twin Shared Room
+                    </option>
+
+                    <option value="Master Room"
+                    {% if room.roomtype == "Master Room" %}
+                    selected
+                    {% endif %}>
+                        Master Room
+                    </option>
+
+                    <option value="Studio Room"
+                    {% if room.roomtype == "Studio Room" %}
+                    selected
+                    {% endif %}>
+                        Studio Room
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="field">
+                <label>Capacity</label>
+                <input type="number"
+                       name="capacity"
+                       value="{{ room.capacity }}">
+            </div>
+
+            <div class="field">
+                <label>Size</label>
+                <input type="text"
+                       name="size"
+                       value="{{ room.size }}">
+            </div>
+
+            <div class="field">
+                <label>Price</label>
+                <input type="text"
+                       name="price"
+                       value="{{ room.price }}">
+            </div>
+
+            <div class="field">
+                <label>Description</label>
+                <textarea name="description">{{ room.description }}</textarea>
+            </div>
+
+            <button type="submit"
+                    class="submit-btn">
+
+                Update Room
+
             </button>
-        </a>
-    </li>
 
-{% empty %}
-    <li>No tenants</li>
-    
-{% endfor %}
-</ul>
+        </form>
+
+        <div class="tenant-section">
+
+            <h3>
+                Current Tenant
+            </h3>
+
+            {% for tenant in room.tenant_set.all %}
+
+                <div class="tenant-card">
+
+                    <span>
+                        👤 {{ tenant.name }}
+                    </span>
+
+                    <a href="{% url 'remove_tenant' tenant.id %}"
+                        class="remove-btn">
+
+                        Remove
+
+                    </a>
+
+                </div>
+
+            {% empty %}
+
+                <div class="empty-box">
+                    No tenants assigned.
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+</div>
 
 {% endblock %}

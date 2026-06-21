@@ -2,36 +2,128 @@
 
 {% block content %}
 
-<h1>Request Room</h1>
+<style>
 
-<h3>Room: {{ room.roomnumber }}</h3>
+.request-container{
+    max-width:500px;
+    margin:auto;
+}
 
-{% if room.owner %}
-    <p>Owner: {{ room.owner.username }}</p>
-{% else %}
-    <p>Owner: Not assigned</p>
-{% endif %}
+.request-card{
+    background:#fff;
+    border-radius:12px;
+    padding:1.25rem;
+    border:0.5px solid #e0e0e0;
+}
 
-<form method="POST">
+.request-title{
+    text-align:center;
+    margin-bottom:20px;
+}
 
-    {% csrf_token %}
+.room-info{
+    background:#F8F7FF;
+    border:1px solid #E0DEFF;
+    border-radius:8px;
+    padding:12px;
+    margin-bottom:15px;
+}
 
-    <label>Message to Owner</label>
-    <br><br>
+.room-info p{
+    margin:6px 0;
+}
 
-    <textarea
-        name="message"
-        rows="5"
-        cols="50"
-        required
-    ></textarea>
+.info-box{
+    background:#EAF3DE;
+    border:1px solid #CFE5B3;
+    border-radius:8px;
+    padding:12px;
+    margin-bottom:15px;
+    color:#3B6D11;
+}
 
-    <br><br>
+.submit-btn{
+    width:100%;
+    padding:13px;
+    background:#534AB7;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-size:15px;
+    font-weight:500;
+    cursor:pointer;
+}
 
-    <button type="submit">
-        Send Request
-    </button>
+.submit-btn:hover{
+    background:#3C3489;
+}
 
-</form>
+.error-box{
+    background:#FEE4E2;
+    color:#B42318;
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:15px;
+}
+
+</style>
+
+<div class="request-container">
+
+    <h1 class="request-title">
+        Request Room
+    </h1>
+
+    <div class="request-card">
+
+        {% if error %}
+            <div class="error-box">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <div class="room-info">
+
+            <p>
+                <strong>🏠 Room:</strong>
+                {{ room.roomnumber }}
+            </p>
+
+            <p>
+                <strong>Room Type:</strong>
+                {{ room.roomtype }}
+            </p>
+
+            <p>
+                <strong>Price:</strong>
+                RM {{ room.price }}
+            </p>
+
+            {% if room.owner %}
+                <p>
+                    <strong>Owner:</strong>
+                    {{ room.owner.username }}
+                </p>
+         {% endif %}
+
+        </div>
+
+        <div class="info-box">
+            Send a room request to start chatting with the owner.
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <button type="submit"
+                class="submit-btn">💬 Send Request
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
 
 {% endblock %}

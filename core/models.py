@@ -10,6 +10,11 @@ ROLE_CHOICES = [
     ('tenant', 'Tenant'),
 ]
 
+TENANT_STATUS_CHOICES = [
+    ('new', 'New Tenant'),
+    ('verified', 'Verified Tenant'),
+]
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -25,6 +30,12 @@ class Profile(models.Model):
 
     address = models.TextField()
 
+    tenant_status = models.CharField(
+        max_length=20,
+        choices=TENANT_STATUS_CHOICES,
+        blank=True,
+        null=True
+    )
     
     email_verified = models.BooleanField(default=False)
 
@@ -65,12 +76,12 @@ class Tenant(models.Model):
         ('male','Male'),
         ('female','Female')
     )
-    gender = models.CharField(max_length = 10, choices= genderchoices)
+    gender = models.CharField(max_length = 10, choices= genderchoices, blank=True, null=True)
 
     contactnumber = models.CharField(max_length = 15)
     email = models.EmailField()
-    ic = models.CharField(max_length = 20)
-    moveindate = models.DateField()
+    ic = models.CharField(max_length = 20, blank=True, null=True)
+    moveindate = models.DateField(blank=True, null=True)
     moveoutdate = models.DateField(blank = True, null = True)
     room = models.ForeignKey('Room',on_delete = models.SET_NULL, null = True, blank = True)
 
@@ -86,6 +97,7 @@ class RoomRequest(models.Model):
         ('pending' , 'Pending'),
         ('accepted' , 'Accepted'),
         ('rejected' , 'Rejected'),
+        ('assigned', 'Assigned'),
     ]
 
     tenant = models.ForeignKey(
@@ -109,5 +121,29 @@ class RoomRequest(models.Model):
     created_at = models.DateTimeField(auto_now_add= True)
 
     def __str__(self):
+
         return f"{self.tenant.username} -> {self.room.roomnumber}"
 
+
+class ChatMessage(models.Model):
+
+    room_request = models.ForeignKey(
+        RoomRequest,
+        on_delete=models.CASCADE
+    )
+
+    sender = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    message = models.TextField()
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"{self.sender.username}"
+=======
+        return f"{self.tenant.username} -> {self.room.roomnumber}"

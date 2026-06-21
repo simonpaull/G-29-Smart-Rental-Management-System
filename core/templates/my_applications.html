@@ -2,60 +2,152 @@
 
 {% block content %}
 
-<h1>My Applications</h1>
+<style>
 
-<table border="1">
+.application-container{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    max-width:700px;
+    margin:auto;
+}
 
-<tr>
-    <th>Room</th>
-    <th>Message</th>
-    <th>Status</th>
-    <th>Date</th>
-    <th>Action</th>
-</tr>
+.application-card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    border-left:6px solid #ddd;
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+    transition:0.3s;
+}
+
+.application-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 5px 15px rgba(0,0,0,0.15);
+}
+
+.card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.card-header h3{
+    margin:0;
+}
+
+.status{
+    font-weight:bold;
+    padding:6px 12px;
+    border-radius:20px;
+}
+
+.pending{
+    background:#fff3cd;
+    color:#856404;
+}
+
+.accepted{
+    background:#d4edda;
+    color:#155724;
+}
+
+.rejected{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+.assigned{
+    background:#d1ecf1;
+    color:#0c5460;
+}
+
+.application-card.pending{
+    border-left-color:#ffc107;
+}
+
+.application-card.accepted{
+    border-left-color:#28a745;
+}
+
+.application-card.rejected{
+    border-left-color:#dc3545;
+}
+
+.application-card.assigned{
+    border-left-color:#17a2b8;
+}
+
+.cancel-btn{
+    display:flex;
+    justify-content:flex-end;
+}
+.application-card a{
+    text-decoration:none;
+    background:#dc3545;
+    color:white;
+    padding:8px 15px;
+    border-radius:8px;
+    display:inline-block;
+}
+
+.application-card a:hover{
+    opacity:0.9;
+}
+
+</style>
+
+<h1 style="text-align:center;">
+    My Applications
+</h1>
+
+<div class="application-container">
 
 {% for request_obj in requests %}
 
-<tr>
+    <div class="application-card {{request_obj.status }}">
 
-    <td>
-        {{ request_obj.room.roomnumber }}
-    </td>
+        <div class="card-header">
+            <h3>
+                🏠 Room {{ request_obj.room.roomnumber }}
+            </h3>
 
-    <td>
-        {{ request_obj.message }}
-    </td>
+            {% if request_obj.status == 'pending' %}
+                <span class="status pending">🟡 Pending</span>
 
-    <td>
-        {{ request_obj.status }}
-    </td>
+            {% elif request_obj.status == 'accepted' %}
+                <span class="status accepted">🟢 Accepted</span>
 
-    <td>
-        {{ request_obj.created_at|date:"d/m/Y" }}
-    </td>
+            {% elif request_obj.status == 'rejected' %}
+                <span class="status rejected">🔴 Rejected</span>
 
-    <td>
-    {% if request_obj.status == 'pending' %}
+            {% elif request_obj.status == 'assigned' %}
+                <span class="status assigned">🔵 Assigned</span>
 
-        <a href="{% url 'cancel_application' request_obj.id %}">
-            Cancel
-        </a>
+            {% endif %}
+        </div>
 
-    {% endif %}
-    </td>
-    
-</tr>
+        <p>{{ request_obj.message }}</p>
+
+        <p>Applied :{{ request_obj.created_at|date:"d/m/Y" }}</p>
+
+        {% if request_obj.status == 'pending' %}
+            <div class="cancel-btn">
+                <a href="{% url 'cancel_application' request_obj.id %}">
+                    Cancel Application
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
 
 {% empty %}
 
-<tr>
-    <td colspan="3">
-        No applications found
-    </td>
-</tr>
+    <p style="text-align:center;">No applications found.</p>
 
 {% endfor %}
 
-</table>
+</div>
 
 {% endblock %}

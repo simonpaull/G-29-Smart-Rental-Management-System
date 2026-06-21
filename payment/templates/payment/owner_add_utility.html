@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Utility Charges</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #F4F3FF; font-family: Arial, sans-serif; }
+        .topbar { background: #534AB7; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .topbar-title { color: #fff; font-size: 15px; font-weight: 500; }
+        .hero { background: #534AB7; padding: 1.5rem 1.5rem 2rem; color: #fff; }
+        .hero h1 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+        .hero p { font-size: 13px; opacity: 0.8; }
+        .content { padding: 1rem; max-width: 700px; margin: 1rem auto 2rem; }
+        .card { background: #fff; border-radius: 12px; padding: 1.25rem; margin-bottom: 12px; border: 0.5px solid #e0e0e0; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+        .card-title { font-size: 15px; font-weight: 500; color: #333; }
+        .card-sub { font-size: 12px; color: #888; }
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .field label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
+        .field input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; }
+        .field input:focus { border-color: #534AB7; box-shadow: 0 0 0 3px rgba(83,74,183,0.08); }
+        .save-btn { padding: 8px 20px; background: #534AB7; color: #fff; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; }
+        .save-btn:hover { background: #3C3489; }
+        .badge-unpaid { background: #FAEEDA; color: #854F0B; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+        .back-link { display: inline-block; color: #534AB7; font-size: 13px; text-decoration: none; margin-bottom: 1rem; }
+        .empty-msg { text-align: center; color: #aaa; padding: 24px; background: #fff; border-radius: 12px; font-size: 13px; }
+        @media (max-width: 400px) { .grid2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-title">Smart Rental System — Admin</div>
+    </div>
+
+    <div class="hero">
+        <h1>Add utility charges</h1>
+        <p>Update electric and water charges for each tenant</p>
+    </div>
+
+    <div class="content">
+        <a class="back-link" href="/payment/admin-summary/">← Back to summary</a>
+
+        {% if payments %}
+            {% for p in payments %}
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">{{ p.tenant.get_full_name|default:p.tenant.username }} — Unit {{ p.unit }}</div>
+                        <div class="card-sub">{{ p.period }} · Due {{ p.due_date }} · Rent RM {{ p.rent }}</div>
+                    </div>
+                    <span class="badge-unpaid">Unpaid</span>
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="payment_id" value="{{ p.id }}">
+                    <div class="grid2">
+                        <div class="field">
+                            <label>Electric (RM)</label>
+                            <input type="number" name="electric" value="{{ p.electric }}" step="0.01" min="0">
+                        </div>
+                        <div class="field">
+                            <label>Water (RM)</label>
+                            <input type="number" name="water" value="{{ p.water }}" step="0.01" min="0">
+                        </div>
+                    </div>
+                    <button class="save-btn" type="submit">Save charges</button>
+                </form>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-msg">No unpaid payments to update.</div>
+        {% endif %}
+    </div>
+</body>
+</html>
