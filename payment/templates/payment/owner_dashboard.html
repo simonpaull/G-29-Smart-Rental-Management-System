@@ -126,10 +126,11 @@
                 <div class="qa-title">My rooms</div>
                 <div class="qa-sub">View owned units</div>
             </a>
-            <a class="qa-card" href="/my-applications/">
-                <div class="qa-icon" style="color:#534AB7;">👤</div>
-                <div class="qa-title">Room requests</div>
-                <div class="qa-sub">Tenant requests</div>
+            <a class="qa-card" href="/owner-chat/">
+                <div class="qa-icon" style="color:#534AB7;">💬</div>
+                <div class="qa-title">Tenant Chats</div>
+                <div class="qa-sub">Open conversations</div>
+            </a>
             </a>
             <a class="qa-card" href="/payment/create-payment/">
                 <div class="qa-title">Create Payment</div>
@@ -179,7 +180,10 @@
                 </div>
                 <div class="badge-meta">
                     <span class="badge badge-req">Pending</span>
-                    <a class="action-btn" href="/room-requests/">Review</a>
+                    <a class="action-btn"
+                        href="/assign-tenant/{{ r.room.id }}/">
+                            Review
+                        </a>
                 </div>
             </div>
             {% endfor %}
@@ -194,10 +198,14 @@
             <div class="room-card">
                 <div class="room-header">
                     <span class="room-num">Unit {{ r.roomnumber }} — {{ r.roomtype }}</span>
-                    {% if r.availability %}
-                    <span class="avail-badge">Available</span>
+                    {% if r.tenant_set.count >= r.capacity %}
+                        <span class="occupied-badge">
+                            Occupied
+                        </span>
                     {% else %}
-                    <span class="occupied-badge">Occupied</span>
+                        <span class="avail-badge">
+                            Available
+                        </span>
                     {% endif %}
                 </div>
                 <div class="detail-row"><span>Price</span><span>RM {{ r.price }}/month</span></div>

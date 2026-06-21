@@ -21,7 +21,8 @@ urlpatterns = [
     path('my-room/', views.my_room, name='my_room'),
     path('cancel-application/<int:request_id>/', views.cancel_application, name='cancel_application'),
     path('chat/<int:request_id>/', views.chat_room, name='chat_room'),
-    
+    path('owner-chat/', views.owner_chat, name='owner_chat'),
+
     path('', views.home, name='home'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
