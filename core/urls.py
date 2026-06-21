@@ -25,8 +25,17 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('register/', views.register_view, name='register'),
-
+    path(
+        'create-owner/',
+         views.create_owner,
+            name='create_owner'
+ ),
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
+    path(
+        'create-tenant/',
+         views.create_tenant,
+            name='create_tenant'
+    ),
     path('tenant-dashboard/', views.tenant_dashboard, name='tenant_dashboard'),
     path('owner-dashboard/', views.owner_dashboard, name='owner_dashboard'),
     path('profile/', views.profile_view, name='profile'),
@@ -86,5 +95,5 @@ urlpatterns = [
          views.verify_email,
         name='verify_email'
 ),
-
+   
 ]

@@ -15,7 +15,10 @@
     <li>Message Admin</li>
 </ul>
 
-<a href="/profile/">My Profile</a> |
+<a href="/profile/">My Profile</a> | 
+<a href="{% url 'create_tenant' %}"> 
+    Create Tenant Account
+</a> |
 <a href="/logout/">Logout</a>
 
 {% endblock %}

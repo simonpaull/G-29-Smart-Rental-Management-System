@@ -419,3 +419,77 @@ def cancel_application(request, request_id):
         room_request.delete()
 
     return redirect('my_applications')
+
+@login_required
+def create_owner(request):
+
+    if request.user.profile.role != 'admin':
+        return redirect('login')
+
+    if request.method == 'POST':
+
+        full_name = request.POST.get('full_name')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        phone_number = request.POST.get('phone_number')
+        address = request.POST.get('address')
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        Profile.objects.create(
+            user=user,
+            full_name=full_name,
+            role='owner',
+            phone_number=phone_number,
+            address=address,
+            email_verified=True
+        )
+
+        return redirect('admin_dashboard')
+
+    return render(
+        request,
+        'create_owner.html'
+    )
+    
+@login_required
+def create_tenant(request):
+
+    if request.user.profile.role != 'owner':
+        return redirect('login')
+
+    if request.method == 'POST':
+
+        full_name = request.POST.get('full_name')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        phone_number = request.POST.get('phone_number')
+        address = request.POST.get('address')
+
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        Profile.objects.create(
+            user=user,
+            full_name=full_name,
+            role='tenant',
+            phone_number=phone_number,
+            address=address,
+            email_verified=True
+        )
+
+        return redirect('owner_dashboard')
+
+    return render(
+        request,
+        'create_tenant.html'
+    )
