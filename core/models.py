@@ -145,5 +145,4 @@ class ChatMessage(models.Model):
 
     def __str__(self):
         return f"{self.sender.username}"
-=======
-        return f"{self.tenant.username} -> {self.room.roomnumber}"
+        
