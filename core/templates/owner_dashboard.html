@@ -46,9 +46,16 @@
     <li>Message Admin</li>
 </ul>
 
-<a href="{% url 'owner_properties' %}">My Properties</a> |
 <a href="/profile/">My Profile</a> |
+
+<a href="{% url 'create_tenant' %}">
+    Create Tenant Account
+</a> |
+
+<a href="{% url 'owner_properties' %}">
+    My Properties
+</a> |
+
 <a href="/logout/">Logout</a>
 
 {% endblock %}
-7. core/templates/tenant_dashboard.h

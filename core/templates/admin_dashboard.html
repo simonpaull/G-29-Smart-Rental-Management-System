@@ -1,19 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <h2>Admin Dashboard</h2>
+
 <p>Welcome {{ request.user.username }}</p>
 
 <a href="/profile/">My Profile</a> |
+
+<a href="{% url 'create_owner' %}">
+    Create Owner Account
+</a> |
+
 <a href="/logout/">Logout</a>
 
 <hr>
 
 <h3>Payment Management</h3>
-<a href="/payment/owner-dashboard/">Owner Dashboard</a> |
-<a href="/payment/admin-history/">View All Payments</a> |
-<a href="/payment/admin-summary/">Payment Summary</a> |
-<a href="/payment/complaint/admin/">View All Complaints</a> |
-<a href="/payment/utility/">Add Utility Charges</a>
+
+<a href="/payment/owner-dashboard/">
+    Owner Dashboard
+</a> |
+
+<a href="/payment/admin-history/">
+    View All Payments
+</a> |
+
+<a href="/payment/admin-summary/">
+    Payment Summary
+</a> |
+
+<a href="/payment/complaint/admin/">
+    View All Complaints
+</a> |
+
+<a href="/payment/utility/">
+    Add Utility Charges
+</a>
 
 {% endblock %}
