@@ -381,6 +381,21 @@ def chat_room(request, request_id):
         }
     )
 
+@login_required
+def owner_chat(request):
+
+    chat_requests = RoomRequest.objects.filter(
+        room__owner=request.user,
+        status='pending'
+    ).order_by('-created_at')
+
+    return render(
+        request,
+        'owner_chat.html',
+        {
+            'chat_requests': chat_requests
+        }
+    )
 
 def logout_view(request):
     logout(request)
