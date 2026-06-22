@@ -95,11 +95,5 @@ urlpatterns = [
         'verify-email/',
          views.verify_email,
         name='verify_email'
-<<<<<<< HEAD
-),
-   
-=======
     ),
-
->>>>>>> main
 ]
