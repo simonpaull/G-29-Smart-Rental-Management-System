@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
+
+{% block content %}
 <head>
     <title>Admin Panel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,27 +48,36 @@
     </style>
 </head>
 <body>
-    <div class="topbar">
-        <div class="topbar-title">⚙️ Admin Panel — Smart Rental System</div>
-        <div class="topbar-user">
-            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
-            <span class="topbar-username">{{ request.user.get_full_name|default:request.user.username }}</span>
-            <a class="logout-btn" href="/logout/">Logout</a>
-        </div>
-    </div>
+    <h1 style="margin-bottom:10px;">
+        Admin Panel
+    </h1>
 
-    <div class="hero">
-        <h1>System administration</h1>
-        <p>Manage all users, owners, and system-wide settings</p>
-    </div>
-
+    <p style="color:gray;margin-bottom:25px;">
+        Manage all users, owners and system settings
+    </p>
     <div class="stats-row">
         <div class="stat-card"><div class="stat-value purple">{{ total_users }}</div><div class="stat-label">Total users</div></div>
         <div class="stat-card"><div class="stat-value green">{{ total_owners }}</div><div class="stat-label">Owners</div></div>
         <div class="stat-card"><div class="stat-value orange">{{ total_tenants }}</div><div class="stat-label">Tenants</div></div>
         <div class="stat-card"><div class="stat-value red">{{ total_banned }}</div><div class="stat-label">Banned</div></div>
     </div>
+    <div style="padding:0 1rem; margin-bottom:20px;">
 
+        <a href="{% url 'create_owner' %}"
+           style="
+           background:#534AB7;
+           color:white;
+           text-decoration:none;
+           padding:12px 20px;
+           border-radius:10px;
+           display:inline-block;
+           font-weight:bold;">
+
+           + Create Owner Account
+
+        </a>
+
+    </div>
     <div class="section-title" style="color:#A32D2D;">Owner complaints about tenants</div>
     {% if owner_complaints %}
     <div class="table-card" style="margin-bottom: 1rem;">
@@ -197,3 +207,4 @@
     </div>
 </body>
 </html>
+{% endblock %}

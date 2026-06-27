@@ -1,6 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 style="margin-bottom:10px;">
+    Owner Dashboard
+</h1>
+
+<p style="color:#666;margin-bottom:25px;">
+    Manage your properties, payments and complaints.
+</p>
+
     <title>Owner Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -67,22 +76,9 @@
             .topbar-username { display: none; }
         }
     </style>
-</head>
-<body>
-    <div class="topbar">
-        <div class="topbar-title">Smart Rental System</div>
-        <div class="topbar-user">
-            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
-            <span class="topbar-username">{{ request.user.get_full_name|default:request.user.username }}</span>
-            <a class="logout-btn" href="/logout/">Logout</a>
-        </div>
-    </div>
 
-    <div class="hero">
-        <h1>Owner dashboard</h1>
-        <p>Manage your properties, payments and complaints</p>
-    </div>
 
+    
     <div class="stats-row">
         <div class="stat-card">
             <div class="stat-value stat-green">RM {{ total_collected }}</div>
@@ -145,6 +141,28 @@
                 <div class="qa-icon" style="color:#E24B4A;">⚠️</div>
                 <div class="qa-title">Report tenant</div>
                 <div class="qa-sub">File complaint to admin</div>
+            </a>
+            <a class="qa-card" href="{% url 'create_tenant' %}">
+                <div class="qa-icon" style="color:#534AB7;">👤</div>
+
+                <div class="qa-title">
+                    Create Tenant
+                </div>
+
+                <div class="qa-sub">
+                    Create tenant accounts
+                </div>
+            </a>
+            <a class="qa-card" href="{% url 'add_room' %}">
+                <div class="qa-icon" style="color:#3B6D11;">➕</div>
+
+                <div class="qa-title">
+                    Add Room
+                </div>
+
+                <div class="qa-sub">
+                    Create new room listing
+                </div>
             </a>
         </div>
 
@@ -245,5 +263,4 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+{% endblock %}

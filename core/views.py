@@ -25,7 +25,7 @@ def login_view(request):
 
             if hasattr(user, 'profile'):
                 if user.profile.role == 'admin':
-                    return redirect('admin_dashboard')
+                    return redirect('/payment/admin-panel/')
 
                 elif user.profile.role == 'owner':
                     return redirect('owner_dashboard')

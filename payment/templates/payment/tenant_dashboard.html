@@ -1,6 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 style="margin-bottom:10px;">
+    Tenant Dashboard
+</h1>
+
+<p style="color:#666;margin-bottom:25px;">
+    Manage your payments, room and complaints.
+</p>
     <title>My Payments</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -62,8 +70,7 @@
             .stat-card { padding: 0.5rem; }
         }
     </style>
-</head>
-<body>
+
     <div class="topbar">
         <div class="topbar-title">Smart Rental System</div>
         <div class="topbar-user">
@@ -185,5 +192,4 @@
                         🏠 My Room
                 </a>
     </div>
-</body>
-</html>
+{% endblock %}

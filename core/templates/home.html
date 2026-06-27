@@ -15,13 +15,41 @@
 </ul>
 
 {% if request.user.is_authenticated %}
+
     {% if request.user.profile.role == 'admin' %}
-    <p><a href="/payment/owner-dashboard/">Go to my dashboard</a></p>
+
+        <p>
+            <a href="/payment/admin-panel/">
+                Go to my dashboard
+            </a>
+        </p>
+
+    {% elif request.user.profile.role == 'owner' %}
+
+        <p>
+            <a href="/payment/owner-dashboard/">
+                Go to my dashboard
+            </a>
+        </p>
+
     {% elif request.user.profile.role == 'tenant' %}
-    <p><a href="/payment/">Go to my dashboard</a></p>
+
+        <p>
+            <a href="/payment/">
+                Go to my dashboard
+            </a>
+        </p>
+
     {% elif request.user.profile.role == 'prospect' %}
-    <p><a href="/payment/new-tenant/">Browse available rooms</a></p>
+
+        <p>
+            <a href="/payment/new-tenant/">
+                Browse available rooms
+            </a>
+        </p>
+
     {% endif %}
+
 {% endif %}
 
 {% endblock %}

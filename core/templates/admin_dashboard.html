@@ -2,40 +2,90 @@
 
 {% block content %}
 
-<h2>Admin Dashboard</h2>
+<h1>Admin Dashboard</h1>
 
-<p>Welcome {{ request.user.username }}</p>
+<div class="dashboard-grid">
 
-<a href="/profile/">My Profile</a> |
+    <a href="{% url 'create_owner' %}" class="card">
+        <i class="fas fa-user-plus"></i>
+        <h3>Create Owner</h3>
+        <p>Create new owner accounts.</p>
+    </a>
 
-<a href="{% url 'create_owner' %}">
-    Create Owner Account
-</a> |
+    <a href="/payment/admin-history/" class="card">
+        <i class="fas fa-money-bill"></i>
+        <h3>Payments</h3>
+        <p>View payment history.</p>
+    </a>
 
-<a href="/logout/">Logout</a>
+    <a href="/payment/complaint/admin/" class="card">
+        <i class="fas fa-comment"></i>
+        <h3>Complaints</h3>
+        <p>View all complaints.</p>
+    </a>
 
-<hr>
+    <a href="/payment/utility/" class="card">
+        <i class="fas fa-bolt"></i>
+        <h3>Utility Charges</h3>
+        <p>Add utility bills.</p>
+    </a>
 
-<h3>Payment Management</h3>
+</div>
 
-<a href="/payment/owner-dashboard/">
-    Owner Dashboard
-</a> |
+<style>
 
-<a href="/payment/admin-history/">
-    View All Payments
-</a> |
+.dashboard-grid{
 
-<a href="/payment/admin-summary/">
-    Payment Summary
-</a> |
+    display:grid;
 
-<a href="/payment/complaint/admin/">
-    View All Complaints
-</a> |
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 
-<a href="/payment/utility/">
-    Add Utility Charges
-</a>
+    gap:25px;
+
+    margin-top:30px;
+
+}
+
+.card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:30px;
+
+    text-align:center;
+
+    text-decoration:none;
+
+    color:#333;
+
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+
+    transition:0.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+.card i{
+
+    font-size:45px;
+
+    color:#5B50C9;
+
+}
+
+.card h3{
+
+    margin-top:15px;
+
+}
+
+</style>
 
 {% endblock %}
