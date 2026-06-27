@@ -2,59 +2,264 @@
 
 {% block content %}
 
-<h2>Login</h2>
+<style>
+
+.login-container{
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:75vh;
+
+}
+
+.login-card{
+
+    width:420px;
+    background:white;
+    padding:40px;
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,.1);
+
+}
+
+.login-title{
+
+    text-align:center;
+    color:#534AB7;
+    margin-bottom:8px;
+
+}
+
+.login-subtitle{
+
+    text-align:center;
+    color:#777;
+    margin-bottom:30px;
+
+}
+
+.form-group{
+
+    margin-bottom:18px;
+
+}
+
+.form-group label{
+
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+    color:#444;
+
+}
+
+.form-group input{
+
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:15px;
+
+}
+
+.password-box{
+
+    display:flex;
+    gap:8px;
+
+}
+
+.password-box input{
+
+    flex:1;
+
+}
+
+.password-box button{
+
+    width:50px;
+    border:none;
+    background:#534AB7;
+    color:white;
+    border-radius:10px;
+    cursor:pointer;
+
+}
+
+.login-btn{
+
+    width:100%;
+    background:#534AB7;
+    color:white;
+    border:none;
+    padding:13px;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+    margin-top:10px;
+
+}
+
+.login-btn:hover{
+
+    background:#4338A5;
+
+}
+
+.error{
+
+    color:red;
+    text-align:center;
+    margin-top:15px;
+
+}
+
+.links{
+
+    text-align:center;
+    margin-top:25px;
+
+}
+
+.links a{
+
+    color:#534AB7;
+    text-decoration:none;
+    font-weight:600;
+
+}
+
+.links a:hover{
+
+    text-decoration:underline;
+
+}
+
+</style>
+
+<div class="login-container">
+
+<div class="login-card">
+
+<h1 class="login-title">
+Smart Rental System
+</h1>
+
+<p class="login-subtitle">
+Login to continue
+</p>
 
 <form method="POST">
 
-    {% csrf_token %}
+{% csrf_token %}
 
-    <label>Username:</label><br>
-    <input type="text" name="username" required><br><br>
+<div class="form-group">
 
-    <label>Password:</label><br>
+<label>Username</label>
 
-    <div style="display:flex; align-items:center; gap:5px;">
-        <input type="password" id="loginPassword" name="password" required>
+<input
+type="text"
+name="username"
+placeholder="Enter your username"
+required>
 
-        <button type="button" onclick="toggleLoginPassword()">
-            👁
-        </button>
-    </div>
+</div>
 
-    <br>
+<div class="form-group">
 
-    <button type="submit">Login</button>
+<label>Password</label>
+
+<div class="password-box">
+
+<input
+type="password"
+id="loginPassword"
+name="password"
+placeholder="Enter your password"
+required>
+
+<button
+type="button"
+onclick="toggleLoginPassword()">
+
+👁
+
+</button>
+
+</div>
+
+</div>
+
+<button
+class="login-btn"
+type="submit">
+
+Login
+
+</button>
 
 </form>
 
 {% if error %}
-    <p style="color:red;">{{ error }}</p>
+
+<p class="error">
+
+{{ error }}
+
+</p>
+
 {% endif %}
+
+<div class="links">
+
+<p>
+
+<a href="/password-reset/">
+
+Forgot Password?
+
+</a>
+
+</p>
 
 <br>
 
 <p>
-    <a href="/password-reset/">Forgot Password?</a>
+
+Don't have an account?
+
+<a href="/register/">
+
+Register
+
+</a>
+
 </p>
 
-<p>
-    Don’t have an account?
-    <a href="/register/">Register here</a>
-</p>
+</div>
+
+</div>
+
+</div>
 
 <script>
 
-function toggleLoginPassword() {
+function toggleLoginPassword(){
 
-    var passwordInput = document.getElementById("loginPassword");
+    var password=document.getElementById("loginPassword");
 
-    if (passwordInput.type === "password") {
-        passwordInput.type = "text";
+    if(password.type==="password"){
+
+        password.type="text";
+
+    }else{
+
+        password.type="password";
+
     }
 
-    else {
-        passwordInput.type = "password";
-    }
 }
 
 </script>

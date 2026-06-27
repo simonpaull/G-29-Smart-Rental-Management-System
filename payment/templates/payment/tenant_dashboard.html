@@ -1,195 +1,200 @@
 {% extends 'base.html' %}
-
 {% block content %}
+<div class="dashboard-wrapper">
 
-<h1 style="margin-bottom:10px;">
-    Tenant Dashboard
-</h1>
+<h1 class="dashboard-title">Tenant Dashboard</h1>
+<p class="dashboard-subtitle">Manage your payments, room and complaints.</p>
 
-<p style="color:#666;margin-bottom:25px;">
-    Manage your payments, room and complaints.
-</p>
-    <title>My Payments</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #F4F3FF; font-family: Arial, sans-serif; }
-        .topbar { background: #534AB7; padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
-        .topbar-title { color: #fff; font-size: 15px; font-weight: 500; }
-        .topbar-user { display: flex; align-items: center; gap: 8px; }
-        .avatar { width: 32px; height: 32px; border-radius: 50%; background: #EEEDFE; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: #534AB7; flex-shrink: 0; }
-        .topbar-username { color: #EEEDFE; font-size: 13px; }
-        .logout-btn { color: #EEEDFE; font-size: 12px; padding: 4px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; text-decoration: none; margin-left: 4px; }
-        .hero { background: #534AB7; padding: 1.5rem 1.5rem 3rem; color: #fff; width: 100%; }
-        .hero h1 { font-size: clamp(16px,4vw,22px); font-weight: 500; margin-bottom: 4px; }
-        .hero p { font-size: 13px; opacity: 0.8; }
-        .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; padding: 0 1rem; margin-top: -1.5rem; margin-bottom: 1.5rem; }
-        .stat-card { background: #fff; border-radius: 12px; padding: 0.75rem; text-align: center; box-shadow: 0 2px 8px rgba(83,74,183,0.1); }
-        .stat-value { font-size: clamp(16px,4vw,22px); font-weight: 500; margin-bottom: 2px; }
-        .stat-label { font-size: clamp(9px,2vw,11px); color: #888; text-transform: uppercase; letter-spacing: 0.04em; }
-        .stat-red { color: #E24B4A; }
-        .stat-orange { color: #BA7517; }
-        .stat-green { color: #3B6D11; }
-        .content { padding: 0 1rem 2rem; }
-        .section-title { font-size: 12px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.25rem 0 0.75rem; }
-        .section-title-red { font-size: 12px; font-weight: 500; color: #A32D2D; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.25rem 0 0.75rem; }
-        .overdue-card { border: 1px solid #F09595; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 10px; background: #fff; }
-        .overdue-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px; }
-        .overdue-badge { background: #FCEBEB; color: #A32D2D; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
-        .overdue-unit { font-size: 15px; font-weight: 500; color: #333; }
-        .pending-card { border: 0.5px solid #e0e0e0; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 10px; background: #fff; }
-        .pending-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 6px; }
-        .pending-badge { background: #FAEEDA; color: #854F0B; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
-        .pending-unit { font-size: 15px; font-weight: 500; color: #333; }
-        .detail-row { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; color: #666; }
-        .amount-row { display: flex; justify-content: space-between; border-top: 1px solid #eee; margin-top: 8px; padding-top: 8px; }
-        .amount-label { font-size: 13px; font-weight: 500; color: #333; }
-        .amount-value-red { font-size: 16px; font-weight: 500; color: #E24B4A; }
-        .amount-value-purple { font-size: 16px; font-weight: 500; color: #534AB7; }
-        .pay-btn-red { display: block; width: 100%; padding: 12px; background: #E24B4A; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; text-align: center; text-decoration: none; margin-top: 10px; font-weight: 500; }
-        .pay-btn { display: block; width: 100%; padding: 12px; background: #534AB7; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; text-align: center; text-decoration: none; margin-top: 10px; font-weight: 500; }
-        .history-card { background: #fff; border-radius: 12px; overflow: hidden; border: 0.5px solid #e0e0e0; }
-        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .history-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 400px; }
-        .history-table th { text-align: left; padding: 10px 12px; background: #F8F7FF; color: #888; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
-        .history-table td { padding: 10px 12px; border-top: 0.5px solid #f0f0f0; color: #333; }
-        .badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
-        .badge-paid { background: #EAF3DE; color: #3B6D11; }
-        .badge-unpaid { background: #FAEEDA; color: #854F0B; }
-        .badge-overdue { background: #FCEBEB; color: #A32D2D; }
-        .download-link { color: #534AB7; font-size: 13px; font-weight: 500; text-decoration: none; white-space: nowrap; }
-        .empty-msg { font-size: 13px; color: #aaa; padding: 12px; background: #fff; border-radius: 10px; text-align: center; border: 0.5px dashed #ddd; }
-        .complaint-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 0.75rem; }
-        .complaint-btn { padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 500; text-align: center; text-decoration: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .complaint-btn-purple { background: #534AB7; color: #fff; }
-        .complaint-btn-grey { background: #fff; color: #534AB7; border: 1px solid #534AB7; }
-        @media (max-width: 400px) {
-            .complaint-grid { grid-template-columns: 1fr; }
-            .topbar-username { display: none; }
-            .stats-row { gap: 6px; }
-            .stat-card { padding: 0.5rem; }
-        }
-    </style>
+<div class="welcome-card">
+<h2>👋 Welcome back, {{ request.user.first_name|default:request.user.username }}</h2>
+<p>Manage your rental payments, complaints and room information.</p>
+</div>
 
-    <div class="topbar">
-        <div class="topbar-title">Smart Rental System</div>
-        <div class="topbar-user">
-            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
-            <span class="topbar-username">{{ request.user.get_full_name|default:request.user.username }}</span>
-            <a class="logout-btn" href="/logout/">Logout</a>
-        </div>
-    </div>
+<div class="stats-row">
+<div class="stat-card">
+<i class="fa-solid fa-triangle-exclamation red fa-2x"></i>
+<div class="stat-number red">{{ overdue|length }}</div>
+<div class="stat-label">Overdue</div>
+</div>
 
-    <div class="hero">
-        <h1>Welcome back, {{ request.user.get_full_name|default:request.user.username }}</h1>
-        <p>Manage your rental payments and complaints here</p>
-    </div>
+<div class="stat-card">
+<i class="fa-solid fa-clock orange fa-2x"></i>
+<div class="stat-number orange">{{ unpaid|length }}</div>
+<div class="stat-label">Pending</div>
+</div>
 
-    <div class="stats-row">
-        <div class="stat-card">
-            <div class="stat-value stat-red">{{ overdue|length }}</div>
-            <div class="stat-label">Overdue</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value stat-orange">{{ unpaid|length }}</div>
-            <div class="stat-label">Pending</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value stat-green">{{ history|length }}</div>
-            <div class="stat-label">Total</div>
-        </div>
-    </div>
+<div class="stat-card">
+<i class="fa-solid fa-wallet green fa-2x"></i>
+<div class="stat-number green">{{ history|length }}</div>
+<div class="stat-label">Paid Records</div>
+</div>
+</div>
 
-    <div class="content">
-        <div class="section-title-red">⚠️ Overdue payments</div>
-        {% if overdue %}
-            {% for o in overdue %}
-            <div class="overdue-card">
-                <div class="overdue-header">
-                    <span class="overdue-unit">Unit {{ o.unit }}</span>
-                    <span class="overdue-badge">{{ o.payments|length }} overdue payment{{ o.payments|length|pluralize }}</span>
-                </div>
-                <div class="detail-row"><span>Periods</span><span>{{ o.periods|join:", " }}</span></div>
-                <div class="detail-row"><span>Earliest due date</span><span>{{ o.earliest_due }}</span></div>
-                <div class="amount-row">
-                    <span class="amount-label">Total overdue</span>
-                    <span class="amount-value-red">RM {{ o.total }}</span>
-                </div>
-                {% for p in o.payments %}
-                <a class="pay-btn-red" href="/payment/{{ p.id }}/" style="margin-top: {% if forloop.first %}10px{% else %}6px{% endif %};">
-                    Pay {{ p.period }} — RM {{ p.total }}
-                </a>
-                {% endfor %}
-            </div>
-            {% endfor %}
-        {% else %}
-            <div class="empty-msg">No overdue payments</div>
-        {% endif %}
+<div class="section-card">
+<h2 class="section-title">⚠️ Overdue Payments</h2>
+{% if overdue %}
+{% for o in overdue %}
+<div class="overdue-card">
+<div class="overdue-header">
+<span class="overdue-unit">Unit {{ o.unit }}</span>
+<span class="overdue-badge">{{ o.payments|length }} overdue payment{{ o.payments|length|pluralize }}</span>
+</div>
+<div class="detail-row"><span>Periods</span><span>{{ o.periods|join:", " }}</span></div>
+<div class="detail-row"><span>Earliest due</span><span>{{ o.earliest_due }}</span></div>
+<div class="amount-row"><span>Total Overdue</span><strong>RM {{ o.total }}</strong></div>
+{% for p in o.payments %}
+<a class="primary-btn" href="/payment/{{ p.id }}/">Pay {{ p.period }} — RM {{ p.total }}</a>
+{% endfor %}
+</div>
+{% endfor %}
+{% else %}
+<div class="empty-msg">🎉 No overdue payments.</div>
+{% endif %}
+</div>
 
-        <div class="section-title">Pending payments</div>
-        {% if unpaid %}
-            {% for p in unpaid %}
-            <div class="pending-card">
-                <div class="pending-header">
-                    <span class="pending-unit">Unit {{ p.unit }}</span>
-                    <span class="pending-badge">Due {{ p.due_date }}</span>
-                </div>
-                <div class="detail-row"><span>Period</span><span>{{ p.period }}</span></div>
-                <div class="detail-row"><span>Rent</span><span>RM {{ p.rent }}</span></div>
-                <div class="detail-row"><span>Electric</span><span>RM {{ p.electric }}</span></div>
-                <div class="detail-row"><span>Water</span><span>RM {{ p.water }}</span></div>
-                <div class="amount-row">
-                    <span class="amount-label">Total due</span>
-                    <span class="amount-value-purple">RM {{ p.total }}</span>
-                </div>
-                <a class="pay-btn" href="/payment/{{ p.id }}/">Pay now</a>
-            </div>
-            {% endfor %}
-        {% else %}
-            <div class="empty-msg">No pending payments</div>
-        {% endif %}
+<div class="section-card">
+<h2 class="section-title">🕒 Pending Payments</h2>
+{% if unpaid %}
+{% for p in unpaid %}
+<div class="pending-card">
+<div class="pending-header">
+<span class="pending-unit">Unit {{ p.unit }}</span>
+<span class="pending-badge">Due {{ p.due_date }}</span>
+</div>
+<div class="detail-row"><span>Period</span><span>{{ p.period }}</span></div>
+<div class="detail-row"><span>Total</span><span>RM {{ p.total }}</span></div>
+<a class="primary-btn" href="/payment/{{ p.id }}/">Pay Now</a>
+</div>
+{% endfor %}
+{% else %}
+<div class="empty-msg">No pending payments.</div>
+{% endif %}
+</div>
 
-        <div class="section-title">Payment history</div>
-        <div class="history-card">
-            <div class="table-wrapper">
-                <table class="history-table">
-                    <thead>
-                        <tr>
-                            <th>Period</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Receipt</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for p in history %}
-                        <tr>
-                            <td>{{ p.period }}</td>
-                            <td>RM {{ p.total }}</td>
-                            <td><span class="badge badge-{{ p.status }}">{{ p.status|capfirst }}</span></td>
-                            <td>
-                                {% if p.status == 'paid' %}
-                                <a class="download-link" href="/payment/{{ p.id }}/receipt/">Download PDF</a>
-                                {% else %}—{% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr><td colspan="4" style="text-align:center;color:#aaa;padding:16px;">No payment records</td></tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="section-card">
+<h2 class="section-title">📄 Payment History</h2>
+<div class="table-wrapper">
 
-        <div class="section-title">Complaints</div>
-        <div class="complaint-grid">
-            <a class="complaint-btn complaint-btn-purple" href="/payment/complaint/">Submit a complaint</a>
-            <a class="complaint-btn complaint-btn-grey" href="/payment/complaint/status/">View my complaints</a>
-        </div>
-        <div class="section-title">ROOM</div>
-                <a class="pay-btn"
-                    href="/my-room/">
-                        🏠 My Room
-                </a>
-    </div>
+<table class="history-table">
+
+    <thead>
+
+        <tr>
+
+            <th>Period</th>
+
+            <th>Total</th>
+
+            <th>Status</th>
+
+            <th style="text-align:center;">Receipt</th>
+
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for p in history %}
+
+        <tr>
+
+            <td>{{ p.period }}</td>
+
+            <td><strong>RM {{ p.total }}</strong></td>
+
+            <td>
+
+                <span class="badge badge-{{ p.status }}">
+
+                    {{ p.status|capfirst }}
+
+                </span>
+
+            </td>
+
+            <td style="text-align:center;">
+
+                {% if p.status == 'paid' %}
+
+                    <a class="download-btn"
+
+                       href="/payment/{{ p.id }}/receipt/">
+
+                        <i class="fa-solid fa-download"></i>
+
+                        Receipt
+
+                    </a>
+
+                {% else %}
+
+                    <span style="color:#999;">—</span>
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+
+            <td colspan="4" class="empty-table">
+
+                <i class="fa-regular fa-folder-open"></i>
+
+                No payment history found.
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+</div>
+</div>
+
+<div class="section-card">
+<h2 class="section-title">⚡ Quick Actions</h2>
+<div class="action-grid">
+
+    <a href="/payment/complaint/" class="action-card">
+
+        <i class="fa-solid fa-file-circle-plus"></i>
+
+        <h3>Submit Complaint</h3>
+
+        <p>Report maintenance or other issues.</p>
+
+    </a>
+
+    <a href="/payment/complaint/status/" class="action-card">
+
+        <i class="fa-solid fa-clipboard-list"></i>
+
+        <h3>My Complaints</h3>
+
+        <p>View the status of your submitted complaints.</p>
+
+    </a>
+
+    <a href="/my-room/" class="action-card">
+
+        <i class="fa-solid fa-house"></i>
+
+        <h3>My Room</h3>
+
+        <p>View your assigned room information.</p>
+
+    </a>
+
+</div>
+
+</div>
 {% endblock %}

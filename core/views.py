@@ -416,16 +416,13 @@ def owner_dashboard(request):
     if request.user.profile.role != 'owner':
         return redirect('tenant_payment_dashboard')
 
-    new_requests = RoomRequest.objects.filter(
-        room__owner=request.user,
-        status='pending'
-    )
+    new_requests = RoomRequest.objects.all()
 
     return render(
         request,
         'owner_dashboard.html',
         {
-            'new_requests': new_requests
+            'room_requests': new_requests
         }
     )
 

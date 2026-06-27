@@ -1,0 +1,792 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+    margin:0;
+
+    background:#F4F4FF;
+
+    font-family:Arial,sans-serif;
+
+}
+.navbar{
+
+    background:#5A4FCF;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 40px;
+    
+    position:fixed;
+
+    top:0;
+
+    left:0;
+
+    width:100%;
+
+    z-index:1000;
+
+    box-shadow:0 5px 18px rgba(0,0,0,.15);
+
+
+}
+
+.container{
+
+    padding-top:95px;
+
+}
+
+.logo{
+
+    color:white;
+
+    font-size:34px;
+
+    font-weight:700;
+
+    display:flex;
+
+    align-items:baseline;
+
+    gap:8px;
+
+}
+
+.logo span{
+
+    font-size:34px;
+
+    font-weight:700;
+
+}
+
+.nav-links{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:30px;
+
+}
+
+.nav-links a{
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:17px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:8px 0;
+
+    position:relative;
+
+    transition:.3s;
+
+}
+
+.nav-links a::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    bottom:-6px;
+
+    width:0;
+
+    height:3px;
+
+    background:white;
+
+    border-radius:50px;
+
+    transition:.3s ease;
+
+}
+
+.nav-links a:hover::after{
+
+    width:100%;
+
+}
+
+.nav-links a i{
+
+    font-size:15px;
+
+}
+
+.container{
+
+    width:90%;
+
+    max-width:1200px;
+
+    margin:35px auto;
+
+}
+
+.page-title{
+
+    font-size:40px;
+
+    font-weight:bold;
+
+    margin-bottom:8px;
+
+}
+
+.page-subtitle{
+
+    color:#777;
+
+    margin-bottom:35px;
+
+}
+
+.section-heading{
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    margin-bottom:25px;
+
+    color:#333;
+
+}
+
+/* =======================================
+   DASHBOARD
+=======================================*/
+
+.dashboard-wrapper{
+
+    max-width:1300px;
+
+    margin:auto;
+
+}
+
+.dashboard-title{
+
+    font-size:42px;
+
+    font-weight:700;
+
+    color:#222;
+
+    margin-bottom:8px;
+
+}
+
+.dashboard-subtitle{
+
+    color:#666;
+
+    font-size:17px;
+
+    margin-bottom:35px;
+
+}
+
+.welcome-card{
+
+    background:linear-gradient(135deg,#534AB7,#675BDC);
+
+    border-radius:22px;
+
+    color:white;
+
+    padding:35px;
+
+    box-shadow:0 15px 35px rgba(83,74,183,.25);
+
+    margin-bottom:35px;
+
+}
+
+.welcome-card h2{
+
+    font-size:34px;
+
+    margin-bottom:10px;
+
+}
+
+.welcome-card p{
+
+    font-size:17px;
+
+    opacity:.9;
+
+}
+
+.stats-row{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+    gap:25px;
+
+    margin-bottom:40px;
+
+}
+
+.stat-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:30px;
+
+    text-align:center;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+    transition:all .3s ease;
+
+    cursor:pointer;
+
+    border:2px solid transparent;
+
+}
+
+.stat-card:hover{
+
+    transform:translateY(-10px);
+
+    box-shadow:0 18px 35px rgba(0,0,0,.15);
+
+    border-color:#5A4FCF;
+
+}
+
+.stat-card i{
+
+    transition:.3s;
+
+}
+
+.stat-card:hover i{
+
+    transform:scale(1.15) rotate(-8deg);
+
+}
+
+.stat-number{
+
+    font-size:42px;
+
+    font-weight:bold;
+
+    margin-top:10px;
+
+}
+
+.stat-label{
+
+    color:#777;
+
+    margin-top:8px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    font-size:13px;
+
+}
+
+.red{
+
+    color:#E74C3C;
+
+}
+
+.orange{
+
+    color:#F39C12;
+
+}
+
+.green{
+
+    color:#2ECC71;
+
+}
+
+.section-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:25px;
+
+    margin-bottom:25px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.section-title{
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    margin-bottom:20px;
+
+    color:#333;
+
+}
+
+.primary-btn{
+
+    background:#534AB7;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:14px 24px;
+
+    border-radius:10px;
+
+    display:inline-block;
+
+    transition:.25s;
+
+    font-weight:600;
+
+}
+
+.primary-btn:hover{
+
+    background:#4337B5;
+
+    transform:translateY(-3px);
+
+}
+
+.secondary-btn{
+
+    background:white;
+
+    border:2px solid #534AB7;
+
+    color:#534AB7;
+
+    text-decoration:none;
+
+    padding:14px 24px;
+
+    border-radius:10px;
+
+    display:inline-block;
+
+    transition:.25s;
+
+    font-weight:600;
+
+}
+
+.secondary-btn:hover{
+
+    background:#534AB7;
+
+    color:white;
+
+}
+
+.stat-card{
+
+    transition:.25s;
+
+}
+
+.stat-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 15px 30px rgba(0,0,0,.12);
+
+}
+
+/* ===========================
+   Payment History Table
+=========================== */
+
+.table-wrapper{
+
+    overflow-x:auto;
+
+}
+
+.history-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:10px;
+
+}
+
+.history-table thead{
+
+    background:#F5F4FF;
+
+}
+
+.history-table th{
+
+    padding:16px;
+
+    text-align:left;
+
+    color:#555;
+
+    font-size:14px;
+
+    border-bottom:2px solid #E5E5E5;
+
+}
+
+.history-table td{
+
+    padding:16px;
+
+    border-bottom:1px solid #ECECEC;
+
+    font-size:15px;
+
+}
+
+.history-table tbody tr{
+
+    transition:.25s;
+
+}
+
+.history-table tbody tr:hover{
+
+    background:#F8F8FF;
+
+}
+
+.download-btn{
+
+    color:#534AB7;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+}
+
+.download-btn:hover{
+
+    text-decoration:underline;
+
+}
+
+.empty-table{
+
+    text-align:center;
+
+    color:#999;
+
+    padding:35px !important;
+
+}
+
+.empty-table i{
+
+    margin-right:8px;
+
+}
+
+.empty-msg{
+
+    text-align:center;
+
+    color:#777;
+
+    padding:18px;
+
+    background:#F9F9FF;
+
+    border:2px dashed #D8D8F7;
+
+    border-radius:12px;
+
+    margin-top:15px;
+
+}
+
+/* ===========================
+   Quick Action Cards
+=========================== */
+
+.action-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+    gap:25px;
+
+    margin-top:20px;
+
+}
+
+.action-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:30px;
+
+    text-decoration:none;
+
+    color:#333;
+
+    text-align:center;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+    transition:.25s;
+
+    border:2px solid transparent;
+
+}
+
+.action-card:hover{
+
+    transform:translateY(-8px);
+
+    border-color:#5A4FCF;
+
+    box-shadow:0 15px 30px rgba(0,0,0,.12);
+
+}
+
+.action-card i{
+
+    font-size:45px;
+
+    color:#5A4FCF;
+
+    margin-bottom:18px;
+
+}
+
+.action-card h3{
+
+    font-size:22px;
+
+    margin-bottom:10px;
+
+}
+
+.action-card p{
+
+    color:#777;
+
+    font-size:15px;
+
+    line-height:1.5;
+
+}
+
+/* ===========================
+        ROOM LISTING
+===========================*/
+
+.room-container{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(330px,1fr));
+
+    gap:30px;
+
+    margin-top:30px;
+
+}
+
+.room-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+    border:2px solid transparent;
+
+}
+
+.room-card:hover{
+
+    transform:translateY(-8px);
+
+    border-color:#5A4FCF;
+
+    box-shadow:0 20px 40px rgba(0,0,0,.15);
+
+}
+
+.room-header{
+
+    background:linear-gradient(135deg,#534AB7,#675BDC);
+
+    color:white;
+
+    padding:22px;
+
+}
+
+.room-header h3{
+
+    margin:0;
+
+    font-size:24px;
+
+}
+
+.room-body{
+
+    padding:25px;
+
+}
+
+.room-info{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:16px;
+
+    border-bottom:1px solid #EEE;
+
+    padding-bottom:10px;
+
+}
+
+.room-label{
+
+    color:#777;
+
+    font-weight:600;
+
+}
+
+.room-value{
+
+    font-weight:bold;
+
+}
+
+.available{
+
+    background:#E8F7EC;
+
+    color:#1D7A34;
+
+    padding:6px 12px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+}
+
+.unavailable{
+
+    background:#FFE8E8;
+
+    color:#C62828;
+
+    padding:6px 12px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+}
+
+.room-description{
+
+    margin:18px 0;
+
+    color:#666;
+
+    line-height:1.6;
+
+}
+
+.room-btn{
+
+    display:block;
+
+    width:100%;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    text-align:center;
+
+    text-decoration:none;
+
+    background:#534AB7;
+
+    color:white;
+
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.room-btn:hover{
+
+    background:#4337B5;
+
+}

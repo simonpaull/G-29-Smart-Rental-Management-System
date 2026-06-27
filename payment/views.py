@@ -353,11 +353,15 @@ def admin_create_payment(request):
         'year_choices': ['2025', '2026', '2027'],
     })
 
-@login_required(login_url='/login/')
+@login_required
 def owner_dashboard(request):
-    if request.user.profile.role not in ['admin', 'owner']:
+
+    print("PAYMENT OWNER DASHBOARD IS RUNNING")
+
+    if request.user.profile.role != 'owner':
         return redirect('tenant_payment_dashboard')
 
+    ...
     check_overdue_payments()
 
     total_collected = sum(p.total() for p in Payment.objects.filter(status='paid'))
@@ -375,6 +379,21 @@ def owner_dashboard(request):
             room__owner=request.user,
             status='pending'
         ).order_by('-created_at')
+        print("Logged in owner:", request.user.username)
+
+        for room in rooms:
+            print("Owner room:", room.roomnumber, "| owner =", room.owner)
+
+        print("Pending requests:", room_requests.count())
+
+        for r in RoomRequest.objects.all():
+            print(
+                 "Request:",
+                 r.id,
+                 "| Room:", r.room.roomnumber,
+                 "| Room owner:", r.room.owner,
+                 "| Status:", r.status
+    )
     except Exception:
         pass
 

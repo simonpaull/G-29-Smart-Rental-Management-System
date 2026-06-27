@@ -1,115 +1,138 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<style>
 
-.room-container{
-    display:grid;
-    gap:16px;
-    max-width:500px;
-    margin:auto;
-}
+<div class="dashboard-wrapper">
 
-.room-card{
-    background:#fff;
-    border-radius:12px;
-    padding:1.25rem;
-    border:0.5px solid #e0e0e0;
-    transition:0.2s;
-}
+    <h1 class="dashboard-title">
+        <i class="fa-solid fa-house"></i>
+        Available Rooms
+    </h1>
 
-.room-card:hover{
-    transform:translateY(-2px);
-}
+    <p class="dashboard-subtitle">
+        Browse available rooms and contact the owner if you're interested.
+    </p>
 
-.room-card h3{
-    color:#333;
-    font-size:15px;
-    font-weight:500;
-    margin-bottom:12px;
-    padding-bottom:10px;
-    border-bottom:0.5px solid #f0f0f0;
-}
+    <div class="room-container">
 
-.available{
-    color:#3B6D11;
-    background:#EAF3DE;
-    padding:4px 10px;
-    border-radius:20px;
-    font-size:13px;
-}
-
-.unavailable{
-    color:#B42318;
-    background:#FEE4E2;
-    padding:4px 10px;
-    border-radius:20px;
-    font-size:13px;
-}
-
-.room-btn{
-    display:block;
-    width:100%;
-    box-sizing:border-box;
-    margin-top:15px;
-    padding:13px;
-    background:#534AB7;
-    color:#fff;
-    border-radius:8px;
-    text-align:center;
-    text-decoration:none;
-    font-size:15px;
-    font-weight:500;
-}
-
-.room-btn:hover{
-    background:#3C3489;
-}
-
-</style>
-
-<div class="room-container">
-    {% for room in rooms %}
+        {% for room in rooms %}
 
         <div class="room-card">
-            <h3>🏠 Room {{ room.roomnumber }}</h3>
 
-            <p>Room Type : {{ room.roomtype }}</p>
+            <div class="room-header">
 
-            <p>Size : {{ room.size }}</p>
+                <h3>
+                    <i class="fa-solid fa-house"></i>
+                    Room {{ room.roomnumber }}
+                </h3>
 
-            <p>Price : RM {{ room.price }}</p>
+            </div>
 
-            <p>
-                Availability :
+            <div class="room-body">
 
-                {% if room.tenant_set.count >= room.capacity %}
-                    <span class="unavailable">
-                        ❌ Full
+                <div class="room-info">
+
+                    <span class="room-label">
+                        <i class="fa-solid fa-layer-group"></i>
+                        Room Type
                     </span>
-                {% else %}
-                    <span class="available">
-                        ✅ Available
+
+                    <span class="room-value">
+                        {{ room.roomtype }}
                     </span>
+
+                </div>
+
+                <div class="room-info">
+
+                    <span class="room-label">
+                        <i class="fa-solid fa-ruler-combined"></i>
+                        Size
+                    </span>
+
+                    <span class="room-value">
+                        {{ room.size }}
+                    </span>
+
+                </div>
+
+                <div class="room-info">
+
+                    <span class="room-label">
+                        <i class="fa-solid fa-money-bill-wave"></i>
+                        Monthly Rent
+                    </span>
+
+                    <span class="room-value">
+                        RM {{ room.price }}
+                    </span>
+
+                </div>
+
+                <div class="room-info">
+
+                    <span class="room-label">
+                        <i class="fa-solid fa-circle-check"></i>
+                        Status
+                    </span>
+
+                    {% if room.tenant_set.count >= room.capacity %}
+
+                        <span class="unavailable">
+                            Full
+                        </span>
+
+                    {% else %}
+
+                        <span class="available">
+                            Available
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="room-description">
+
+                    {{ room.description }}
+
+                </div>
+
+                {% if room.tenant_set.count < room.capacity %}
+
+                    <a href="{% url 'request_room' room.id %}" class="room-btn">
+
+                        <i class="fa-solid fa-paper-plane"></i>
+
+                        PM Owner
+
+                    </a>
+
                 {% endif %}
-            </p>
 
-            <p>
-                {{ room.description }}
-            </p>
-
-
-            {% if room.tenant_set.count < room.capacity %}
-                <a href="{% url 'request_room' room.id %}" class="room-btn">
-                    PM Owner
-                </a>
-            {% endif %}    
+            </div>
 
         </div>
-        
-    {% empty %}
-        <p>No rooms available.</p>
-    {% endfor %}
+
+        {% empty %}
+
+        <div class="section-card">
+
+            <div class="empty-msg">
+
+                <i class="fa-solid fa-house-circle-xmark fa-2x"></i>
+
+                <br><br>
+
+                No rooms available at the moment.
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
 
 </div>
 

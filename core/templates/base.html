@@ -1,66 +1,20 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Rental System</title>
 
     <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    <title>Smart Rental Management System</title>
-
-    <style>
-
-        body{
-            margin:0;
-            font-family:Arial, sans-serif;
-            background:#f5f5f5;
-        }
-
-        .navbar{
-
-            background:#5B50C9;
-            padding:15px 40px;
-
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-
-        }
-
-        .logo{
-
-            color:white;
-            font-size:24px;
-            font-weight:bold;
-
-        }
-
-        .nav-links a{
-
-            color:white;
-            text-decoration:none;
-
-            margin-left:20px;
-
-            font-size:16px;
-            font-weight:500;
-
-        }
-
-        .nav-links a:hover{
-
-            text-decoration:underline;
-
-        }
-
-        .container{
-
-            padding:30px;
-
-        }
-
-    </style>
+    <link rel="stylesheet"
+          href="{% static 'css/style.css' %}">
 
 </head>
 
@@ -70,43 +24,70 @@
 
     <div class="logo">
 
-        Smart Rental System
+        Smart Rental <span>System</span>
 
     </div>
 
     <div class="nav-links">
 
-        <a href="/">Home</a>
+        <a href="/">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
 
         {% if user.is_authenticated %}
 
             {% if user.profile.role == 'admin' %}
 
-                <a href="/payment/admin-panel/">Dashboard</a>
+                <a href="/payment/admin-panel/">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
 
             {% elif user.profile.role == 'owner' %}
 
-                <a href="/payment/owner-dashboard/">Dashboard</a>
+                <a href="/payment/owner-dashboard/">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
 
             {% elif user.profile.role == 'prospect' %}
 
-                <a href="/prospect-dashboard/">Dashboard</a>
+                <a href="/prospect-dashboard/">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
 
             {% elif user.profile.role == 'tenant' %}
 
-                <a href="/payment/tenant-dashboard/">Dashboard</a>
+                <a href="/payment/">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
 
             {% endif %}
 
-            <a href="/profile/">Profile</a>
+            <a href="/profile/">
+                <i class="fa-regular fa-user"></i>
+                Profile
+            </a>
 
-            <a href="/logout/">Logout</a>
+            <a href="/logout/">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
 
         {% else %}
 
-            <a href="/login/">Login</a>
+            <a href="/login/">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Login
+            </a>
 
-            <a href="/register/">Register</a>
+            <a href="/register/">
+                <i class="fa-solid fa-user-plus"></i>
+                Register
+            </a>
 
         {% endif %}
 
