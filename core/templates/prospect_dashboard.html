@@ -4,17 +4,54 @@
 
 <style>
 .page-container{max-width:1200px;margin:0 auto;}
-.welcome-card{background:linear-gradient(135deg,#534AB7,#6D63D8);color:#fff;border-radius:18px;padding:30px;margin-bottom:30px;box-shadow:0 8px 20px rgba(83,74,183,.25);}
+.welcome-card{
+    background:linear-gradient(135deg,#534AB7,#7166F2);
+    color:#fff;
+    border-radius:22px;
+    padding:35px;
+    margin-bottom:35px;
+    box-shadow:0 15px 35px rgba(83,74,183,.25);
+}
 .welcome-card h1{margin:0 0 8px;font-size:30px;}
 .welcome-card p{margin:0;opacity:.9;}
 .section-title{color:#777;text-transform:uppercase;font-size:13px;font-weight:700;letter-spacing:1px;margin:20px 0;}
 .qa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:25px;}
-.qa-card{background:#fff;border-radius:18px;text-decoration:none;color:#333;padding:28px;min-height:190px;display:flex;flex-direction:column;justify-content:center;align-items:center;border:2px solid transparent;box-shadow:0 5px 15px rgba(0,0,0,.08);transition:.25s;}
-.qa-card:hover{transform:translateY(-6px);border-color:#534AB7;}
-.qa-icon{font-size:48px;margin-bottom:16px;}
+.qa-card{
+    background:#fff;
+    border-radius:18px;
+    text-decoration:none;
+    color:#333;
+    padding:28px;
+    min-height:190px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    border:2px solid transparent;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    transition:all .3s ease;
+}
+
+.qa-card:hover{
+    transform:translateY(-8px) scale(1.02);
+    border-color:#534AB7;
+    box-shadow:0 12px 30px rgba(83,74,183,.25);
+}
+.qa-icon{
+    font-size:58px;
+    margin-bottom:18px;
+    transition:.3s;
+}
+.qa-card:hover .qa-icon{
+    transform:scale(1.15);
+}
 .qa-title{font-size:18px;font-weight:bold;text-align:center;}
 .qa-sub{margin-top:8px;color:#777;text-align:center;font-size:13px;}
-.disabled-card{opacity:.7;}
+.disabled-card{
+    opacity:.55;
+    cursor:not-allowed;
+    filter:grayscale(40%);
+}
 </style>
 
 <div class="page-container">

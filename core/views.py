@@ -94,13 +94,14 @@ def add_room(request):
         description = request.POST.get('description')
 
         Room.objects.create(
-            roomnumber=roomnumber,
-            roomtype=roomtype,
-            capacity=capacity,
-            size=size,
-            price=price,
-            description=description
-        )
+           owner=request.user,
+           roomnumber=roomnumber,
+           roomtype=roomtype,
+           capacity=capacity,
+           size=size,
+           price=price,
+           description=description
+      )
 
         return redirect('owner_properties')
 
@@ -316,12 +317,14 @@ def update_request_status(request, request_id, status):
     if status not in ['accepted', 'rejected', 'pending']:
         return redirect('owner_dashboard')
 
-    room_request = RoomRequest.objects.get(
-        id=request_id
-    )
+    room_request = RoomRequest.objects.get(id=request_id)
+
+    print("Before:", room_request.status)
 
     room_request.status = status
     room_request.save()
+
+    print("After:", room_request.status)
 
     return redirect(
         'assign_tenant',
@@ -353,6 +356,16 @@ def chat_room(request, request_id):
     ):
         return redirect('dashboard')
 
+    # Mark all messages from the OTHER user as read
+    ChatMessage.objects.filter(
+        room_request=room_request,
+        read=False
+    ).exclude(
+        sender=request.user
+    ).update(
+        read=True
+    )
+
     messages = ChatMessage.objects.filter(
         room_request=room_request
     ).order_by('created_at')
@@ -364,7 +377,8 @@ def chat_room(request, request_id):
         ChatMessage.objects.create(
             room_request=room_request,
             sender=request.user,
-            message=message
+            message=message,
+            read=False
         )
 
         return redirect(
@@ -568,6 +582,32 @@ def verify_email(request):
         'verify_email.html'
     )
 
+from django.http import JsonResponse
+
+def resend_otp(request):
+
+    data = request.session.get('registration_data')
+
+    if not data:
+        return JsonResponse({
+            'success': False
+        })
+
+    otp = str(random.randint(100000, 999999))
+
+    request.session['otp'] = otp
+
+    send_mail(
+        'Email Verification',
+        f'Your new verification code is: {otp}',
+        settings.EMAIL_HOST_USER,
+        [data['email']],
+        fail_silently=False,
+    )
+
+    return JsonResponse({
+        'success': True
+    })
 
 @login_required
 def cancel_application(request, request_id):

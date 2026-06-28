@@ -10,8 +10,8 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet
 from .models import Payment, Complaint, RentalContract
 from .utils import check_overdue_payments, auto_detect_priority
-
 import io
+
 
 def generate_receipt_pdf(payment):
     buffer = io.BytesIO()
@@ -370,32 +370,45 @@ def owner_dashboard(request):
     pending_complaints = Complaint.objects.filter(status='pending').order_by('priority')
     recent_payments = Payment.objects.all().order_by('-due_date')[:5]
 
-    rooms = []
-    room_requests = []
-    try:
-        from core.models import Room, RoomRequest
-        rooms = Room.objects.filter(owner=request.user)
-        room_requests = RoomRequest.objects.filter(
-            room__owner=request.user,
-            status='pending'
-        ).order_by('-created_at')
-        print("Logged in owner:", request.user.username)
+    from core.models import Room, RoomRequest, ChatMessage
+    
+    rooms = Room.objects.filter(owner=request.user)
 
-        for room in rooms:
-            print("Owner room:", room.roomnumber, "| owner =", room.owner)
+    room_requests = RoomRequest.objects.filter(
+        room__owner=request.user,
+        status='pending'
+    ).order_by('-created_at')
+    
+    unread_messages = ChatMessage.objects.filter(
+        room_request__room__owner=request.user,
+        read=False
+    ).exclude(
+        sender=request.user
+    ).values(
+        'room_request'
+    ).distinct().count()
+    total_rooms = len(rooms)
 
-        print("Pending requests:", room_requests.count())
-
-        for r in RoomRequest.objects.all():
-            print(
-                 "Request:",
-                 r.id,
-                 "| Room:", r.room.roomnumber,
-                 "| Room owner:", r.room.owner,
-                 "| Status:", r.status
+    occupied_rooms = sum(
+        1 for room in rooms
+        if room.tenant_set.count() >= room.capacity
     )
-    except Exception:
-        pass
+
+    print("Logged in owner:", request.user.username)
+
+    for room in rooms:
+        print("Owner room:", room.roomnumber, "| owner =", room.owner)
+
+    print("Pending requests:", room_requests.count())
+
+    for r in RoomRequest.objects.all():
+        print(
+            "Request:",
+            r.id,
+            "| Room:", r.room.roomnumber,
+            "| Room owner:", r.room.owner,
+            "| Status:", r.status
+        )
 
     return render(request, 'payment/owner_dashboard.html', {
         'total_collected': total_collected,
@@ -405,6 +418,9 @@ def owner_dashboard(request):
         'rooms': rooms,
         'room_requests': room_requests,
         'recent_payments': recent_payments,
+        'total_rooms': total_rooms,
+        'occupied_rooms': occupied_rooms,
+        'unread_messages': unread_messages,
     })
 
 @login_required(login_url='/login/')
@@ -566,3 +582,4 @@ def owner_complaint_submit(request):
     return render(request, 'payment/owner_complaint_submit.html', {
         'tenants': tenants
     })
+    

@@ -5,14 +5,17 @@
     font-family:Arial, Helvetica, sans-serif;
 }
 
+html{
+    height:100%;
+}
+
 body{
-
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
     margin:0;
-
-    background:#F4F4FF;
-
+    background:#F4F3FF;
     font-family:Arial,sans-serif;
-
 }
 .navbar{
 
@@ -138,13 +141,10 @@ body{
 }
 
 .container{
-
     width:90%;
-
     max-width:1200px;
-
     margin:35px auto;
-
+    flex:1;
 }
 
 .page-title{
@@ -789,4 +789,138 @@ body{
 
     background:#4337B5;
 
+}
+
+/* ===========================
+   Owner Request Cards
+=========================== */
+
+.request-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:24px;
+
+    margin-bottom:20px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+.request-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 15px 30px rgba(0,0,0,.12);
+
+}
+
+.request-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    margin-bottom:18px;
+
+}
+
+.request-top h3{
+
+    margin:0;
+
+    font-size:20px;
+
+}
+
+.request-room{
+
+    color:#666;
+
+    margin-top:8px;
+
+}
+
+.request-date{
+
+    color:#999;
+
+    font-size:14px;
+
+    margin-top:5px;
+
+}
+
+.request-message{
+
+    background:#F7F7FD;
+
+    border-left:4px solid #5A4FCF;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    margin-bottom:20px;
+
+    color:#555;
+
+}
+
+.request-actions{
+
+    text-align:right;
+
+}
+
+.review-btn{
+
+    display:inline-block;
+
+    padding:12px 24px;
+
+    background:#5A4FCF;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:10px;
+
+    font-weight:600;
+
+    transition:.3s;
+
+}
+
+.review-btn:hover{
+
+    background:#463DB0;
+
+    transform:translateY(-2px);
+
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+
+
+.footer{
+    width:100%;
+    background:#534AB7;
+    color:white;
+    text-align:center;
+    padding:18px 0;
+    margin-top:auto;
+}
+
+.footer p{
+    margin:0;
 }

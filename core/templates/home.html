@@ -1,55 +1,297 @@
-{% extends 'base.html' %}
+{{% extends 'base.html' %}
 
 {% block content %}
-<h2>Welcome Page</h2>
 
-<p>This is our Smart Rental Management System homepage.</p>
+<style>
 
-<p>Our features include:</p>
+.hero{
+    background:linear-gradient(135deg,#534AB7,#7166F2);
+    color:white;
+    border-radius:24px;
+    padding:60px 50px;
+    text-align:center;
+    box-shadow:0 15px 35px rgba(83,74,183,.25);
+    margin-bottom:50px;
+}
+
+.hero h1{
+    font-size:48px;
+    margin-bottom:15px;
+}
+
+.hero p{
+    font-size:20px;
+    opacity:.95;
+    max-width:750px;
+    margin:auto;
+    line-height:1.8;
+}
+
+.hero-buttons{
+    margin-top:35px;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.hero-btn{
+    background:white;
+    color:#534AB7;
+    padding:15px 35px;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.hero-btn:hover{
+    transform:translateY(-4px);
+    box-shadow:0 10px 20px rgba(0,0,0,.2);
+}
+
+.section-title{
+    text-align:center;
+    font-size:32px;
+    color:#534AB7;
+    margin-bottom:40px;
+    font-weight:bold;
+}
+
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:30px;
+    margin-bottom:60px;
+}
+
+.feature-card{
+    background:white;
+    border-radius:18px;
+    padding:35px;
+    text-align:center;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.feature-card:hover{
+    transform:translateY(-8px);
+}
+
+.feature-icon{
+    font-size:60px;
+    margin-bottom:20px;
+}
+
+.feature-title{
+    font-size:22px;
+    font-weight:bold;
+    margin-bottom:15px;
+    color:#534AB7;
+}
+
+.feature-text{
+    color:#666;
+    line-height:1.7;
+}
+
+.role-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:30px;
+}
+
+.role-card{
+    background:white;
+    border-radius:18px;
+    padding:35px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    text-align:center;
+}
+
+.role-card h3{
+    color:#534AB7;
+    margin-bottom:15px;
+    font-size:24px;
+}
+
+.role-card ul{
+    list-style:none;
+    padding:0;
+    margin:0;
+}
+
+.role-card li{
+    padding:8px 0;
+    color:#555;
+}
+
+</style>
+
+<div class="hero">
+
+    <h1>🏠 Smart Rental System</h1>
+
+    <p>
+        A complete rental management platform that helps property owners,
+        tenants, and prospective tenants manage rooms, payments,
+        applications, complaints and communication in one place.
+    </p>
+
+    <div class="hero-buttons">
+
+        {% if request.user.is_authenticated %}
+
+            {% if request.user.profile.role == 'admin' %}
+                <a href="/payment/admin-panel/" class="hero-btn">Go to Dashboard</a>
+
+            {% elif request.user.profile.role == 'owner' %}
+                <a href="/payment/owner-dashboard/" class="hero-btn">Go to Dashboard</a>
+
+            {% elif request.user.profile.role == 'tenant' %}
+                <a href="/payment/" class="hero-btn">Go to Dashboard</a>
+
+            {% elif request.user.profile.role == 'prospect' %}
+                <a href="/prospect-dashboard/" class="hero-btn">Go to Dashboard</a>
+
+            {% endif %}
+
+        {% else %}
+
+            <a href="/login/" class="hero-btn">Login</a>
+
+            <a href="/register/" class="hero-btn">Register</a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<h2 class="section-title">
+Why Choose Our System?
+</h2>
+
+<div class="feature-grid">
+
+    <div class="feature-card">
+
+        <div class="feature-icon">🏠</div>
+
+        <div class="feature-title">
+            Room Listings
+        </div>
+
+        <div class="feature-text">
+            Browse available rooms with pricing, capacity,
+            room size and availability information.
+        </div>
+
+    </div>
+
+    <div class="feature-card">
+
+        <div class="feature-icon">💬</div>
+
+        <div class="feature-title">
+            Direct Messaging
+        </div>
+
+        <div class="feature-text">
+            Prospective tenants can communicate directly
+            with property owners before renting.
+        </div>
+
+    </div>
+
+    <div class="feature-card">
+
+        <div class="feature-icon">💳</div>
+
+        <div class="feature-title">
+            Payment Management
+        </div>
+
+        <div class="feature-text">
+            Track monthly rental payments,
+            overdue payments and payment history.
+        </div>
+
+    </div>
+
+    <div class="feature-card">
+
+        <div class="feature-icon">📋</div>
+
+        <div class="feature-title">
+            Complaint System
+        </div>
+
+        <div class="feature-text">
+            Submit and manage maintenance
+            complaints quickly and efficiently.
+        </div>
+
+    </div>
+
+</div>
+
+<h2 class="section-title">
+User Roles
+</h2>
+
+<div class="role-grid">
+
+<div class="role-card">
+
+<h3>👤 Prospect</h3>
+
 <ul>
-    <li>User login</li>
-    <li>Room listing</li>
-    <li>Booking management</li>
-    <li>Payment tracking</li>
-    <li>Complaint management</li>
+
+<li>✔ Browse Rooms</li>
+
+<li>✔ Submit Applications</li>
+
+<li>✔ Chat with Owners</li>
+
 </ul>
 
-{% if request.user.is_authenticated %}
+</div>
 
-    {% if request.user.profile.role == 'admin' %}
+<div class="role-card">
 
-        <p>
-            <a href="/payment/admin-panel/">
-                Go to my dashboard
-            </a>
-        </p>
+<h3>🏠 Owner</h3>
 
-    {% elif request.user.profile.role == 'owner' %}
+<ul>
 
-        <p>
-            <a href="/payment/owner-dashboard/">
-                Go to my dashboard
-            </a>
-        </p>
+<li>✔ Manage Rooms</li>
 
-    {% elif request.user.profile.role == 'tenant' %}
+<li>✔ Approve Applications</li>
 
-        <p>
-            <a href="/payment/">
-                Go to my dashboard
-            </a>
-        </p>
+<li>✔ Manage Tenants</li>
 
-    {% elif request.user.profile.role == 'prospect' %}
+<li>✔ Create Payments</li>
 
-        <p>
-            <a href="/prospect-dashboard/">
-                Go to my dashboard
-            </a>
-        </p>
+</ul>
 
-    {% endif %}
+</div>
 
-{% endif %}
+<div class="role-card">
+
+<h3>🛠 Administrator</h3>
+
+<ul>
+
+<li>✔ Manage Owners</li>
+
+<li>✔ Monitor Complaints</li>
+
+<li>✔ Manage System</li>
+
+</ul>
+
+</div>
+
+</div>
 
 {% endblock %}

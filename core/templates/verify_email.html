@@ -1,34 +1,359 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Email Verification</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+.verify-container{
+    max-width:600px;
+    margin:50px auto;
+}
+
+.verify-card{
+    background:#fff;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    animation:fadeIn .35s ease;
+}
+
+.verify-header{
+    background:linear-gradient(135deg,#534AB7,#6E63E8);
+    color:white;
+    text-align:center;
+    padding:45px;
+}
+
+.verify-icon{
+    width:100px;
+    height:100px;
+    margin:0 auto 20px;
+    border-radius:50%;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:52px;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+.verify-header h2{
+    margin:0;
+    font-size:34px;
+}
+
+.verify-header p{
+    margin-top:10px;
+    opacity:.9;
+    font-size:17px;
+}
+
+.verify-body{
+    padding:40px;
+}
+
+.form-group{
+    margin-bottom:25px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:10px;
+    font-weight:600;
+    color:#444;
+    font-size:17px;
+}
+
+.form-group input{
+    width:100%;
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:18px;
+    text-align:center;
+    letter-spacing:4px;
+    transition:.3s;
+    box-sizing:border-box;
+}
+
+.form-group input:focus{
+    outline:none;
+    border-color:#534AB7;
+    box-shadow:0 0 8px rgba(83,74,183,.2);
+}
+
+.verify-btn{
+    width:100%;
+    background:#534AB7;
+    color:white;
+    border:none;
+    padding:15px;
+    border-radius:10px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.verify-btn:hover{
+    background:#4339A6;
+    transform:translateY(-2px);
+}
+
+.error-box{
+    background:#FDECEC;
+    color:#C0392B;
+    border-left:5px solid #E74C3C;
+    border-radius:10px;
+    padding:15px;
+    margin-bottom:25px;
+}
+
+.back-link{
+    text-align:center;
+    margin-top:25px;
+}
+
+.back-link a{
+    color:#534AB7;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+.back-link a:hover{
+    text-decoration:underline;
+}
+
+@keyframes fadeIn{
+
+from{
+opacity:0;
+transform:translateY(15px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+@media(max-width:700px){
+
+.verify-body{
+padding:25px;
+}
+
+}
+.resend-area{
+
+    margin-top:18px;
+
+    text-align:center;
+
+}
+
+.resend-btn{
+
+    background:none;
+
+    border:none;
+
+    color:#999;
+
+    font-size:15px;
+
+    cursor:not-allowed;
+
+    font-weight:bold;
+
+}
+
+.resend-btn.active{
+
+    color:#534AB7;
+
+    cursor:pointer;
+
+}
+
+.resend-btn.active:hover{
+
+    text-decoration:underline;
+
+}
+</style>
+
+<div class="verify-container">
+
+<div class="verify-card">
+
+<div class="verify-header">
+
+<div class="verify-icon">
+📧
+</div>
 
 <h2>Email Verification</h2>
 
-<p>Enter the verification code sent to your email.</p>
+<p>
+We've sent a 6-digit verification code to your email address.
+</p>
+
+</div>
+
+<div class="verify-body">
 
 <form method="POST">
-    {% csrf_token %}
 
-    <input
-        type="text"
-        name="otp"
-        placeholder="Enter 6-digit code"
-        required
-    >
-
-    <button type="submit">
-        Verify
-    </button>
-</form>
+{% csrf_token %}
 
 {% if error %}
-<p style="color:red;">
-    {{ error }}
-</p>
+
+<div class="error-box">
+
+{{ error }}
+
+</div>
+
 {% endif %}
 
-</body>
-</html>
+<div class="form-group">
+
+<label>Verification Code</label>
+
+<input
+type="text"
+name="otp"
+placeholder="000000"
+maxlength="6"
+required>
+
+</div>
+
+<button
+type="submit"
+class="verify-btn">
+
+<i class="fa-solid fa-circle-check"></i>
+
+Verify Email
+
+</button>
+<div class="resend-area">
+<button
+type="button"
+id="resendBtn"
+class="resend-btn"
+disabled
+onclick="resendOTP()">
+
+<i class="fa-solid fa-rotate-right"></i>
+
+Resend Code (<span id="countdown">30</span>s)
+
+</button>
+
+</div>
+</form>
+
+<div class="back-link">
+
+<a href="/login/">
+
+<i class="fa-solid fa-arrow-left"></i>
+
+Back to Login
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<script>
+
+let seconds = 30;
+
+const resendBtn = document.getElementById("resendBtn");
+
+const countdown = document.getElementById("countdown");
+
+let timer = setInterval(function(){
+
+    seconds--;
+
+    countdown.innerHTML = seconds;
+
+    if(seconds <= 0){
+
+        clearInterval(timer);
+
+        resendBtn.disabled = false;
+
+        resendBtn.classList.add("active");
+
+        resendBtn.innerHTML =
+        '<i class="fa-solid fa-rotate-right"></i> Resend Code';
+
+    }
+
+},1000);
+
+
+function resendOTP(){
+
+    fetch("/resend-otp/")
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if(data.success){
+
+            alert("✅ A new verification code has been sent.");
+
+            resendBtn.disabled = true;
+
+            resendBtn.classList.remove("active");
+
+            seconds = 30;
+
+            resendBtn.innerHTML =
+            '<i class="fa-solid fa-rotate-right"></i> Resend Code (<span id="countdown">30</span>s)';
+
+            const newCountdown =
+                document.getElementById("countdown");
+
+            timer = setInterval(function(){
+
+                seconds--;
+
+                newCountdown.innerHTML = seconds;
+
+                if(seconds <= 0){
+
+                    clearInterval(timer);
+
+                    resendBtn.disabled = false;
+
+                    resendBtn.classList.add("active");
+
+                    resendBtn.innerHTML =
+                    '<i class="fa-solid fa-rotate-right"></i> Resend Code';
+
+                }
+
+            },1000);
+
+        }
+
+    });
+
+}
+
+</script>
+{% endblock %}
