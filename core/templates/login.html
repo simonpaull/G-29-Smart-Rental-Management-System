@@ -1,62 +1,590 @@
-{% extends 'base.html' %}
+{% load static %}
 
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
 
-<h2>Login</h2>
+<head>
 
-<form method="POST">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {% csrf_token %}
+<title>Smart Rental Login</title>
 
-    <label>Username:</label><br>
-    <input type="text" name="username" required><br><br>
+<style>
 
-    <label>Password:</label><br>
-
-    <div style="display:flex; align-items:center; gap:5px;">
-        <input type="password" id="loginPassword" name="password" required>
-
-        <button type="button" onclick="toggleLoginPassword()">
-            👁
-        </button>
-    </div>
-
-    <br>
-
-    <button type="submit">Login</button>
-
-</form>
-
-{% if error %}
-    <p style="color:red;">{{ error }}</p>
-{% endif %}
-
-<br>
-
-<p>
-    <a href="/password-reset/">Forgot Password?</a>
-</p>
-
-<p>
-    Don’t have an account?
-    <a href="/register/">Register here</a>
-</p>
-
-<script>
-
-function toggleLoginPassword() {
-
-    var passwordInput = document.getElementById("loginPassword");
-
-    if (passwordInput.type === "password") {
-        passwordInput.type = "text";
-    }
-
-    else {
-        passwordInput.type = "password";
-    }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
 }
 
-</script>
+body{
 
-{% endblock %}
+    background:
+
+    radial-gradient(circle at top left,#F8F6FF,#F4F3FF);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    height:100vh;
+
+}
+
+.container{
+
+    width:min(92vw, 1280px);
+    aspect-ratio:16/9;
+
+    border-radius:28px;
+
+    overflow:hidden;
+
+    position:relative;
+
+    background:
+    url("{% static 'images/login-bg.png' %}");
+
+    background-size:cover;
+
+    background-position:center;
+
+    background-repeat:no-repeat;
+
+    box-shadow:
+    0 25px 70px rgba(83,74,183,.15);
+}
+
+.login-box{
+
+    width:28%;
+    max-width:340px;
+    min-width:290px;
+
+    background:#FFFFFF;
+
+    padding:22px 26px;
+
+    border-radius:28px;
+
+    border:1px solid #EEEAFE;
+
+    box-shadow:
+        0 15px 40px rgba(83,74,183,.08);
+
+    position:absolute;
+
+    right:13.5%;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    z-index:10;
+
+    animation:fadeUp .45s ease;
+
+    will-change:transform,opacity;
+
+}
+
+.login-box h1{
+
+    text-align:center;
+
+    color:#534AB7;
+
+    font-size:clamp(22px,2vw,30px);
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    margin-bottom:8px;
+
+}
+
+.login-box p{
+
+    text-align:center;
+
+    font-size:14px;
+
+    font-weight:400;
+
+    color:#8B8FA7;
+
+    line-height:1.6;
+
+    max-width:220px;
+
+    margin:0 auto 24px;
+}
+
+.form-group{
+
+    margin-bottom:10px;
+
+}
+
+.form-group label{
+
+    display:block;
+
+    font-size:15px;
+
+    margin-bottom:10px;
+
+    color:#4E4E4E;
+
+    font-weight:600;
+
+}
+
+.form-group input{
+
+    width:100%;
+
+    height:clamp(42px, 4vw, 52px);
+
+    border:2px solid #ECE9FD;
+
+    border-radius:16px;
+
+    padding:0 18px;
+
+    background:#FAFAFF;
+
+    font-size:15px;
+
+    transition:.3s;
+
+    outline:none;
+
+}
+
+.form-group input:focus{
+
+    border-color:#534AB7;
+
+    background:white;
+
+    box-shadow:
+
+    0 0 0 5px rgba(83,74,183,.12);
+
+}
+
+.login-btn{
+
+
+    width:50%;
+
+    height:40px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:#534AB7;
+
+    color:white;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+    display:block;
+
+    margin:18px auto 0;
+}
+
+.login-btn:hover{
+
+    background:#473EA7;
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+    0 15px 35px rgba(83,74,183,.30);
+
+}
+
+.register{
+
+    margin-top:18px;
+
+    text-align:center;
+
+    color:#8B8FA7;
+
+    font-size:10px;
+
+    font-weight:400;
+
+}
+
+.register a{
+
+    color:#534AB7;
+
+    font-size:13px;
+
+    font-weight:500;
+
+    text-decoration:none;
+
+}
+
+.register a:hover{
+
+    text-decoration:underline;
+
+}
+.error-message{
+
+    margin-top:15px;
+
+    margin-bottom:10px;
+
+    color:#D32F2F;
+
+    font-size:14px;
+
+    font-weight:500;
+
+    text-align:center;
+
+}
+
+.password-box{
+
+    position:relative;
+
+}
+
+.password-box input{
+
+    padding-right:55px;
+
+}
+
+.eye{
+
+    position:absolute;
+
+    top:50%;
+
+    right:20px;
+
+    transform:translateY(-50%);
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    color:#777;
+
+    transition:.25s;
+
+    user-select:none;
+
+}
+
+.eye:hover{
+
+    color:#534AB7;
+
+}
+
+.option{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    margin-top:10px;
+
+}
+
+.option a{
+
+    color:#534AB7;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+}
+
+.option a:hover{
+
+    text-decoration:underline;
+
+}
+
+.logo{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    margin-bottom:6px;
+
+}
+
+.logo-icon{
+
+    width:50px;
+
+    height:50px;
+
+    background:#EEEDFE;
+
+    border-radius:18px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:34px;
+
+    color:#534AB7;
+
+    margin-bottom:20px;
+
+    box-shadow:
+    0 10px 30px rgba(83,74,183,.12);
+
+}
+
+.input-box{
+
+    position:relative;
+    height:clamp(46px, 4vw, 54px);;
+
+}
+
+.icon{
+
+    position:absolute;
+
+    left:18px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#7D73DD;
+
+    font-size:18px;
+
+}
+
+.input-box input{
+
+    width:100%;
+    height:100%;
+
+    border:none;
+    outline:none;
+
+    background:transparent;
+
+    padding-left:56px;
+    padding-right:50px;
+
+    font-size:16px;
+
+}
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+.login-btn:active{
+
+    transform:scale(.98);
+
+}
+
+@media(max-width:1000px){
+
+.container{
+
+    width:95%;
+    height:auto;
+}
+
+.login-box{
+
+    width:90%;
+    max-width:430px;
+
+    margin:40px auto;
+
+}
+
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+        <div class="login-box">
+
+            <div class="logo">
+                <div class="logo-icon">
+                    🏠
+                </div>
+                <h1>LOGIN</h1>
+
+            </div>
+
+            <p>Welcome back! Please sign in to continue.</p>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <div class="form-group">
+
+                <label>Username</label>
+
+                    <div class="input-box">
+
+                       <span class="icon">👤</span>
+
+                            <input
+                                type="text"
+                                name="username"
+                                placeholder="Enter your username"
+                                required>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Password</label>
+
+                    <div class="input-box password-box">
+
+                        <span class="icon">🔒</span>
+
+                        <input
+                            id="loginPassword"
+                            type="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required>
+                            
+                            <span class="eye"
+                            onclick="toggleLoginPassword()">
+
+                            👁
+
+                            </span>
+                    </div>
+                </div>
+
+                {% if error %}
+                    <div class="error-message">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
+                <div class="option">
+
+                    <a href="/password-reset/">
+
+                        Forgot Password?
+
+                    </a>
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="login-btn">
+
+                    LOGIN
+
+                </button>
+
+                <div class="register">
+
+                    Don't have an account?
+
+                    <a href="/register/">
+
+                        Register Here
+
+                    </a>
+
+                </div>
+
+            </form>
+
+            <script>
+
+            function toggleLoginPassword(){
+
+                var passwordInput=document.getElementById("loginPassword");
+
+                if(passwordInput.type==="password"){
+
+                    passwordInput.type="text";
+
+                }else{
+
+                    passwordInput.type="password";
+
+                }
+
+            }
+
+            </script>
+
+        </div>
+
+</div>
+
+</body>
+
+</html>

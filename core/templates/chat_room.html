@@ -5,35 +5,41 @@
 <style>
 
 .my-message{
-    background-color: #dcf8c6;
-    padding:10px;
-    margin:10px 0;
-    border-radius:10px;
+    background:linear-gradient(135deg,#4CAF50,#6CCF7B);
+    color:white;
+    padding:12px 18px;
+    margin:12px 0;
+    border-radius:18px 18px 5px 18px;
     width:fit-content;
+    max-width:65%;
     margin-left:auto;
+    box-shadow:0 3px 8px rgba(76,175,80,.25);
 }
 
 .other-message{
-    background-color:#f1f1f1;
-    padding:10px;
-    margin:10px 0;
-    border-radius:10px;
+    background:white;
+    padding:12px 18px;
+    margin:12px 0;
+    border-radius:18px 18px 18px 5px;
     width:fit-content;
-    max-width:70%;
+    max-width:65%;
+    border-left:4px solid #4CAF50;
+    box-shadow:0 3px 8px rgba(0,0,0,.05);
 }
 
 .chat-box{
-    border:1px solid #ddd;
-    padding:15px;
-    height:350px;
+    border:none;
+    padding:25px;
+    height:420px;
     overflow-y:auto;
-    background:#fafafa;
-    border-radius:15px;
+    background:#f2f5f9;
+    border-radius:20px;
+    box-shadow:inset 0 0 8px rgba(0,0,0,.03);
 }
 
 textarea{
     width:100%:
-    padding:12px 15px:
+    padding:12px 15px;
     border-radius:20px;
     border:1px solid #ddd;
     resize:none;
@@ -56,8 +62,10 @@ button{
     cursor:pointer;
 }
 
-button:hover{
-    background:#45a049;
+.send-btn:hover{
+    transform:translateY(-50%) scale(1.05);
+
+    box-shadow:0 5px 15px rgba(76,175,80,.35);
 }
 
 .chat-form{
@@ -87,27 +95,37 @@ button:hover{
 
 .send-btn{
     position:absolute;
-    right:25px;
-    top:50%;
+    right:15px;
+    top:47%;
     transform:translateY(-50%);
     padding:6px 12px;
     border:none;
     border-radius:20px;
-    background:#4CAF50;
+    background:linear-gradient(
+    135deg,
+    #4CAF50,
+    #67C66B
+    );
     color:white;
     cursor:pointer;
     display:flex;
     justify-content:center;
     align-items:center;
     line-height:1;
+    transition:.9s
 }
 
 .chat-info{
-    background:white;
-    border-radius:15px;
-    padding:15px 20px;
+    background:linear-gradient(
+        135deg,
+        #F8FFF8,
+        #EDF8EE
+    );
+    border-radius:18px;
+    padding:20px 25px;
     margin-bottom:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    border-top:5px solid #4CAF50;
+    box-shadow:0 4px 15px rgba(0,0,0,.08);
 }
 
 .chat-info h3{
@@ -139,10 +157,43 @@ button:hover{
     background:#d1ecf1;
     color:#0c5460;
 }
+
+h2{
+   display:inline-block;
+
+    background:linear-gradient(135deg,#4CAF50,#67C66B);
+
+    color:white;
+
+    padding:12px 22px;
+
+    border-radius:12px;
+
+    font-size:28px;
+}
+
+@keyframes popup{
+
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.my-message,
+.other-message{
+    animation:popup .25s ease;
+}
 </style>
 
-<h2>Chat Room</h2>
+
 <div class="chat-info">
+    <h2>Chat Room</h2>
 
     <h3>🏠 Room {{ room_request.room.roomnumber }}</h3>
 
@@ -162,7 +213,6 @@ button:hover{
 </div>
 
 <div class ="chat-box">
-    <hr>
 
     {% for msg in messages %}
 
@@ -183,7 +233,6 @@ button:hover{
 
     {% endfor %}
 </div>
-<hr>
 
 <form method="POST" class="chat-form">
 
@@ -201,5 +250,32 @@ button:hover{
     </button>
 
 </form>
+
+<script>
+window.onload = function () {
+    const box = document.querySelector(".chat-box");
+    if (box) {
+        box.scrollTop = box.scrollHeight;
+    }
+};
+
+const textarea = document.querySelector('textarea');
+const form = document.querySelector('.chat-form');
+
+textarea.addEventListener('keydown', function(e) {
+
+    // Enter（没有按 Shift）
+    if (e.key === 'Enter' && !e.shiftKey) {
+
+        e.preventDefault();   // 阻止换行
+
+        if (textarea.value.trim() !== "") {
+            form.submit();
+        }
+
+    }
+
+});
+</script>
 
 {% endblock %}
