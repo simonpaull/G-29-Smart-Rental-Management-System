@@ -97,4 +97,9 @@ urlpatterns = [
          views.verify_email,
         name='verify_email'
     ),
+    path(
+        'resend-otp/',
+         views.resend_otp,
+         name='resend_otp'
+    ),
 ]

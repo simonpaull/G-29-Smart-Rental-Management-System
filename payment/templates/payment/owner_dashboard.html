@@ -1,6 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<div style="
+background:linear-gradient(135deg,#534AB7,#6C63FF);
+padding:30px;
+border-radius:18px;
+margin-bottom:25px;
+color:white;
+box-shadow:0 10px 25px rgba(83,74,183,.2);
+">
+
+    <h1 style="margin:0;font-size:30px;font-weight:700;">
+        👋 Welcome back,
+        {{ request.user.first_name|default:request.user.username }}
+    </h1>
+
+    <p style="margin-top:10px;font-size:15px;opacity:.9;">
+        Manage your properties, tenants and payments from one dashboard.
+    </p>
+
+</div>
+
     <title>Owner Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -23,7 +45,14 @@
         .stat-orange { color: #BA7517; }
         .stat-green { color: #3B6D11; }
         .content { padding: 0 1rem 2rem; }
-        .section-title { font-size: 12px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.25rem 0 0.75rem; }
+        .section-title{
+           font-size:15px;
+           font-weight:700;
+           color:#534AB7;
+           text-transform:uppercase;
+           letter-spacing:1px;
+           margin:25px 0 15px;
+      }
         .section-title-red { font-size: 12px; font-weight: 500; color: #A32D2D; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.25rem 0 0.75rem; }
         .section-title-blue { font-size: 12px; font-weight: 500; color: #185FA5; text-transform: uppercase; letter-spacing: 0.05em; margin: 1.25rem 0 0.75rem; }
         .qa-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 1rem; }
@@ -47,11 +76,53 @@
         .badge-resolved { background: #EAF3DE; color: #3B6D11; }
         .badge-req { background: #E0E8FF; color: #185FA5; }
         .action-btn { padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 500; border: 0.5px solid #534AB7; color: #534AB7; background: #fff; cursor: pointer; white-space: nowrap; text-decoration: none; display: inline-block; }
-        .room-card { background: #fff; border-radius: 12px; border: 0.5px solid #e0e0e0; padding: 1rem 1.25rem; margin-bottom: 10px; }
-        .room-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .room-num { font-size: 14px; font-weight: 500; color: #333; }
-        .avail-badge { background: #EAF3DE; color: #3B6D11; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
-        .occupied-badge { background: #FAEEDA; color: #854F0B; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+        .room-card {
+           background: #fff;
+           border-radius: 14px;
+           border: 1px solid #e8e8e8;
+           padding: 20px;
+           margin-bottom: 18px;
+           box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+           transition: all 0.25s ease;
+        }
+
+       .room-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 20px rgba(83,74,183,0.15);
+        }
+       .room-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 18px 24px;
+          margin-bottom: 15px;
+          background: linear-gradient(90deg, #534AB7, #6A5AE0);
+          border-radius: 10px;
+        }
+        .room-num {
+          font-size: 22px;
+          font-weight: 700;
+          color: #FFFFFF;
+          text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+          letter-spacing: 0.5px;
+        }
+        .avail-badge {
+          background: #E8F8D8;
+          color: #2E7D32;
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 700;
+       }
+
+        .occupied-badge {
+          background: #FFE7BA;
+          color: #9A5B00;
+          padding: 6px 14px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 700;
+        }
         .detail-row { display: flex; justify-content: space-between; font-size: 13px; padding: 3px 0; color: #666; }
         .history-card { background: #fff; border-radius: 12px; overflow: hidden; border: 0.5px solid #e0e0e0; }
         .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -66,36 +137,81 @@
             .qa-grid { grid-template-columns: repeat(2,1fr); }
             .topbar-username { display: none; }
         }
-    </style>
-</head>
-<body>
-    <div class="topbar">
-        <div class="topbar-title">Smart Rental System</div>
-        <div class="topbar-user">
-            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
-            <span class="topbar-username">{{ request.user.get_full_name|default:request.user.username }}</span>
-            <a class="logout-btn" href="/logout/">Logout</a>
-        </div>
-    </div>
+        .message-badge{
+          display:inline-flex;
+          justify-content:center;
+          align-items:center;
+          min-width:22px;
+          height:22px;
+          padding:0 6px;
+          margin-left:8px;
+          background:#E53935;
+          color:white;
+          border-radius:50%;
+          font-size:12px;
+          font-weight:bold;
+        }
+        .chat-card{
+          position:relative;
+        }
 
-    <div class="hero">
-        <h1>Owner dashboard</h1>
-        <p>Manage your properties, payments and complaints</p>
-    </div>
+        .notification-dot{
+          position:absolute;
+          top:12px;
+          right:12px;
+          min-width:24px;
+          height:24px;
+          padding:0 7px;
+          background:#E53935;
+          color:#fff;
+          border-radius:50%;
+          display:flex;
+          justify-content:center;
+          align-items:center;
+          font-size:12px;
+          font-weight:bold;
+          box-shadow:0 2px 6px rgba(0,0,0,.2);
+       }
+    </style>
 
     <div class="stats-row">
+
         <div class="stat-card">
-            <div class="stat-value stat-green">RM {{ total_collected }}</div>
-            <div class="stat-label">Collected</div>
+
+            <div class="stat-value stat-green">
+                RM {{ total_collected }}
+            </div>
+
+            <div class="stat-label">
+                Total Revenue
+            </div>
+
         </div>
+
         <div class="stat-card">
-            <div class="stat-value stat-red">{{ total_overdue }}</div>
-            <div class="stat-label">Overdue</div>
+
+            <div class="stat-value" style="color:#534AB7;">
+                {{ occupied_rooms }} / {{ total_rooms }}
+            </div>
+
+            <div class="stat-label">
+                Occupied Rooms
+            </div>
+
         </div>
+
         <div class="stat-card">
-            <div class="stat-value stat-orange">{{ total_complaints }}</div>
-            <div class="stat-label">Complaints</div>
+
+            <div class="stat-value stat-orange">
+                {{ room_requests|length }}
+            </div>
+
+            <div class="stat-label">
+                Pending Requests
+            </div>
+
         </div>
+
     </div>
 
     <div class="content">
@@ -126,14 +242,39 @@
                 <div class="qa-title">My rooms</div>
                 <div class="qa-sub">View owned units</div>
             </a>
-            <a class="qa-card" href="/owner-chat/">
-                <div class="qa-icon" style="color:#534AB7;">💬</div>
-                <div class="qa-title">Tenant Chats</div>
-                <div class="qa-sub">Open conversations</div>
+           <a class="qa-card" href="/owner-chat/">
+               <div class="qa-icon" style="color:#534AB7;">💬</div>
+
+               <div class="qa-title">
+                   Tenant Chats
+
+                   {% if unread_messages > 0 %}
+                       <span class="message-badge">
+                           {{ unread_messages }}
+                       </span>
+                   {% endif %}
+
+                </div>
+
+                <div class="qa-sub">
+                    Open conversations
+                </div>
             </a>
             </a>
-            <a class="qa-card" href="/payment/create-payment/">
-                <div class="qa-title">Create Payment</div>
+           <a href="/payment/create/" class="qa-card">
+
+               <div class="qa-icon">
+                    <i class="fa-solid fa-money-check-dollar"></i>
+               </div>
+
+               <div class="qa-title">
+                   Create Payment
+               </div>
+
+               <div class="qa-sub">
+                   Generate tenant payment
+               </div>
+
             </a>
             <a class="qa-card" href="/payment/contracts/">
                 <div class="qa-icon" style="color:#534AB7;">📝</div>
@@ -145,6 +286,28 @@
                 <div class="qa-icon" style="color:#E24B4A;">⚠️</div>
                 <div class="qa-title">Report tenant</div>
                 <div class="qa-sub">File complaint to admin</div>
+            </a>
+            <a class="qa-card" href="{% url 'create_tenant' %}">
+                <div class="qa-icon" style="color:#534AB7;">👤</div>
+
+                <div class="qa-title">
+                    Create Tenant
+                </div>
+
+                <div class="qa-sub">
+                    Create tenant accounts
+                </div>
+            </a>
+            <a class="qa-card" href="{% url 'add_room' %}">
+                <div class="qa-icon" style="color:#3B6D11;">➕</div>
+
+                <div class="qa-title">
+                    Add Room
+                </div>
+
+                <div class="qa-sub">
+                    Create new room listing
+                </div>
             </a>
         </div>
 
@@ -172,20 +335,60 @@
         <div class="section-title-blue">🔔 Pending room requests</div>
         {% if room_requests %}
         <div class="complaint-card">
-            {% for r in room_requests %}
-            <div class="complaint-item">
-                <div>
-                    <div class="complaint-title">{{ r.tenant.username }} → Unit {{ r.room.roomnumber }}</div>
-                    <div class="complaint-sub">{{ r.created_at|date:"d M Y" }} · "{{ r.message|truncatechars:50 }}"</div>
+           {% for r in room_requests %}
+
+           <div class="request-card">
+
+              <div class="request-top">
+
+                  <div>
+
+                      <h3>
+
+                         <i class="fa-solid fa-user"></i>
+
+                         {{ r.tenant.username }}
+
+                      </h3>
+
+                      <p class="request-room">
+
+                          <i class="fa-solid fa-house"></i>
+
+                          Room {{ r.room.roomnumber }}
+
+                      </p>
+
+                      <p class="request-date">
+
+                          <i class="fa-regular fa-calendar"></i>
+
+                          {{ r.created_at|date:"d M Y" }}
+
+                      </p>
+
+                    </div>
+
+                    <span class="badge badge-req">
+
+                        Pending
+
+                    </span>
+
                 </div>
-                <div class="badge-meta">
-                    <span class="badge badge-req">Pending</span>
-                    <a class="action-btn"
-                        href="/assign-tenant/{{ r.room.id }}/">
-                            Review
-                        </a>
+
+                <div class="request-message">
+
+                    <i class="fa-solid fa-comment-dots"></i>
+
+                    {{ r.message }}
+
                 </div>
+
+                
+
             </div>
+
             {% endfor %}
         </div>
         {% else %}
@@ -197,7 +400,7 @@
             {% for r in rooms %}
             <div class="room-card">
                 <div class="room-header">
-                    <span class="room-num">Unit {{ r.roomnumber }} — {{ r.roomtype }}</span>
+                    <span class="room-num"><i class="fa-solid fa-house"></i>Unit {{ r.roomnumber }} — {{ r.roomtype }}</span>
                     {% if r.tenant_set.count >= r.capacity %}
                         <span class="occupied-badge">
                             Occupied
@@ -208,9 +411,31 @@
                         </span>
                     {% endif %}
                 </div>
-                <div class="detail-row"><span>Price</span><span>RM {{ r.price }}/month</span></div>
-                <div class="detail-row"><span>Capacity</span><span>{{ r.capacity }} person(s)</span></div>
-                <div class="detail-row"><span>Size</span><span>{{ r.size }}</span></div>
+                <div class="detail-row">
+                    <span>Price</span>
+                    <span>RM {{ r.price }}/month</span>
+                </div>
+
+                <div class="detail-row">
+                    <span>Occupancy</span>
+                    <span>{{ r.tenant_set.count }} / {{ r.capacity }} person(s)</span>
+                </div>
+
+                <div class="detail-row">
+                    <span>Size</span>
+                    <span>{{ r.size }}</span>
+                </div>
+
+                {% if r.tenant_set.count > 0 %}
+                <div class="detail-row">
+                    <span>Current Tenant{{ r.tenant_set.count|pluralize }}</span>
+                    <span>
+                        {% for tenant in r.tenant_set.all %}
+                            {{ tenant.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                {% endif %}
             </div>
             {% endfor %}
         {% else %}
@@ -245,5 +470,5 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+    
+{% endblock %}

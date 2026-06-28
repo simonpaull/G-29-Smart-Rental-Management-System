@@ -1,46 +1,116 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <title>Smart Rental Management System</title>
-</head>
-<body>
-    <h1>Smart Rental Management System</h1>
 
-    <nav>
-        <a href="/">Home</a> |
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Rental System</title>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+    <div class="logo">
+
+        Smart Rental <span>System</span>
+
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
 
         {% if user.is_authenticated %}
 
             {% if user.profile.role == 'admin' %}
-                <a href="/payment/admin-panel/">Dashboard</a> |
+
+                <a href="/payment/admin-panel/">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
 
             {% elif user.profile.role == 'owner' %}
-                <a href="/payment/owner-dashboard/">Dashboard</a> |
+
+                <a href="/payment/owner-dashboard/">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
 
             {% elif user.profile.role == 'prospect' %}
-                <a href="/prospect-dashboard/">Dashboard</a> |
+
+                <a href="/prospect-dashboard/">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
 
             {% elif user.profile.role == 'tenant' %}
-                <a href="/payment/">Dashboard</a> |
+
+                <a href="/payment/">
+                    <i class="fa-solid fa-table-columns"></i>
+                    Dashboard
+                </a>
 
             {% endif %}
-            
-            <a href="/profile/">Profile</a> |
-            <a href="/logout/">Logout</a>
 
-         {% else %}
+            <a href="/profile/">
+                <i class="fa-regular fa-user"></i>
+                Profile
+            </a>
 
-            <a href="/login/">Login</a> |
-            <a href="/register/">Register</a>
+            <a href="/logout/">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+            </a>
+
+        {% else %}
+
+            <a href="/login/">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Login
+            </a>
+
+            <a href="/register/">
+                <i class="fa-solid fa-user-plus"></i>
+                Register
+            </a>
 
         {% endif %}
-    </nav>
-    <hr>
 
-    {% block content %}{% endblock %}
+    </div>
+
+</div>
+
+<div class="container">
+
+    {% block content %}
+
+    {% endblock %}
+
+</div>
+
+<footer class="footer">
+
+    <p>
+        © 2026 Smart Rental System |
+        Developed by Group 29
+    </p>
+
+</footer>
+
 </body>
 </html>
