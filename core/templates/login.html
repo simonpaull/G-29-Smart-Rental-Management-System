@@ -1,155 +1,32 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
-<style>
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
 
-.login-container{
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:75vh;
-
-}
-
-.login-card{
-
-    width:420px;
-    background:white;
-    padding:40px;
-    border-radius:18px;
-    box-shadow:0 10px 25px rgba(0,0,0,.1);
-
-}
-
-.login-title{
-
-    text-align:center;
-    color:#534AB7;
-    margin-bottom:8px;
-
-}
-
-.login-subtitle{
-
-    text-align:center;
-    color:#777;
-    margin-bottom:30px;
-
-}
-
-.form-group{
-
-    margin-bottom:18px;
-
-}
-
-.form-group label{
-
-    display:block;
-    margin-bottom:8px;
-    font-weight:600;
-    color:#444;
-
-}
-
-.form-group input{
-
-    width:100%;
-    padding:12px;
-    border:1px solid #ddd;
-    border-radius:10px;
-    font-size:15px;
-
-}
-
-.password-box{
-
-    display:flex;
-    gap:8px;
-
-}
-
-.password-box input{
-
-    flex:1;
-
-}
-
-.password-box button{
-
-    width:50px;
-    border:none;
-    background:#534AB7;
-    color:white;
-    border-radius:10px;
-    cursor:pointer;
-
-}
-
-.login-btn{
-
-    width:100%;
-    background:#534AB7;
-    color:white;
-    border:none;
-    padding:13px;
-    border-radius:10px;
-    font-size:16px;
-    cursor:pointer;
-    margin-top:10px;
-
-}
-
-.login-btn:hover{
-
-    background:#4338A5;
-
-}
-
-.error{
-
-    color:red;
-    text-align:center;
-    margin-top:15px;
-
-}
-
-.links{
-
-    text-align:center;
-    margin-top:25px;
-
-}
-
-.links a{
-
-    color:#534AB7;
-    text-decoration:none;
-    font-weight:600;
-
-}
-
-.links a:hover{
-
-    text-decoration:underline;
-
-}
-
-</style>
+<div class="login-page">
 
 <div class="login-container">
 
-<div class="login-card">
 
-<h1 class="login-title">
-Smart Rental System
-</h1>
+<div class="login-box">
 
-<p class="login-subtitle">
-Login to continue
+<div class="logo">
+
+<div class="logo-icon">
+
+🏠
+
+</div>
+
+<h2>Welcome Back</h2>
+
+<p>
+Please sign in to your account
 </p>
+
+</div>
 
 <form method="POST">
 
@@ -157,86 +34,94 @@ Login to continue
 
 <div class="form-group">
 
-<label>Username</label>
+    <label>Username</label>
 
-<input
-type="text"
-name="username"
-placeholder="Enter your username"
-required>
+    <div class="input-box">
+
+        <i class="fa-solid fa-user icon"></i>
+
+        <input
+            type="text"
+            name="username"
+            placeholder="Enter your username"
+            required>
+
+    </div>
 
 </div>
 
 <div class="form-group">
 
-<label>Password</label>
+    <label>Password</label>
 
-<div class="password-box">
+    <div class="input-box">
 
-<input
-type="password"
-id="loginPassword"
-name="password"
-placeholder="Enter your password"
-required>
+        <i class="fa-solid fa-lock icon"></i>
 
-<button
-type="button"
-onclick="toggleLoginPassword()">
+        <input
+            id="loginPassword"
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            required>
 
-👁
+        <span
+            class="eye"
+            onclick="toggleLoginPassword()">
 
-</button>
+            <i class="fa-solid fa-eye"></i>
+
+        </span>
+
+    </div>
 
 </div>
-
-</div>
-
-<button
-class="login-btn"
-type="submit">
-
-Login
-
-</button>
-
-</form>
 
 {% if error %}
 
-<p class="error">
+<div class="error-message">
 
-{{ error }}
+    <i class="fa-solid fa-circle-exclamation"></i>
 
-</p>
+    {{ error }}
+
+</div>
 
 {% endif %}
 
-<div class="links">
+<div class="option">
 
-<p>
+    <a href="/password-reset/">
 
-<a href="/password-reset/">
+        Forgot Password?
 
-Forgot Password?
+    </a>
 
-</a>
+</div>
 
-</p>
+<button
+    type="submit"
+    class="login-btn">
 
-<br>
+    <i class="fa-solid fa-right-to-bracket"></i>
 
-<p>
+    Login
 
-Don't have an account?
+</button>
 
-<a href="/register/">
+<div class="register">
 
-Register
+    Don't have an account?
 
-</a>
+    <a href="/register/">
 
-</p>
+        Register Here
+
+    </a>
+
+</div>
+
+</form>
 
 </div>
 
@@ -248,15 +133,29 @@ Register
 
 function toggleLoginPassword(){
 
-    var password=document.getElementById("loginPassword");
+    const password =
+        document.getElementById("loginPassword");
+
+    const eye =
+        document.querySelector(".eye i");
 
     if(password.type==="password"){
 
         password.type="text";
 
-    }else{
+        eye.classList.remove("fa-eye");
+
+        eye.classList.add("fa-eye-slash");
+
+    }
+
+    else{
 
         password.type="password";
+
+        eye.classList.remove("fa-eye-slash");
+
+        eye.classList.add("fa-eye");
 
     }
 

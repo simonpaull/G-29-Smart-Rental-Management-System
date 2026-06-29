@@ -10,16 +10,32 @@ html{
 }
 
 body{
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
+
     margin:0;
+
+    min-height:100vh;
+
     background:#F4F3FF;
+
     font-family:Arial,sans-serif;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+main{
+
+    flex:1;
+
+    display:flex;
+
 }
 .navbar{
 
-    background:#5A4FCF;
+    height:72px;
+
+    background:#534AB7;
 
     display:flex;
 
@@ -27,42 +43,31 @@ body{
 
     align-items:center;
 
-    padding:18px 40px;
-    
-    position:fixed;
+    padding:0 40px;
 
-    top:0;
-
-    left:0;
-
-    width:100%;
-
-    z-index:1000;
-
-    box-shadow:0 5px 18px rgba(0,0,0,.15);
-
-
-}
-
-.container{
-
-    padding-top:95px;
+    box-shadow:0 4px 15px rgba(0,0,0,.12);
 
 }
 
 .logo{
 
-    color:white;
+    display:flex;
 
-    font-size:34px;
+    align-items:center;
+
+    justify-content:center;
+
+    height:100%;
+
+    font-size:20px;
 
     font-weight:700;
 
-    display:flex;
+    color:white;
 
-    align-items:baseline;
+    line-height:1;
 
-    gap:8px;
+    letter-spacing:.3px;
 
 }
 
@@ -80,17 +85,13 @@ body{
 
     align-items:center;
 
-    gap:30px;
+    gap:35px;
+
+    height:100%;
 
 }
 
 .nav-links a{
-
-    color:white;
-
-    text-decoration:none;
-
-    font-size:17px;
 
     display:flex;
 
@@ -98,14 +99,21 @@ body{
 
     gap:8px;
 
-    padding:8px 0;
+    height:100%;
+
+    color:white;
+
+    text-decoration:none;
+
+    font-size:18px;
+
+    font-weight:500;
 
     position:relative;
 
     transition:.3s;
 
 }
-
 .nav-links a::after{
 
     content:"";
@@ -127,6 +135,13 @@ body{
     transition:.3s ease;
 
 }
+.nav-links a:hover{
+
+    color:#ffffff;
+
+    transform:translateY(-2px);
+
+}
 
 .nav-links a:hover::after{
 
@@ -141,12 +156,22 @@ body{
 }
 
 .container{
-    width:90%;
-    max-width:1200px;
-    margin:35px auto;
-    flex:1;
-}
 
+    width:95%;
+
+    max-width:1400px;
+
+    margin:0 auto;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    flex:1;
+
+}
 .page-title{
 
     font-size:40px;
@@ -913,12 +938,21 @@ body{
 
 
 .footer{
+
     width:100%;
+
     background:#534AB7;
+
     color:white;
+
     text-align:center;
-    padding:18px 0;
+
+    padding:14px 0;
+
     margin-top:auto;
+
+    font-size:14px;
+
 }
 
 .footer p{
