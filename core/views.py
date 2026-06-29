@@ -74,15 +74,21 @@ def room_list(request):
         return redirect('tenant_payment_dashboard')
 
     else:
-        rooms = Room.objects.all()
+        rooms = Room.objects.filter(availability=True)
 
         return render(request, 'room_list.html', {'rooms': rooms})
 
 
+@login_required
 def owner_properties(request):
-    rooms = Room.objects.all()
-    return render(request, 'owner_properties.html', {'rooms': rooms})
 
+    rooms = Room.objects.filter(owner=request.user)
+
+    return render(
+        request,
+        'owner_properties.html',
+        {'rooms': rooms}
+    )
 
 def add_room(request):
     if request.method == 'POST':
@@ -110,7 +116,10 @@ def add_room(request):
 
 
 def edit_room(request, id):
-    room = Room.objects.get(id=id)
+    room = Room.objects.get(
+      id=id,
+      owner=request.user
+    )
 
     if request.method == "POST":
         room.roomnumber = request.POST.get('roomnumber')
@@ -127,7 +136,10 @@ def edit_room(request, id):
 
 
 def delete_room(request, id):
-    room = Room.objects.get(id=id)
+    room = Room.objects.get(
+        id=id,
+        owner=request.user
+    )
 
     if request.method == 'POST':
         room.delete()
@@ -161,7 +173,10 @@ def tenant_list(request):
 @login_required
 def assign_tenant(request, id):
 
-    room = Room.objects.get(id=id)
+    room = Room.objects.get(
+      id=room_id,
+      owner=request.user
+    )
 
     requests = RoomRequest.objects.filter(
         room=room
@@ -634,6 +649,18 @@ def create_owner(request):
         phone_number = request.POST.get('phone_number')
         address = request.POST.get('address')
 
+        # Check username
+        if User.objects.filter(username=username).exists():
+            return render(request, 'create_owner.html', {
+                'error': 'Username already exists.'
+            })
+
+        # Check email
+        if User.objects.filter(email=email).exists():
+            return render(request, 'create_owner.html', {
+                'error': 'Email already exists.'
+            })
+
         user = User.objects.create_user(
             username=username,
             email=email,
@@ -649,12 +676,9 @@ def create_owner(request):
             email_verified=True
         )
 
-        return redirect('admin_dashboard')
+        return redirect("/payment/admin-panel/")
 
-    return render(
-        request,
-        'create_owner.html'
-    )
+    return render(request, 'create_owner.html')
     
 @login_required
 def create_tenant(request):

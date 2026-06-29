@@ -28,7 +28,6 @@ main{
 
     flex:1;
 
-    display:flex;
 
 }
 .navbar{
@@ -59,7 +58,7 @@ main{
 
     height:100%;
 
-    font-size:20px;
+    font-size:28px;
 
     font-weight:700;
 
@@ -71,13 +70,6 @@ main{
 
 }
 
-.logo span{
-
-    font-size:34px;
-
-    font-weight:700;
-
-}
 
 .nav-links{
 
@@ -161,15 +153,7 @@ main{
 
     max-width:1400px;
 
-    margin:0 auto;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    flex:1;
+    margin:30px auto;
 
 }
 .page-title{
